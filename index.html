@@ -659,6 +659,12 @@ function showTab(t){
 }
 
 /* ---------- track tasks ---------- */
+function daysLeft(dl){
+  if(!dl)return null;
+  const d=new Date(dl+'T12:00:00');if(isNaN(d))return null;
+  const now=new Date();now.setHours(12,0,0,0);
+  return Math.round((d-now)/86400000);
+}
 function statusOpts(sel){return STATUSES.map(s=>`<option value="${s}" ${s===sel?'selected':''}>${s==='Complete'?'Completed':s}</option>`).join('');}
 function addOpts(list,have){return '<option value="">+ Action</option>'+list.filter(x=>!have.includes(x)).map(x=>`<option>${x}</option>`).join('');}
 function actClass(a){if(ACT_RED.includes(a))return 'a-red';if(ACT_ORANGE.includes(a))return 'a-orange';if(ACT_BLUE.includes(a))return 'a-blue';if(ACT_GREEN.includes(a))return 'a-green';return '';}
@@ -678,7 +684,7 @@ function rowHtml(si,ri,r){
   return `<tr>
     <td><select class="status ${SCLASS[r.status]}" onchange="updRow(${si},${ri},'status',this.value);renderTasks()">${statusOpts(r.status)}</select></td>
     <td>${r.status==='Complete'?'<span style="color:#b6bcc8;font-size:12px">—</span>':`<input class="cell dl" type="date" value="${esc(r.deadline)}" onchange="updRow(${si},${ri},'deadline',this.value)">`}</td>
-    <td><input class="cell days" value="${esc(r.days)}" placeholder="—" onchange="updRow(${si},${ri},'days',this.value)"></td>
+    <td>${(()=>{const dlv=r.status==='Complete'?null:daysLeft(r.deadline);if(dlv===null)return `<input class="cell days" value="${esc(r.days)}" placeholder="—" onchange="updRow(${si},${ri},'days',this.value)">`;const cls=dlv<0?'neg':(dlv<=3?'':'mut');return `<span class="res ${cls}" style="display:block;text-align:center" title="Est. deadline'a göre otomatik">${dlv}</span>`;})()}</td>
     <td><input class="cell task" value="${esc(r.task)}" placeholder="Task" onchange="updRow(${si},${ri},'task',this.value)"></td>
     <td><div class="chips">${chips}<select class="add-sel" onchange="addAction(${si},${ri},this.value);this.selectedIndex=0">${addOpts(ACTIONS,r.actions||[])}</select></div></td>
     <td><div class="notewrap">${notePrev?`<div class="noteprev" onclick="openNote(${si},${ri})" title="Open note">${esc(notePrev)}</div>`:''}<button class="npen" onclick="openNote(${si},${ri})" title="${notePrev?'Edit note':'Add note'}">✏️</button></div></td>
