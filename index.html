@@ -232,12 +232,31 @@
   footer{text-align:center;color:var(--muted);font-size:12px;padding:18px 12px 6px}
   #sync{font-weight:700;margin:7px 0}
   .mini{background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer}
+  #gate{position:fixed;inset:0;background:linear-gradient(135deg,#0E1B3D 0%,#16264d 60%,#1b2f5c 100%);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+  .gatebox{text-align:center;max-width:340px;width:100%}
+  .gatebox img{height:44px;margin-bottom:18px}
+  .gatebox h2{color:#fff;font-size:15px;font-weight:800;letter-spacing:.6px;margin:0 0 4px}
+  .gatebox p{color:#8fa0c4;font-size:11.5px;margin:0 0 18px}
+  .gatebox input{width:100%;border:1.5px solid #2c3d66;background:rgba(255,255,255,.06);color:#fff;border-radius:11px;padding:12px 14px;font-size:15px;text-align:center;outline:none;font-family:inherit;letter-spacing:2px}
+  .gatebox input:focus{border-color:var(--orange)}
+  .gatebox button{width:100%;margin-top:11px;background:var(--orange);color:#fff;border:none;border-radius:11px;padding:12px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit}
+  .gatebox .gerr{color:#ff8f7d;font-size:11.5px;font-weight:700;margin-top:10px;min-height:15px}
   #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:700;opacity:0;transition:opacity .25s;pointer-events:none;z-index:99}
   #toast.show{opacity:1}
   @media (max-width:640px){.htitle{display:none}}
 </style>
 </head>
 <body>
+<div id="gate" style="display:none">
+  <div class="gatebox">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATgAAABKCAYAAAAv4kgUAAAETElEQVR42u3d64rcMAxA4XHI+7+y+qtQynaaiy+y/R0oFNpNHFs6kTIZb4mIz01+/0D5AEBijgc/U/4SHQAsI7ifqjkAWE5wtSRHlABSCK6VjEgOQFXOShKKT50PHWodp7VQs46xDJqPnnNydbxlYHy8ma/oPM+RcG2/je/WWM5PPuKT/xPaSBQAWeaux5zEw/9bForzGfKj5RrfirOzUXDtILmf5sarM20EE9Znq3ip5oqj4sljUPBmWyTPEuuucSQZB3LGx9e8OwYHRVgwQdx5Hq3NugVB3BXcnZMXgdikrSJ+knPDe3jcY2AQhEXccl4jyXWQ3AZ5dwguuDFg1fU9yE2yLkD54w/WXN9HeXdWSsayaLIXwrq0zvEg+Eqj8dzZDOLtOAi17Q2//OPvl49xNAz6VcXwpFJYXYo1q6eoHHfYp2r7Krhsr4OUHRZgMSEWY0GHtbu8tkeH1jQWTv6sSRSLzwl54VIeHI2DrLY4Y5OWb4vgMwVozVPBjZDb3/8mQQBt7H8F12JLnjDRWjSVJEbP9ZEsscrNCRKcpA9Ub1F7t6bfjrua5HpveAgQ3GfcczdovYDHgrsil9Fyk6wAmlRw5Ea+K6N7WJizwuJnkFtsGKiFXMkL1yq4onKTaMCOLSq55Wl3yyLXAXQXXOkQwK3kViTydONT1aJ7BedVkPrykMjAIM5/JGTtl2pb7hln2yJVI3CpgvsmDbv95qtaVYfAzQpulsote4LvKJ+Y9NylwzndjBJVcOTWX26zf4Iq2TFdBUdu84+t5UvQnrdhWsGRG1oIzfpheItKbu8koLIBklZw5JazNVxBmqo3pKjgsrU4syaGSo7ckKiCy/j90pIsKVtIa4dfDA0MFRy53R9TXLz20dcxcgxl4HlikWvDyxZ1Jrlleoi/87c0VKeYRnDZ7l62VAJQtUXNUrnc3bZpdJuw0866I9pAoGsFN+vOIFo1gOBSyy0WFMfs4/c4AUu0qCq3uSUS5hkquLxyi00rBFICOrWoo9oQLc78WEMME1xp3B6NOLY2VpUJghsmIHID3IS7Ca7FLrTk5hqBtBUcuRHq6kLXXm8kuAx7unnNRPsBNKvgyn+C1VbjpKG1xxQxcHRKrpVfEpZs5gtJC4SjQ3CuvKVQtl+Vp+IjUmt3sYLLXrmNTuiQgEPXg8D2jZHLa39OHOxFEj2+puy/VzZurk95uF5lcHyUAectE5zvp7V91DGdSRJu9VZM69hWsqo57WrXFnX0br/QxmDf9S0tBUdudcZcBK9x4h21N7wkN4lbq/UQS+L09XEPQTNkET0zGhdT4nTd9S1vKzhVyfXxZh5zbJoE5Lbu+v54nPPhgUI7IYFuxkiNefU1wbUlV/2NijNJAM8cmNqoMXMdk89h2eScLdb38nWUiFeeikoTF5IcQG3ePoMjIQDLCq6W5ApxAsgouF2eDwAguCqS854YgOUEp5IDUI1fl5UPw6ijueMAAAAASUVORK5CYII=" alt="Bargello">
+    <h2>AMAZON LAUNCH TRACKER</h2>
+    <p>Protected panel · Export Partners</p>
+    <input id="gatePass" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')gateTry()">
+    <button onclick="gateTry()">Enter</button>
+    <div class="gerr" id="gateErr"></div>
+  </div>
+</div>
 <header>
   <img class="logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATgAAABKCAYAAAAv4kgUAAAETElEQVR42u3d64rcMAxA4XHI+7+y+qtQynaaiy+y/R0oFNpNHFs6kTIZb4mIz01+/0D5AEBijgc/U/4SHQAsI7ifqjkAWE5wtSRHlABSCK6VjEgOQFXOShKKT50PHWodp7VQs46xDJqPnnNydbxlYHy8ma/oPM+RcG2/je/WWM5PPuKT/xPaSBQAWeaux5zEw/9bForzGfKj5RrfirOzUXDtILmf5sarM20EE9Znq3ip5oqj4sljUPBmWyTPEuuucSQZB3LGx9e8OwYHRVgwQdx5Hq3NugVB3BXcnZMXgdikrSJ+knPDe3jcY2AQhEXccl4jyXWQ3AZ5dwguuDFg1fU9yE2yLkD54w/WXN9HeXdWSsayaLIXwrq0zvEg+Eqj8dzZDOLtOAi17Q2//OPvl49xNAz6VcXwpFJYXYo1q6eoHHfYp2r7Krhsr4OUHRZgMSEWY0GHtbu8tkeH1jQWTv6sSRSLzwl54VIeHI2DrLY4Y5OWb4vgMwVozVPBjZDb3/8mQQBt7H8F12JLnjDRWjSVJEbP9ZEsscrNCRKcpA9Ub1F7t6bfjrua5HpveAgQ3GfcczdovYDHgrsil9Fyk6wAmlRw5Ea+K6N7WJizwuJnkFtsGKiFXMkL1yq4onKTaMCOLSq55Wl3yyLXAXQXXOkQwK3kViTydONT1aJ7BedVkPrykMjAIM5/JGTtl2pb7hln2yJVI3CpgvsmDbv95qtaVYfAzQpulsote4LvKJ+Y9NylwzndjBJVcOTWX26zf4Iq2TFdBUdu84+t5UvQnrdhWsGRG1oIzfpheItKbu8koLIBklZw5JazNVxBmqo3pKjgsrU4syaGSo7ckKiCy/j90pIsKVtIa4dfDA0MFRy53R9TXLz20dcxcgxl4HlikWvDyxZ1Jrlleoi/87c0VKeYRnDZ7l62VAJQtUXNUrnc3bZpdJuw0866I9pAoGsFN+vOIFo1gOBSyy0WFMfs4/c4AUu0qCq3uSUS5hkquLxyi00rBFICOrWoo9oQLc78WEMME1xp3B6NOLY2VpUJghsmIHID3IS7Ca7FLrTk5hqBtBUcuRHq6kLXXm8kuAx7unnNRPsBNKvgyn+C1VbjpKG1xxQxcHRKrpVfEpZs5gtJC4SjQ3CuvKVQtl+Vp+IjUmt3sYLLXrmNTuiQgEPXg8D2jZHLa39OHOxFEj2+puy/VzZurk95uF5lcHyUAectE5zvp7V91DGdSRJu9VZM69hWsqo57WrXFnX0br/QxmDf9S0tBUdudcZcBK9x4h21N7wkN4lbq/UQS+L09XEPQTNkET0zGhdT4nTd9S1vKzhVyfXxZh5zbJoE5Lbu+v54nPPhgUI7IYFuxkiNefU1wbUlV/2NijNJAM8cmNqoMXMdk89h2eScLdb38nWUiFeeikoTF5IcQG3ePoMjIQDLCq6W5ApxAsgouF2eDwAguCqS854YgOUEp5IDUI1fl5UPw6ijueMAAAAASUVORK5CYII=" alt="Bargello">
   <div class="htitle">AMAZON LAUNCH TRACKER<small>PREPARED BY EXPORT PARTNERS · CLIENT: CC KİMYA</small></div>
@@ -613,6 +632,23 @@ async function boot(){
   await loadScript('https'+'://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js');
   initData();
 }
+/* ---------- access gate ---------- */
+const GATE_KEY='brg_gate_v1';
+function gateOk(){try{return localStorage.getItem(GATE_KEY)==='ok';}catch(e){return false;}}
+function gateShow(){const g=document.getElementById('gate');if(g)g.style.display='flex';const i=document.getElementById('gatePass');if(i&&i.focus)setTimeout(()=>i.focus(),50);}
+function gateHide(){const g=document.getElementById('gate');if(g)g.style.display='none';}
+function gateTry(){
+  const i=document.getElementById('gatePass');
+  const val=(i&&i.value||'').trim();
+  if(val===atob('YmFyZ2VsbG8yMDI2')){
+    try{localStorage.setItem(GATE_KEY,'ok');}catch(e){}
+    gateHide();
+  }else{
+    const e=document.getElementById('gateErr');if(e)e.textContent='Wrong password, try again.';
+    if(i)i.value='';
+  }
+}
+function gateInit(){if(gateOk())gateHide();else gateShow();}
 
 /* ---------- tabs ---------- */
 function showTab(t){
@@ -949,6 +985,7 @@ function toast(m){const t=document.getElementById('toast');if(!t)return;t.textCo
 function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bargello-tracker-backup.json';a.click();}
 function importData(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);state=normalize(d);save();renderAll();toast('Backup restored');}catch(e){alert('Invalid backup file.');}};r.readAsText(f);ev.target.value='';}
 
+gateInit();
 boot();
 </script>
 </body></html>
