@@ -590,7 +590,7 @@ function normalize(d){
   const sections=(d.sections||[]).map(s=>({id:s.id||id(),name:s.name||'',rows:(s.rows||[]).map(r=>({
     id:r.id||id(),status:STATUSES.includes(r.status)?r.status:'Not Started',
     deadline:r.deadline||'',days:r.days||'',task:r.task||'',note:r.note||'',
-    actions:Array.isArray(r.actions)?r.actions.filter(a=>ACTIONS.includes(a)):[]
+    actions:Array.isArray(r.actions)?r.actions.filter(a=>ACTIONS.includes(a)):[],isNew:!!r.isNew
   }))}));
   const timeline=(d.timeline||[]).map(t=>{
     let cells=Array.isArray(t.cells)?t.cells.slice(0,nw):[];
@@ -724,6 +724,8 @@ function addOpts(list,have){return '<option value="">+ Action</option>'+list.fil
 function actClass(a){if(ACT_RED.includes(a))return 'a-red';if(ACT_ORANGE.includes(a))return 'a-orange';if(ACT_BLUE.includes(a))return 'a-blue';if(ACT_GREEN.includes(a))return 'a-green';return '';}
 const SORT_RANK={'On Hold':0,'Over Due':1,'In Progress':2,'Complete':3,'Not Started':4};
 function rowCmp(a,b){
+  if(!!a.r.isNew!==!!b.r.isNew)return a.r.isNew?-1:1;   /* yeni satır her şeyin üstünde */
+  if(a.r.isNew&&b.r.isNew)return a.ri-b.ri;             /* en son eklenen en üstte */
   const ra=SORT_RANK[a.r.status],rb=SORT_RANK[b.r.status];
   if(ra!==rb)return ra-rb;
   if(a.r.status==='Complete')return a.ri-b.ri;            /* completed: girildiği sıra */
@@ -774,8 +776,8 @@ function renderTasks(){
       <button class="del" onclick="delSection(${si})" title="Delete section" style="float:right">✕</button>
     </td></tr>`;
     if(open){
-      html+=shown.map(x=>rowHtml(si,x.ri,x.r)).join('');
       html+=`<tr><td colspan="7" style="padding:0"><button class="addrow" onclick="addRow(${si})">+ Add row</button></td></tr>`;
+      html+=shown.map(x=>rowHtml(si,x.ri,x.r)).join('');
     }
   });
   document.getElementById('taskBody').innerHTML=html;
@@ -783,7 +785,7 @@ function renderTasks(){
 function updRow(si,ri,k,v){
   const r=state.sections[si].rows[ri],old=r[k];r[k]=v;
   if(old!==v){
-    if(k==='status')logChange(r.task+' → '+v);
+    if(k==='status'){logChange(r.task+' → '+v);r.isNew=false;}
     else if(k==='deadline')logChange('Deadline: '+r.task+' → '+(v||'—'));
     else if(k==='task')logChange('Görev adı: "'+(old||'')+'" → "'+v+'"');
     else if(k==='days')logChange('Days: '+r.task+' → '+(v||'—'));
@@ -792,7 +794,7 @@ function updRow(si,ri,k,v){
 }
 function updSection(si,v){state.sections[si].name=v;save();}
 function toggleSec(sid){collapsed[sid]=!collapsed[sid];renderTasks();}
-function addRow(si){state.sections[si].rows.push({id:id(),status:'Not Started',deadline:'',days:'',task:'',note:'',actions:[]});logChange('Satır eklendi ('+state.sections[si].name+')');save();renderTasks();}
+function addRow(si){state.sections[si].rows.unshift({id:id(),status:'Not Started',deadline:'',days:'',task:'',note:'',actions:[],isNew:true});logChange('Satır eklendi ('+state.sections[si].name+')');save();renderTasks();}
 function delRow(si,ri){logChange('Satır silindi: '+(state.sections[si].rows[ri].task||'—'));state.sections[si].rows.splice(ri,1);save();renderTasks();}
 function addSection(){state.sections.push({id:id(),name:'NEW SECTION',rows:[]});save();renderTasks();}
 function delSection(si){state.sections.splice(si,1);save();renderTasks();}
