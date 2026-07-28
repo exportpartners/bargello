@@ -241,6 +241,14 @@
   .gatebox input:focus{border-color:var(--orange)}
   .gatebox button{width:100%;margin-top:11px;background:var(--orange);color:#fff;border:none;border-radius:11px;padding:12px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit}
   .gatebox .gerr{color:#ff8f7d;font-size:11.5px;font-weight:700;margin-top:10px;min-height:15px}
+  .logbtn{margin-left:auto;background:rgba(255,255,255,.1);border:1px solid #2c3d66;color:#cdd6e4;border-radius:9px;padding:7px 13px;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .logbtn:hover{background:rgba(255,255,255,.18)}
+  .logrow{display:flex;gap:10px;padding:9px 2px;border-bottom:1px solid var(--line);font-size:12.5px;line-height:1.5}
+  .logrow:last-child{border-bottom:none}
+  .logwho{flex-shrink:0;background:#e9edf5;color:var(--ink2);border-radius:8px;padding:2px 9px;font-size:10.5px;font-weight:800;height:fit-content}
+  .logmsg{flex:1;color:#39415a}
+  .logtime{flex-shrink:0;color:var(--muted);font-size:10.5px;white-space:nowrap}
+  #lastUpd{font-size:11px;color:var(--muted);font-weight:700;margin-top:5px}
   #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:700;opacity:0;transition:opacity .25s;pointer-events:none;z-index:99}
   #toast.show{opacity:1}
   @media (max-width:640px){.htitle{display:none}}
@@ -260,6 +268,7 @@
 <header>
   <img class="logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATgAAABKCAYAAAAv4kgUAAAETElEQVR42u3d64rcMAxA4XHI+7+y+qtQynaaiy+y/R0oFNpNHFs6kTIZb4mIz01+/0D5AEBijgc/U/4SHQAsI7ifqjkAWE5wtSRHlABSCK6VjEgOQFXOShKKT50PHWodp7VQs46xDJqPnnNydbxlYHy8ma/oPM+RcG2/je/WWM5PPuKT/xPaSBQAWeaux5zEw/9bForzGfKj5RrfirOzUXDtILmf5sarM20EE9Znq3ip5oqj4sljUPBmWyTPEuuucSQZB3LGx9e8OwYHRVgwQdx5Hq3NugVB3BXcnZMXgdikrSJ+knPDe3jcY2AQhEXccl4jyXWQ3AZ5dwguuDFg1fU9yE2yLkD54w/WXN9HeXdWSsayaLIXwrq0zvEg+Eqj8dzZDOLtOAi17Q2//OPvl49xNAz6VcXwpFJYXYo1q6eoHHfYp2r7Krhsr4OUHRZgMSEWY0GHtbu8tkeH1jQWTv6sSRSLzwl54VIeHI2DrLY4Y5OWb4vgMwVozVPBjZDb3/8mQQBt7H8F12JLnjDRWjSVJEbP9ZEsscrNCRKcpA9Ub1F7t6bfjrua5HpveAgQ3GfcczdovYDHgrsil9Fyk6wAmlRw5Ea+K6N7WJizwuJnkFtsGKiFXMkL1yq4onKTaMCOLSq55Wl3yyLXAXQXXOkQwK3kViTydONT1aJ7BedVkPrykMjAIM5/JGTtl2pb7hln2yJVI3CpgvsmDbv95qtaVYfAzQpulsote4LvKJ+Y9NylwzndjBJVcOTWX26zf4Iq2TFdBUdu84+t5UvQnrdhWsGRG1oIzfpheItKbu8koLIBklZw5JazNVxBmqo3pKjgsrU4syaGSo7ckKiCy/j90pIsKVtIa4dfDA0MFRy53R9TXLz20dcxcgxl4HlikWvDyxZ1Jrlleoi/87c0VKeYRnDZ7l62VAJQtUXNUrnc3bZpdJuw0866I9pAoGsFN+vOIFo1gOBSyy0WFMfs4/c4AUu0qCq3uSUS5hkquLxyi00rBFICOrWoo9oQLc78WEMME1xp3B6NOLY2VpUJghsmIHID3IS7Ca7FLrTk5hqBtBUcuRHq6kLXXm8kuAx7unnNRPsBNKvgyn+C1VbjpKG1xxQxcHRKrpVfEpZs5gtJC4SjQ3CuvKVQtl+Vp+IjUmt3sYLLXrmNTuiQgEPXg8D2jZHLa39OHOxFEj2+puy/VzZurk95uF5lcHyUAectE5zvp7V91DGdSRJu9VZM69hWsqo57WrXFnX0br/QxmDf9S0tBUdudcZcBK9x4h21N7wkN4lbq/UQS+L09XEPQTNkET0zGhdT4nTd9S1vKzhVyfXxZh5zbJoE5Lbu+v54nPPhgUI7IYFuxkiNefU1wbUlV/2NijNJAM8cmNqoMXMdk89h2eScLdb38nWUiFeeikoTF5IcQG3ePoMjIQDLCq6W5ApxAsgouF2eDwAguCqS854YgOUEp5IDUI1fl5UPw6ijueMAAAAASUVORK5CYII=" alt="Bargello">
   <div class="htitle">AMAZON LAUNCH TRACKER<small>PREPARED BY EXPORT PARTNERS · CLIENT: CC KİMYA</small></div>
+  <button class="logbtn" onclick="openLog()">🕑 Updates</button>
 </header>
 
 <div class="wrap">
@@ -441,6 +450,7 @@
 
   <footer>
     <div id="sync">● Local only on this device</div>
+    <div id="lastUpd"></div>
     <div style="display:flex;gap:8px;justify-content:center;opacity:.85">
       <button class="mini" onclick="exportData()">⬇ Backup (JSON)</button>
       <button class="mini" onclick="document.getElementById('imp').click()">⬆ Restore</button>
@@ -449,6 +459,12 @@
   </footer>
 </div>
 <div id="toast"></div>
+<div class="modal-bg" id="logBg" onclick="if(event.target===this)closeLog()">
+  <div class="modal">
+    <div class="mhead"><div class="mtitle">Son Değişiklikler<small>ACTIVITY LOG</small></div><button class="mclose" onclick="closeLog()">✕</button></div>
+    <div class="mbody" id="logBody" style="max-height:60vh"></div>
+  </div>
+</div>
 <div class="modal-bg" id="noteBg" onclick="if(event.target===this)closeNote()">
   <div class="modal">
     <div class="mhead">
@@ -562,7 +578,7 @@ const SEED={
   weeks:DEFAULT_WEEKS.map(w=>({m:w.m,w:w.w}))
 };
 
-let state={sections:[],timeline:[],weeks:[],calc:[],ship:{rate:0,list:[]},strategy:{market:'DE',depth:'core',fulfil:'hybrid',ppc:'mid',bundles:['discovery','duo']}};
+let state={sections:[],timeline:[],weeks:[],calc:[],ship:{rate:0,list:[]},log:[],strategy:{market:'DE',depth:'core',fulfil:'hybrid',ppc:'mid',bundles:['discovery','duo']}};
 let curShip=0;
 let collapsed={};
 let secFilter={}; /* per-section: array of selected statuses; empty = All */
@@ -602,7 +618,8 @@ function normalize(d){
     ppc:['low','mid','high'].includes(st.ppc)?st.ppc:'mid',
     bundles:Array.isArray(st.bundles)?st.bundles.filter(b=>['discovery','duo','auto'].includes(b)):['discovery','duo']
   };
-  return {sections,timeline,weeks,calc,ship,strategy};
+  const log=Array.isArray(d.log)?d.log.slice(0,60).map(e=>({t:+e.t||0,u:(e.u||'').slice(0,24),m:(e.m||'').slice(0,160)})):[];
+  return {sections,timeline,weeks,calc,ship,strategy,log};
 }
 
 /* ---------- storage / optional sync ---------- */
@@ -632,6 +649,43 @@ async function boot(){
   await loadScript('https'+'://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js');
   initData();
 }
+/* ---------- activity log ---------- */
+const USER_KEY='brg_user';
+function whoAmI(){
+  let u='';try{u=localStorage.getItem(USER_KEY)||'';}catch(e){}
+  if(!u){
+    u=(prompt('Adınız (değişiklik kayıtlarında görünecek):')||'').trim().slice(0,24)||'Anonim';
+    try{localStorage.setItem(USER_KEY,u);}catch(e){}
+  }
+  return u;
+}
+let _lastTlLog=0;
+function logChange(m){
+  if(!state.log)state.log=[];
+  state.log.unshift({t:Date.now(),u:whoAmI(),m:String(m).slice(0,160)});
+  if(state.log.length>60)state.log.length=60;
+  renderLastUpd();
+}
+function agoTxt(t){
+  const d=Date.now()-t;
+  if(d<60000)return 'az önce';
+  if(d<3600000)return Math.floor(d/60000)+' dk önce';
+  if(d<86400000)return Math.floor(d/3600000)+' saat önce';
+  return Math.floor(d/86400000)+' gün önce';
+}
+function renderLastUpd(){
+  const el=document.getElementById('lastUpd');if(!el)return;
+  const e=(state.log||[])[0];
+  el.textContent=e?('Son güncelleme: '+agoTxt(e.t)+' · '+e.u+' · '+e.m):'';
+}
+function openLog(){
+  const b=document.getElementById('logBody');
+  const L=state.log||[];
+  b.innerHTML=L.length?L.map(e=>`<div class="logrow"><span class="logwho">${esc(e.u)}</span><span class="logmsg">${esc(e.m)}</span><span class="logtime">${agoTxt(e.t)}</span></div>`).join(''):'<div style="color:var(--muted);font-size:13px;padding:10px 2px">Henüz kayıtlı değişiklik yok.</div>';
+  document.getElementById('logBg').classList.add('show');
+}
+function closeLog(){document.getElementById('logBg').classList.remove('show');}
+
 /* ---------- access gate ---------- */
 const GATE_KEY='brg_gate_v1';
 function gateOk(){try{return localStorage.getItem(GATE_KEY)==='ok';}catch(e){return false;}}
@@ -668,6 +722,16 @@ function daysLeft(dl){
 function statusOpts(sel){return STATUSES.map(s=>`<option value="${s}" ${s===sel?'selected':''}>${s==='Complete'?'Completed':s}</option>`).join('');}
 function addOpts(list,have){return '<option value="">+ Action</option>'+list.filter(x=>!have.includes(x)).map(x=>`<option>${x}</option>`).join('');}
 function actClass(a){if(ACT_RED.includes(a))return 'a-red';if(ACT_ORANGE.includes(a))return 'a-orange';if(ACT_BLUE.includes(a))return 'a-blue';if(ACT_GREEN.includes(a))return 'a-green';return '';}
+const SORT_RANK={'On Hold':0,'Over Due':1,'In Progress':2,'Complete':3,'Not Started':4};
+function rowCmp(a,b){
+  const ra=SORT_RANK[a.r.status],rb=SORT_RANK[b.r.status];
+  if(ra!==rb)return ra-rb;
+  if(a.r.status==='Complete')return a.ri-b.ri;            /* completed: girildiği sıra */
+  const da=a.r.deadline?new Date(a.r.deadline+'T12:00:00').getTime():Infinity;
+  const db=b.r.deadline?new Date(b.r.deadline+'T12:00:00').getTime():Infinity;
+  if(da!==db)return da-db;                                 /* yakından ileriye; boş tarih en altta */
+  return a.ri-b.ri;
+}
 function passFilter(sel,r){
   if(!sel||!sel.length)return true;
   return sel.includes(r.status);
@@ -696,7 +760,7 @@ function renderTasks(){
   state.sections.forEach((s,si)=>{
     const f=secFilter[s.id]||[];
     const open=!collapsed[s.id];
-    const shown=s.rows.map((r,ri)=>({r,ri})).filter(x=>passFilter(f,x.r));
+    const shown=s.rows.map((r,ri)=>({r,ri})).filter(x=>passFilter(f,x.r)).sort(rowCmp);
     html+=`<tr><td colspan="7" class="secbar">
       <span class="secpill">
         <span class="chev" onclick="toggleSec('${s.id}')">${open?'▾':'▸'}</span>
@@ -716,15 +780,24 @@ function renderTasks(){
   });
   document.getElementById('taskBody').innerHTML=html;
 }
-function updRow(si,ri,k,v){state.sections[si].rows[ri][k]=v;save();}
+function updRow(si,ri,k,v){
+  const r=state.sections[si].rows[ri],old=r[k];r[k]=v;
+  if(old!==v){
+    if(k==='status')logChange(r.task+' → '+v);
+    else if(k==='deadline')logChange('Deadline: '+r.task+' → '+(v||'—'));
+    else if(k==='task')logChange('Görev adı: "'+(old||'')+'" → "'+v+'"');
+    else if(k==='days')logChange('Days: '+r.task+' → '+(v||'—'));
+  }
+  save();
+}
 function updSection(si,v){state.sections[si].name=v;save();}
 function toggleSec(sid){collapsed[sid]=!collapsed[sid];renderTasks();}
-function addRow(si){state.sections[si].rows.push({id:id(),status:'Not Started',deadline:'',days:'',task:'',note:'',actions:[]});save();renderTasks();}
-function delRow(si,ri){state.sections[si].rows.splice(ri,1);save();renderTasks();}
+function addRow(si){state.sections[si].rows.push({id:id(),status:'Not Started',deadline:'',days:'',task:'',note:'',actions:[]});logChange('Satır eklendi ('+state.sections[si].name+')');save();renderTasks();}
+function delRow(si,ri){logChange('Satır silindi: '+(state.sections[si].rows[ri].task||'—'));state.sections[si].rows.splice(ri,1);save();renderTasks();}
 function addSection(){state.sections.push({id:id(),name:'NEW SECTION',rows:[]});save();renderTasks();}
 function delSection(si){state.sections.splice(si,1);save();renderTasks();}
-function addAction(si,ri,v){if(!v)return;const r=state.sections[si].rows[ri];if(!r.actions)r.actions=[];if(!r.actions.includes(v))r.actions.push(v);save();renderTasks();}
-function rmAction(si,ri,j){state.sections[si].rows[ri].actions.splice(j,1);save();renderTasks();}
+function addAction(si,ri,v){if(!v)return;const r=state.sections[si].rows[ri];if(!r.actions)r.actions=[];if(!r.actions.includes(v)){r.actions.push(v);logChange('Action eklendi: '+v+' — '+r.task);}save();renderTasks();}
+function rmAction(si,ri,j){const r=state.sections[si].rows[ri];logChange('Action kaldırıldı: '+r.actions[j]+' — '+r.task);r.actions.splice(j,1);save();renderTasks();}
 
 /* ---------- note modal ---------- */
 let noteSel=null;
@@ -764,6 +837,7 @@ function closeNote(){document.getElementById('noteBg').classList.remove('show');
 function saveNote(){
   if(!noteSel)return;
   state.sections[noteSel[0]].rows[noteSel[1]].note=cleanRich(document.getElementById('noteText').innerHTML);
+  logChange('Not güncellendi: '+(state.sections[noteSel[0]].rows[noteSel[1]].task||'—'));
   save();toast('Saved');closeNote();
 }
 
@@ -801,7 +875,9 @@ function delMonth(m){
   state.timeline.forEach(t=>{t.cells=t.cells.filter((c,i)=>keep[i]);});
   save();renderTimeline();toast(m+' removed');
 }
-function cycleCell(ti,ci){const cur=state.timeline[ti].cells[ci]||0;state.timeline[ti].cells[ci]=(cur+1)%3;save();renderTimeline();}
+function cycleCell(ti,ci){const cur=state.timeline[ti].cells[ci]||0;state.timeline[ti].cells[ci]=(cur+1)%3;
+  if(Date.now()-_lastTlLog>600000){logChange('Timeline güncellendi');_lastTlLog=Date.now();}
+  save();renderTimeline();}
 function updTL(ti,v){state.timeline[ti].task=v;save();}
 function addTLRow(){state.timeline.push({id:id(),task:'',cells:fill(weeksNow().length,0)});save();renderTimeline();}
 function delTLRow(ti){state.timeline.splice(ti,1);save();renderTimeline();}
@@ -848,7 +924,8 @@ function renderCalc(){
   html+=`<tr><td colspan="15" style="padding:0"><button class="addrow" onclick="addCalcRow()">+ Add product</button></td></tr>`;
   document.getElementById('calcBody').innerHTML=html;
 }
-function updCalc(i,k,v){state.calc[i][k]=(k==='name'||k==='mode')?v:(v===''?'':parseFloat(v));save();renderCalc();}
+let _lastCalcLog=0;
+function updCalc(i,k,v){state.calc[i][k]=(k==='name'||k==='mode')?v:(v===''?'':parseFloat(v));if(Date.now()-_lastCalcLog>600000){logChange('Profitability güncellendi');_lastCalcLog=Date.now();}save();renderCalc();}
 function addCalcRow(){state.calc.push({id:id(),mode:'FBA',name:'',price:'',vat:19,cogs:'',ship:'',ref:15,ful:'',sto:'',ppc:'',other:''});save();renderCalc();}
 function delCalcRow(i){state.calc.splice(i,1);save();renderCalc();}
 
@@ -903,7 +980,8 @@ function renderShip(){
   html+=`<tr><td colspan="14" style="padding:0"><button class="addrow" onclick="addShipRow()">+ Add SKU</button></td></tr>`;
   document.getElementById('shipBody').innerHTML=html;
 }
-function updShip(i,k,v){const txt=['sku','fnsku','name','notes'].includes(k);cur().rows[i][k]=txt?v:(v===''?'':parseFloat(v));save();renderShip();}
+let _lastShipLog=0;
+function updShip(i,k,v){const txt=['sku','fnsku','name','notes'].includes(k);cur().rows[i][k]=txt?v:(v===''?'':parseFloat(v));if(Date.now()-_lastShipLog>600000){logChange('Shipment Plan güncellendi');_lastShipLog=Date.now();}save();renderShip();}
 function updShipMeta(k,v){cur()[k]=v;save();renderShip();}
 function addShipRow(){cur().rows.push({id:id(),sku:'',fnsku:'',name:'',upb:'',boxes:'',l:'',w:'',h:'',kg:'',notes:''});save();renderShip();}
 function delShipRow(i){cur().rows.splice(i,1);save();renderShip();}
@@ -986,7 +1064,7 @@ function stSet(key,val,multi){
 }
 
 /* ---------- shared ---------- */
-function renderAll(){renderTasks();renderTimeline();renderCalc();renderShip();renderStudio();}
+function renderAll(){renderTasks();renderTimeline();renderCalc();renderShip();renderStudio();renderLastUpd();}
 function toast(m){const t=document.getElementById('toast');if(!t)return;t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
 function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bargello-tracker-backup.json';a.click();}
 function importData(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);state=normalize(d);save();renderAll();toast('Backup restored');}catch(e){alert('Invalid backup file.');}};r.readAsText(f);ev.target.value='';}
