@@ -722,7 +722,7 @@ function daysLeft(dl){
 function statusOpts(sel){return STATUSES.map(s=>`<option value="${s}" ${s===sel?'selected':''}>${s==='Complete'?'Completed':s}</option>`).join('');}
 function addOpts(list,have){return '<option value="">+ Action</option>'+list.filter(x=>!have.includes(x)).map(x=>`<option>${x}</option>`).join('');}
 function actClass(a){if(ACT_RED.includes(a))return 'a-red';if(ACT_ORANGE.includes(a))return 'a-orange';if(ACT_BLUE.includes(a))return 'a-blue';if(ACT_GREEN.includes(a))return 'a-green';return '';}
-const SORT_RANK={'On Hold':0,'Over Due':1,'In Progress':2,'Complete':3,'Not Started':4};
+const SORT_RANK={'Over Due':0,'On Hold':1,'In Progress':2,'Complete':3,'Not Started':4};
 function rowCmp(a,b){
   if(!!a.r.isNew!==!!b.r.isNew)return a.r.isNew?-1:1;   /* yeni satır her şeyin üstünde */
   if(a.r.isNew&&b.r.isNew)return a.ri-b.ri;             /* en son eklenen en üstte */
@@ -1066,7 +1066,22 @@ function stSet(key,val,multi){
 }
 
 /* ---------- shared ---------- */
-function renderAll(){renderTasks();renderTimeline();renderCalc();renderShip();renderStudio();renderLastUpd();}
+function applyOverdue(){
+  let ch=false;
+  (state.sections||[]).forEach(sec=>(sec.rows||[]).forEach(r=>{
+    if(r.status!=='Complete'&&r.status!=='Over Due'&&r.deadline){
+      const d=daysLeft(r.deadline);
+      if(d!==null&&d<0){
+        r.status='Over Due';r.isNew=false;ch=true;
+        if(!state.log)state.log=[];
+        state.log.unshift({t:Date.now(),u:'Sistem',m:r.task+' → Over Due (deadline geçti)'});
+        if(state.log.length>60)state.log.length=60;
+      }
+    }
+  }));
+  if(ch)save();
+}
+function renderAll(){applyOverdue();renderTasks();renderTimeline();renderCalc();renderShip();renderStudio();renderLastUpd();}
 function toast(m){const t=document.getElementById('toast');if(!t)return;t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
 function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bargello-tracker-backup.json';a.click();}
 function importData(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);state=normalize(d);save();renderAll();toast('Backup restored');}catch(e){alert('Invalid backup file.');}};r.readAsText(f);ev.target.value='';}
