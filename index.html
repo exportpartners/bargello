@@ -249,6 +249,8 @@
   .logmsg{flex:1;color:#39415a}
   .logtime{flex-shrink:0;color:var(--muted);font-size:10.5px;white-space:nowrap}
   #lastUpd{font-size:11px;color:var(--muted);font-weight:700;margin-top:5px}
+  .cell.dl.needdl{border-color:#e05c4a !important;box-shadow:0 0 0 3px rgba(224,92,74,.15);animation:dlp 1.6s ease-in-out infinite}
+  @keyframes dlp{0%,100%{box-shadow:0 0 0 3px rgba(224,92,74,.12)}50%{box-shadow:0 0 0 5px rgba(224,92,74,.28)}}
   #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:700;opacity:0;transition:opacity .25s;pointer-events:none;z-index:99}
   #toast.show{opacity:1}
   @media (max-width:640px){.htitle{display:none}}
@@ -590,7 +592,7 @@ function normalize(d){
   const sections=(d.sections||[]).map(s=>({id:s.id||id(),name:s.name||'',rows:(s.rows||[]).map(r=>({
     id:r.id||id(),status:STATUSES.includes(r.status)?r.status:'Not Started',
     deadline:r.deadline||'',days:r.days||'',task:r.task||'',note:r.note||'',
-    actions:Array.isArray(r.actions)?r.actions.filter(a=>ACTIONS.includes(a)):[],isNew:!!r.isNew
+    actions:Array.isArray(r.actions)?r.actions.filter(a=>ACTIONS.includes(a)):[],isNew:!!r.isNew,odMuted:!!r.odMuted
   }))}));
   const timeline=(d.timeline||[]).map(t=>{
     let cells=Array.isArray(t.cells)?t.cells.slice(0,nw):[];
@@ -749,7 +751,7 @@ function rowHtml(si,ri,r){
   const notePrev=textOf(r.note||'');
   return `<tr>
     <td><select class="status ${SCLASS[r.status]}" onchange="updRow(${si},${ri},'status',this.value);renderTasks()">${statusOpts(r.status)}</select></td>
-    <td>${r.status==='Complete'?'<span style="color:#b6bcc8;font-size:12px">—</span>':`<input class="cell dl" type="date" value="${esc(r.deadline)}" onchange="updRow(${si},${ri},'deadline',this.value)">`}</td>
+    <td>${r.status==='Complete'?'<span style="color:#b6bcc8;font-size:12px">—</span>':`<input class="cell dl ${r.status==='In Progress'&&!r.deadline?'needdl':''}" type="date" value="${esc(r.deadline)}" title="${r.status==='In Progress'&&!r.deadline?'In Progress için deadline girilmesi önerilir':''}" onchange="updRow(${si},${ri},'deadline',this.value)">`}</td>
     <td>${(()=>{const dlv=r.status==='Complete'?null:daysLeft(r.deadline);if(dlv===null)return `<input class="cell days" value="${esc(r.days)}" placeholder="—" onchange="updRow(${si},${ri},'days',this.value)">`;const cls=dlv<0?'neg':(dlv<=3?'':'mut');return `<span class="res ${cls}" style="display:block;text-align:center" title="Est. deadline'a göre otomatik">${dlv}</span>`;})()}</td>
     <td><input class="cell task" value="${esc(r.task)}" placeholder="Task" onchange="updRow(${si},${ri},'task',this.value)"></td>
     <td><div class="chips">${chips}<select class="add-sel" onchange="addAction(${si},${ri},this.value);this.selectedIndex=0">${addOpts(ACTIONS,r.actions||[])}</select></div></td>
@@ -785,7 +787,13 @@ function renderTasks(){
 function updRow(si,ri,k,v){
   const r=state.sections[si].rows[ri],old=r[k];r[k]=v;
   if(old!==v){
-    if(k==='status'){logChange(r.task+' → '+v);r.isNew=false;}
+    if(k==='status'){
+      logChange(r.task+' → '+v);r.isNew=false;
+      const dl=daysLeft(r.deadline);
+      r.odMuted=(v!=='Over Due'&&dl!==null&&dl<0);
+      if(v==='In Progress'&&!r.deadline)toast('⚠ Bu iş In Progress: lütfen Est. Deadline girin');
+    }
+    if(k==='deadline'){r.odMuted=false;}
     else if(k==='deadline')logChange('Deadline: '+r.task+' → '+(v||'—'));
     else if(k==='task')logChange('Görev adı: "'+(old||'')+'" → "'+v+'"');
     else if(k==='days')logChange('Days: '+r.task+' → '+(v||'—'));
@@ -1069,7 +1077,7 @@ function stSet(key,val,multi){
 function applyOverdue(){
   let ch=false;
   (state.sections||[]).forEach(sec=>(sec.rows||[]).forEach(r=>{
-    if(r.status!=='Complete'&&r.status!=='Over Due'&&r.deadline){
+    if(r.status!=='Complete'&&r.status!=='Over Due'&&!r.odMuted&&r.deadline){
       const d=daysLeft(r.deadline);
       if(d!==null&&d<0){
         r.status='Over Due';r.isNew=false;ch=true;
