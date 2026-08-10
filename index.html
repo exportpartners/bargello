@@ -789,6 +789,7 @@ function updRow(si,ri,k,v){
   if(old!==v){
     if(k==='status'){
       logChange(r.task+' → '+v);r.isNew=false;
+      if(v==='Not Started'){r.deadline='';r.days='';r.odMuted=false;}  /* Not Started: tarihi temizle */
       const dl=daysLeft(r.deadline);
       r.odMuted=(v!=='Over Due'&&dl!==null&&dl<0);
       if(v==='In Progress'&&!r.deadline)toast('⚠ Bu iş In Progress: lütfen Est. Deadline girin');
