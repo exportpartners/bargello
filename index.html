@@ -751,7 +751,7 @@ function rowHtml(si,ri,r){
   const notePrev=textOf(r.note||'');
   return `<tr>
     <td><select class="status ${SCLASS[r.status]}" onchange="updRow(${si},${ri},'status',this.value);renderTasks()">${statusOpts(r.status)}</select></td>
-    <td>${r.status==='Complete'?'<span style="color:#b6bcc8;font-size:12px">—</span>':`<input class="cell dl ${r.status==='In Progress'&&!r.deadline?'needdl':''}" type="date" value="${esc(r.deadline)}" title="${r.status==='In Progress'&&!r.deadline?'In Progress için deadline girilmesi önerilir':''}" onchange="updRow(${si},${ri},'deadline',this.value)">`}</td>
+    <td>${(r.status==='Complete'||r.status==='Not Started')?'<span style="color:#b6bcc8;font-size:12px">—</span>':`<input class="cell dl ${r.status==='In Progress'&&!r.deadline?'needdl':''}" type="date" value="${esc(r.deadline)}" title="${r.status==='In Progress'&&!r.deadline?'In Progress için deadline girilmesi önerilir':''}" onchange="updRow(${si},${ri},'deadline',this.value)">`}</td>
     <td>${(()=>{const dlv=r.status==='Complete'?null:daysLeft(r.deadline);if(dlv===null)return `<input class="cell days" value="${esc(r.days)}" placeholder="—" onchange="updRow(${si},${ri},'days',this.value)">`;const cls=dlv<0?'neg':(dlv<=3?'':'mut');return `<span class="res ${cls}" style="display:block;text-align:center" title="Est. deadline'a göre otomatik">${dlv}</span>`;})()}</td>
     <td><input class="cell task" value="${esc(r.task)}" placeholder="Task" onchange="updRow(${si},${ri},'task',this.value)"></td>
     <td><div class="chips">${chips}<select class="add-sel" onchange="addAction(${si},${ri},this.value);this.selectedIndex=0">${addOpts(ACTIONS,r.actions||[])}</select></div></td>
