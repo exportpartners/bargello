@@ -52,6 +52,11 @@
   .st-complete{background:var(--ink)}
   .st-inprogress{background:linear-gradient(90deg,#1f8a4c,#5cc884,#1f8a4c);background-size:200% 100%;animation:flow 2.6s linear infinite}
   .st-notstarted{background:var(--gray)}.st-onhold{background:#a34d64}.st-overdue{background:var(--red)}
+  .st-urgent{background:var(--red);animation:epblink 1.05s ease-in-out infinite}
+  .noteprev.urgent{color:var(--red);font-weight:600;animation:epblink 1.05s ease-in-out infinite}
+  tr.urgentrow td{background:rgba(192,57,43,.07)}
+  @keyframes epblink{0%,100%{opacity:1}50%{opacity:.32}}
+  @media (prefers-reduced-motion:reduce){.st-urgent,.noteprev.urgent{animation:none}}
   @keyframes flow{0%{background-position:0 0}100%{background-position:200% 0}}
 
   .cell{border:1px solid transparent;background:transparent;font-family:inherit;font-size:13px;color:var(--text);outline:none;width:100%;padding:5px 6px;border-radius:7px}
@@ -507,8 +512,8 @@ const FIREBASE_CONFIG={
 };
 /* ===================================================== */
 
-const STATUSES=['Complete','In Progress','Not Started','On Hold','Over Due'];
-const SCLASS={'Complete':'st-complete','In Progress':'st-inprogress','Not Started':'st-notstarted','On Hold':'st-onhold','Over Due':'st-overdue'};
+const STATUSES=['Complete','In Progress','Not Started','On Hold','Over Due','Urgent'];
+const SCLASS={'Complete':'st-complete','In Progress':'st-inprogress','Not Started':'st-notstarted','On Hold':'st-onhold','Over Due':'st-overdue','Urgent':'st-urgent'};
 const ACTIONS=['Awaiting Client Info','Awaiting Documents','Collecting Requested Files','Client Approval Pending','Waiting on Amazon','Awaiting Third-Party Approval','Revision Requested','Payment Pending'];
 const ACT_RED=['Awaiting Client Info','Payment Pending'];
 const ACT_ORANGE=['Awaiting Documents','Revision Requested'];
@@ -724,7 +729,7 @@ function daysLeft(dl){
 function statusOpts(sel){return STATUSES.map(s=>`<option value="${s}" ${s===sel?'selected':''}>${s==='Complete'?'Completed':s}</option>`).join('');}
 function addOpts(list,have){return '<option value="">+ Action</option>'+list.filter(x=>!have.includes(x)).map(x=>`<option>${x}</option>`).join('');}
 function actClass(a){if(ACT_RED.includes(a))return 'a-red';if(ACT_ORANGE.includes(a))return 'a-orange';if(ACT_BLUE.includes(a))return 'a-blue';if(ACT_GREEN.includes(a))return 'a-green';return '';}
-const SORT_RANK={'Over Due':0,'On Hold':1,'In Progress':2,'Complete':3,'Not Started':4};
+const SORT_RANK={'Urgent':-1,'Over Due':0,'On Hold':1,'In Progress':2,'Complete':3,'Not Started':4};
 function rowCmp(a,b){
   if(!!a.r.isNew!==!!b.r.isNew)return a.r.isNew?-1:1;   /* yeni satır her şeyin üstünde */
   if(a.r.isNew&&b.r.isNew)return a.ri-b.ri;             /* en son eklenen en üstte */
@@ -749,13 +754,13 @@ function clearFilter(sid){secFilter[sid]=[];renderTasks();}
 function rowHtml(si,ri,r){
   const chips=(r.actions||[]).map((a,j)=>`<span class="chip ${actClass(a)}">${esc(a)}<span onclick="rmAction(${si},${ri},${j})">✕</span></span>`).join('');
   const notePrev=textOf(r.note||'');
-  return `<tr>
+  return `<tr class="${r.status==='Urgent'?'urgentrow':''}">
     <td><select class="status ${SCLASS[r.status]}" onchange="updRow(${si},${ri},'status',this.value);renderTasks()">${statusOpts(r.status)}</select></td>
     <td>${(r.status==='Complete'||r.status==='Not Started')?'<span style="color:#b6bcc8;font-size:12px">—</span>':`<input class="cell dl ${r.status==='In Progress'&&!r.deadline?'needdl':''}" type="date" value="${esc(r.deadline)}" title="${r.status==='In Progress'&&!r.deadline?'In Progress için deadline girilmesi önerilir':''}" onchange="updRow(${si},${ri},'deadline',this.value)">`}</td>
     <td>${(()=>{const dlv=r.status==='Complete'?null:daysLeft(r.deadline);if(dlv===null)return `<input class="cell days" value="${esc(r.days)}" placeholder="—" onchange="updRow(${si},${ri},'days',this.value)">`;const cls=dlv<0?'neg':(dlv<=3?'':'mut');return `<span class="res ${cls}" style="display:block;text-align:center" title="Est. deadline'a göre otomatik">${dlv}</span>`;})()}</td>
     <td><input class="cell task" value="${esc(r.task)}" placeholder="Task" onchange="updRow(${si},${ri},'task',this.value)"></td>
     <td><div class="chips">${chips}<select class="add-sel" onchange="addAction(${si},${ri},this.value);this.selectedIndex=0">${addOpts(ACTIONS,r.actions||[])}</select></div></td>
-    <td><div class="notewrap">${notePrev?`<div class="noteprev" onclick="openNote(${si},${ri})" title="Open note">${esc(notePrev)}</div>`:''}<button class="npen" onclick="openNote(${si},${ri})" title="${notePrev?'Edit note':'Add note'}">✏️</button></div></td>
+    <td><div class="notewrap">${notePrev?`<div class="noteprev ${r.status==='Urgent'?'urgent':''}" onclick="openNote(${si},${ri})" title="Open note">${esc(notePrev)}</div>`:''}<button class="npen" onclick="openNote(${si},${ri})" title="${notePrev?'Edit note':'Add note'}">✏️</button></div></td>
     <td><button class="del" onclick="delRow(${si},${ri})" title="Delete row">✕</button></td>
   </tr>`;
 }
