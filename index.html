@@ -682,11 +682,18 @@ async function boot(){
    ayri bir dugumde ilk/son gorulme tutulur. Ayni kisinin telefonu ve
    laptopu iki ayri cihaz sayilir, sayiyi okurken bu akilda tutulmali. */
 const DEV_KEY='brg_dev';
-const VIS_ON='brg_vis_on';
 let visRef=null, visits={};
 /* Sayac dugmesi musteriye gorunmesin diye gizli. Updates'e 10 saniye
-   icinde 3 kez tiklayinca aciliyor ve o tarayicida kalici kaliyor. */
-function visShown(){try{return localStorage.getItem(VIS_ON)==='1';}catch(e){return false;}}
+   icinde 3 kez tiklayinca beliriyor, gecici: modal kapaninca ya da
+   bakilmadan 90 saniye gecince kendiliginden kayboluyor, sayfa
+   yenilenince de gidiyor. Hicbir yere kaydedilmiyor. */
+let visOn=false, _visTimer=null;
+function visShown(){return visOn;}
+function visReveal(){
+  visOn=true;renderVisBtn();
+  clearTimeout(_visTimer);
+  _visTimer=setTimeout(()=>{visOn=false;renderVisBtn();},90000);
+}
 let _logTaps=0,_logTapT=0;
 function tapLog(){
   const now=Date.now();
@@ -694,15 +701,11 @@ function tapLog(){
   _logTapT=now;_logTaps++;
   if(_logTaps>=3&&!visShown()){
     _logTaps=0;
-    try{localStorage.setItem(VIS_ON,'1');}catch(e){}
-    renderVisBtn();toast('Ziyaret sayacı açıldı');
+    visReveal();toast('Ziyaret sayacı açıldı · kapatınca kaybolur');
   }
   openLog();
 }
-function visHide(){
-  try{localStorage.removeItem(VIS_ON);}catch(e){}
-  renderVisBtn();closeVis();toast('Ziyaret sayacı gizlendi');
-}
+function visHide(){clearTimeout(_visTimer);visOn=false;renderVisBtn();}
 function devId(){
   let d='';try{d=localStorage.getItem(DEV_KEY)||'';}catch(e){}
   if(!d){d=Date.now().toString(36)+Math.random().toString(36).slice(2,8);try{localStorage.setItem(DEV_KEY,d);}catch(e){}}
@@ -744,7 +747,7 @@ function openVis(){
   const L=visList(), ben=devId(), hafta=visHafta();
   const ust='<div style="font-size:13px;color:var(--muted);padding:2px 2px 10px">'
     +'Bu hafta <strong style="color:var(--ink)">'+hafta+'</strong> cihaz paneli açtı · toplam '+L.length+' cihaz kayıtlı.'
-    +'<br>Cihaz sayılır, kişi değil: aynı kişinin telefonu ve bilgisayarı iki cihaz görünür.'+'<br><button class="logbtn" style="margin-top:8px" onclick="visHide()">Bu cihazda gizle</button></div>';
+    +'<br>Cihaz sayılır, kişi değil: aynı kişinin telefonu ve bilgisayarı iki cihaz görünür.</div>';
   b.innerHTML=ust+(L.length?L.map((v,i)=>{
     const bu=v.id===ben?' <span style="color:var(--red);font-weight:700">(bu cihaz)</span>':'';
     return '<div class="logrow"><span class="logwho">'+esc(v.ua||'Cihaz')+bu+'</span>'
@@ -753,7 +756,7 @@ function openVis(){
   }).join(''):'<div style="color:var(--muted);font-size:13px;padding:10px 2px">Henüz ziyaret kaydı yok.</div>');
   document.getElementById('visBg').classList.add('show');
 }
-function closeVis(){document.getElementById('visBg').classList.remove('show');}
+function closeVis(){document.getElementById('visBg').classList.remove('show');visHide();}
 
 /* ---------- activity log ---------- */
 const USER_KEY='brg_user';
@@ -1217,6 +1220,7 @@ function toast(m){const t=document.getElementById('toast');if(!t)return;t.textCo
 function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bargello-tracker-backup.json';a.click();}
 function importData(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);state=normalize(d);save();renderAll();toast('Backup restored');}catch(e){alert('Invalid backup file.');}};r.readAsText(f);ev.target.value='';}
 
+try{localStorage.removeItem('brg_vis_on');}catch(e){}
 gateInit();
 boot();
 </script>
