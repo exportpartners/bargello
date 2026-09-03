@@ -286,6 +286,7 @@
   <img class="logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATgAAABKCAYAAAAv4kgUAAAETElEQVR42u3d64rcMAxA4XHI+7+y+qtQynaaiy+y/R0oFNpNHFs6kTIZb4mIz01+/0D5AEBijgc/U/4SHQAsI7ifqjkAWE5wtSRHlABSCK6VjEgOQFXOShKKT50PHWodp7VQs46xDJqPnnNydbxlYHy8ma/oPM+RcG2/je/WWM5PPuKT/xPaSBQAWeaux5zEw/9bForzGfKj5RrfirOzUXDtILmf5sarM20EE9Znq3ip5oqj4sljUPBmWyTPEuuucSQZB3LGx9e8OwYHRVgwQdx5Hq3NugVB3BXcnZMXgdikrSJ+knPDe3jcY2AQhEXccl4jyXWQ3AZ5dwguuDFg1fU9yE2yLkD54w/WXN9HeXdWSsayaLIXwrq0zvEg+Eqj8dzZDOLtOAi17Q2//OPvl49xNAz6VcXwpFJYXYo1q6eoHHfYp2r7Krhsr4OUHRZgMSEWY0GHtbu8tkeH1jQWTv6sSRSLzwl54VIeHI2DrLY4Y5OWb4vgMwVozVPBjZDb3/8mQQBt7H8F12JLnjDRWjSVJEbP9ZEsscrNCRKcpA9Ub1F7t6bfjrua5HpveAgQ3GfcczdovYDHgrsil9Fyk6wAmlRw5Ea+K6N7WJizwuJnkFtsGKiFXMkL1yq4onKTaMCOLSq55Wl3yyLXAXQXXOkQwK3kViTydONT1aJ7BedVkPrykMjAIM5/JGTtl2pb7hln2yJVI3CpgvsmDbv95qtaVYfAzQpulsote4LvKJ+Y9NylwzndjBJVcOTWX26zf4Iq2TFdBUdu84+t5UvQnrdhWsGRG1oIzfpheItKbu8koLIBklZw5JazNVxBmqo3pKjgsrU4syaGSo7ckKiCy/j90pIsKVtIa4dfDA0MFRy53R9TXLz20dcxcgxl4HlikWvDyxZ1Jrlleoi/87c0VKeYRnDZ7l62VAJQtUXNUrnc3bZpdJuw0866I9pAoGsFN+vOIFo1gOBSyy0WFMfs4/c4AUu0qCq3uSUS5hkquLxyi00rBFICOrWoo9oQLc78WEMME1xp3B6NOLY2VpUJghsmIHID3IS7Ca7FLrTk5hqBtBUcuRHq6kLXXm8kuAx7unnNRPsBNKvgyn+C1VbjpKG1xxQxcHRKrpVfEpZs5gtJC4SjQ3CuvKVQtl+Vp+IjUmt3sYLLXrmNTuiQgEPXg8D2jZHLa39OHOxFEj2+puy/VzZurk95uF5lcHyUAectE5zvp7V91DGdSRJu9VZM69hWsqo57WrXFnX0br/QxmDf9S0tBUdudcZcBK9x4h21N7wkN4lbq/UQS+L09XEPQTNkET0zGhdT4nTd9S1vKzhVyfXxZh5zbJoE5Lbu+v54nPPhgUI7IYFuxkiNefU1wbUlV/2NijNJAM8cmNqoMXMdk89h2eScLdb38nWUiFeeikoTF5IcQG3ePoMjIQDLCq6W5ApxAsgouF2eDwAguCqS854YgOUEp5IDUI1fl5UPw6ijueMAAAAASUVORK5CYII=" alt="Bargello">
   <div class="htitle">AMAZON LAUNCH TRACKER<small>PREPARED BY EXPORT PARTNERS · CLIENT: CC KİMYA</small></div>
   <button class="logbtn" onclick="openLog()">🕑 Updates</button>
+  <button class="logbtn" onclick="openVis()" id="visBtn" title="Paneli acan cihaz sayisi">👁 Ziyaret</button>
 </header>
 
 <div class="wrap">
@@ -483,6 +484,12 @@
     <div class="mbody" id="logBody" style="max-height:60vh"></div>
   </div>
 </div>
+<div class="modal-bg" id="visBg" onclick="if(event.target===this)closeVis()">
+  <div class="modal">
+    <div class="mhead"><div class="mtitle">Ziyaretler<small>PANELİ AÇAN CİHAZLAR</small></div><button class="mclose" onclick="closeVis()">✕</button></div>
+    <div class="mbody" id="visBody" style="max-height:60vh"></div>
+  </div>
+</div>
 <div class="modal-bg" id="noteBg" onclick="if(event.target===this)closeNote()">
   <div class="modal">
     <div class="mhead">
@@ -651,6 +658,9 @@ function initData(){
     try{
       firebase.initializeApp(FIREBASE_CONFIG);
       dbRef=firebase.database().ref('bargello_tracker_v2');
+      visRef=firebase.database().ref('bargello_visits_v1');
+      visRef.on('value',sn=>{visits=sn.val()||{};renderVisBtn();},()=>{});
+      noteVisit();
       dbRef.on('value',snap=>{
         const v=snap.val();
         if(v){state=normalize(v);}else{state=localData();try{dbRef.set(state);}catch(e){}}
@@ -667,6 +677,62 @@ async function boot(){
   await loadScript('https'+'://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js');
   initData();
 }
+/* ---------- ziyaret sayaci ----------
+   Kimlik toplamaz. Her tarayiciya rastgele bir kimlik verilir, Firebase'de
+   ayri bir dugumde ilk/son gorulme tutulur. Ayni kisinin telefonu ve
+   laptopu iki ayri cihaz sayilir, sayiyi okurken bu akilda tutulmali. */
+const DEV_KEY='brg_dev';
+let visRef=null, visits={};
+function devId(){
+  let d='';try{d=localStorage.getItem(DEV_KEY)||'';}catch(e){}
+  if(!d){d=Date.now().toString(36)+Math.random().toString(36).slice(2,8);try{localStorage.setItem(DEV_KEY,d);}catch(e){}}
+  return d;
+}
+function uaShort(){
+  const u=navigator.userAgent;
+  const os=/iPhone|iPad|iPod/.test(u)?'iOS':/Android/.test(u)?'Android':/Mac/.test(u)?'Mac':/Windows/.test(u)?'Windows':/Linux/.test(u)?'Linux':'Diğer';
+  const br=/Edg\//.test(u)?'Edge':/OPR\//.test(u)?'Opera':/Chrome\//.test(u)?'Chrome':/Firefox\//.test(u)?'Firefox':/Safari\//.test(u)?'Safari':'Tarayıcı';
+  return os+' · '+br;
+}
+function noteVisit(){
+  if(!visRef||!gateOk())return;
+  const id=devId(), now=Date.now();
+  visRef.child(id).once('value').then(sn=>{
+    const v=sn.val()||{};
+    // Ayni oturumda sayfa yenilemeleri ziyaret sayisini sismesin diye 30 dakikalik pencere.
+    const yeni=(now-(v.last||0))>30*60*1000;
+    visRef.child(id).set({first:v.first||now,last:now,n:(v.n||0)+(yeni||!v.n?1:0),ua:uaShort()});
+  }).catch(()=>{});
+}
+function visList(){
+  return Object.keys(visits||{}).map(k=>Object.assign({id:k},visits[k]||{}))
+    .filter(v=>v.last).sort((a,b)=>b.last-a.last);
+}
+function visHafta(){
+  const sinir=Date.now()-7*24*60*60*1000;
+  return visList().filter(v=>v.last>=sinir).length;
+}
+function renderVisBtn(){
+  const el=document.getElementById('visBtn');if(!el)return;
+  const n=visHafta();
+  el.textContent='👁 Ziyaret'+(n?' ('+n+')':'');
+}
+function openVis(){
+  const b=document.getElementById('visBody');
+  const L=visList(), ben=devId(), hafta=visHafta();
+  const ust='<div style="font-size:13px;color:var(--muted);padding:2px 2px 10px">'
+    +'Bu hafta <strong style="color:var(--ink)">'+hafta+'</strong> cihaz paneli açtı · toplam '+L.length+' cihaz kayıtlı.'
+    +'<br>Cihaz sayılır, kişi değil: aynı kişinin telefonu ve bilgisayarı iki cihaz görünür.</div>';
+  b.innerHTML=ust+(L.length?L.map((v,i)=>{
+    const bu=v.id===ben?' <span style="color:var(--red);font-weight:700">(bu cihaz)</span>':'';
+    return '<div class="logrow"><span class="logwho">'+esc(v.ua||'Cihaz')+bu+'</span>'
+      +'<span class="logmsg">'+v.n+' ziyaret · ilk: '+new Date(v.first||v.last).toLocaleDateString('tr-TR')+'</span>'
+      +'<span class="logtime">'+agoTxt(v.last)+'</span></div>';
+  }).join(''):'<div style="color:var(--muted);font-size:13px;padding:10px 2px">Henüz ziyaret kaydı yok.</div>');
+  document.getElementById('visBg').classList.add('show');
+}
+function closeVis(){document.getElementById('visBg').classList.remove('show');}
+
 /* ---------- activity log ---------- */
 const USER_KEY='brg_user';
 function whoAmI(){
@@ -715,6 +781,7 @@ function gateTry(){
   if(val===atob('YmFyZ2VsbG8yMDI2')){
     try{localStorage.setItem(GATE_KEY,'ok');}catch(e){}
     gateHide();
+    noteVisit();
   }else{
     const e=document.getElementById('gateErr');if(e)e.textContent='Wrong password, try again.';
     if(i)i.value='';
