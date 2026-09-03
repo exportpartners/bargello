@@ -285,8 +285,8 @@
 <header>
   <img class="logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATgAAABKCAYAAAAv4kgUAAAETElEQVR42u3d64rcMAxA4XHI+7+y+qtQynaaiy+y/R0oFNpNHFs6kTIZb4mIz01+/0D5AEBijgc/U/4SHQAsI7ifqjkAWE5wtSRHlABSCK6VjEgOQFXOShKKT50PHWodp7VQs46xDJqPnnNydbxlYHy8ma/oPM+RcG2/je/WWM5PPuKT/xPaSBQAWeaux5zEw/9bForzGfKj5RrfirOzUXDtILmf5sarM20EE9Znq3ip5oqj4sljUPBmWyTPEuuucSQZB3LGx9e8OwYHRVgwQdx5Hq3NugVB3BXcnZMXgdikrSJ+knPDe3jcY2AQhEXccl4jyXWQ3AZ5dwguuDFg1fU9yE2yLkD54w/WXN9HeXdWSsayaLIXwrq0zvEg+Eqj8dzZDOLtOAi17Q2//OPvl49xNAz6VcXwpFJYXYo1q6eoHHfYp2r7Krhsr4OUHRZgMSEWY0GHtbu8tkeH1jQWTv6sSRSLzwl54VIeHI2DrLY4Y5OWb4vgMwVozVPBjZDb3/8mQQBt7H8F12JLnjDRWjSVJEbP9ZEsscrNCRKcpA9Ub1F7t6bfjrua5HpveAgQ3GfcczdovYDHgrsil9Fyk6wAmlRw5Ea+K6N7WJizwuJnkFtsGKiFXMkL1yq4onKTaMCOLSq55Wl3yyLXAXQXXOkQwK3kViTydONT1aJ7BedVkPrykMjAIM5/JGTtl2pb7hln2yJVI3CpgvsmDbv95qtaVYfAzQpulsote4LvKJ+Y9NylwzndjBJVcOTWX26zf4Iq2TFdBUdu84+t5UvQnrdhWsGRG1oIzfpheItKbu8koLIBklZw5JazNVxBmqo3pKjgsrU4syaGSo7ckKiCy/j90pIsKVtIa4dfDA0MFRy53R9TXLz20dcxcgxl4HlikWvDyxZ1Jrlleoi/87c0VKeYRnDZ7l62VAJQtUXNUrnc3bZpdJuw0866I9pAoGsFN+vOIFo1gOBSyy0WFMfs4/c4AUu0qCq3uSUS5hkquLxyi00rBFICOrWoo9oQLc78WEMME1xp3B6NOLY2VpUJghsmIHID3IS7Ca7FLrTk5hqBtBUcuRHq6kLXXm8kuAx7unnNRPsBNKvgyn+C1VbjpKG1xxQxcHRKrpVfEpZs5gtJC4SjQ3CuvKVQtl+Vp+IjUmt3sYLLXrmNTuiQgEPXg8D2jZHLa39OHOxFEj2+puy/VzZurk95uF5lcHyUAectE5zvp7V91DGdSRJu9VZM69hWsqo57WrXFnX0br/QxmDf9S0tBUdudcZcBK9x4h21N7wkN4lbq/UQS+L09XEPQTNkET0zGhdT4nTd9S1vKzhVyfXxZh5zbJoE5Lbu+v54nPPhgUI7IYFuxkiNefU1wbUlV/2NijNJAM8cmNqoMXMdk89h2eScLdb38nWUiFeeikoTF5IcQG3ePoMjIQDLCq6W5ApxAsgouF2eDwAguCqS854YgOUEp5IDUI1fl5UPw6ijueMAAAAASUVORK5CYII=" alt="Bargello">
   <div class="htitle">AMAZON LAUNCH TRACKER<small>PREPARED BY EXPORT PARTNERS · CLIENT: CC KİMYA</small></div>
-  <button class="logbtn" onclick="openLog()">🕑 Updates</button>
-  <button class="logbtn" onclick="openVis()" id="visBtn" title="Paneli acan cihaz sayisi">👁 Ziyaret</button>
+  <button class="logbtn" onclick="tapLog()">🕑 Updates</button>
+  <button class="logbtn" onclick="openVis()" id="visBtn" title="Paneli acan cihaz sayisi" style="display:none">👁 Ziyaret</button>
 </header>
 
 <div class="wrap">
@@ -682,7 +682,27 @@ async function boot(){
    ayri bir dugumde ilk/son gorulme tutulur. Ayni kisinin telefonu ve
    laptopu iki ayri cihaz sayilir, sayiyi okurken bu akilda tutulmali. */
 const DEV_KEY='brg_dev';
+const VIS_ON='brg_vis_on';
 let visRef=null, visits={};
+/* Sayac dugmesi musteriye gorunmesin diye gizli. Updates'e 10 saniye
+   icinde 3 kez tiklayinca aciliyor ve o tarayicida kalici kaliyor. */
+function visShown(){try{return localStorage.getItem(VIS_ON)==='1';}catch(e){return false;}}
+let _logTaps=0,_logTapT=0;
+function tapLog(){
+  const now=Date.now();
+  if(now-_logTapT>10000)_logTaps=0;
+  _logTapT=now;_logTaps++;
+  if(_logTaps>=3&&!visShown()){
+    _logTaps=0;
+    try{localStorage.setItem(VIS_ON,'1');}catch(e){}
+    renderVisBtn();toast('Ziyaret sayacı açıldı');
+  }
+  openLog();
+}
+function visHide(){
+  try{localStorage.removeItem(VIS_ON);}catch(e){}
+  renderVisBtn();closeVis();toast('Ziyaret sayacı gizlendi');
+}
 function devId(){
   let d='';try{d=localStorage.getItem(DEV_KEY)||'';}catch(e){}
   if(!d){d=Date.now().toString(36)+Math.random().toString(36).slice(2,8);try{localStorage.setItem(DEV_KEY,d);}catch(e){}}
@@ -714,6 +734,8 @@ function visHafta(){
 }
 function renderVisBtn(){
   const el=document.getElementById('visBtn');if(!el)return;
+  if(!visShown()){el.style.display='none';return;}
+  el.style.display='';
   const n=visHafta();
   el.textContent='👁 Ziyaret'+(n?' ('+n+')':'');
 }
@@ -722,7 +744,7 @@ function openVis(){
   const L=visList(), ben=devId(), hafta=visHafta();
   const ust='<div style="font-size:13px;color:var(--muted);padding:2px 2px 10px">'
     +'Bu hafta <strong style="color:var(--ink)">'+hafta+'</strong> cihaz paneli açtı · toplam '+L.length+' cihaz kayıtlı.'
-    +'<br>Cihaz sayılır, kişi değil: aynı kişinin telefonu ve bilgisayarı iki cihaz görünür.</div>';
+    +'<br>Cihaz sayılır, kişi değil: aynı kişinin telefonu ve bilgisayarı iki cihaz görünür.'+'<br><button class="logbtn" style="margin-top:8px" onclick="visHide()">Bu cihazda gizle</button></div>';
   b.innerHTML=ust+(L.length?L.map((v,i)=>{
     const bu=v.id===ben?' <span style="color:var(--red);font-weight:700">(bu cihaz)</span>':'';
     return '<div class="logrow"><span class="logwho">'+esc(v.ua||'Cihaz')+bu+'</span>'
