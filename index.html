@@ -61,7 +61,6 @@
   .pill.p-third{border-color:rgba(66,140,226,.45)} .pill.p-third .pv{background:var(--blueD)}
   .pill.p-urgent .pv{background:var(--red);animation:epblink 1.05s ease-in-out infinite}
   .pill.p-done .pv{background:var(--ink)}
-  .pill .ps{font-size:10.5px;font-weight:600;color:var(--muted);letter-spacing:.04em}
   #urgentBar{margin:0 0 14px}
   .ubox{border:1.5px solid var(--red);border-radius:10px;background:rgba(192,57,43,.06);padding:11px 14px}
   .uhead{display:flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.14em;font-weight:800;color:var(--red);margin-bottom:8px}
@@ -892,16 +891,21 @@ function renderPillBar(){
   const rows=state.sections.flatMap(s=>s.rows);
   const open=rows.filter(r=>r.status!=='Complete');
   const g={client:[],ep:[],third:[]};
-  open.forEach(r=>g[whoWaits(r)].push(r.task.replace(/^ACİL\s*·\s*/,'')));
+  open.forEach(r=>{
+    /* Yalnizca ELDEKI is sayilir: 'Not Started' satirlar (FR/IT/ES ambalaj,
+       Pan-EU, UK gibi ileri tarihli plan kalemleri) bekleyen is degildir. */
+    if(r.status==='Not Started') return;
+    g[whoWaits(r)].push(r.task.replace(/^ACİL\s*·\s*/,''));
+  });
   const urgent=open.filter(r=>r.status==='Urgent'||r.status==='Over Due').map(r=>r.task.replace(/^ACİL\s*·\s*/,''));
   const done=rows.filter(r=>r.status==='Complete').length;
-  const pill=(cls,label,n,sub,list)=>`<span class="pill ${cls}" title="${esc((list||[]).join(' · '))}"><span class="pv">${n}</span>${label}${sub?` <span class="ps">${sub}</span>`:''}</span>`;
+  const pill=(cls,label,n,list)=>`<span class="pill ${cls}" title="${esc((list||[]).join(' · '))}"><span class="pv">${n}</span>${label}</span>`;
   el.innerHTML=
-    pill('p-urgent','Acil',urgent.length,'işlem bekliyor',urgent)+
-    pill('p-client','Firmada bekleyen',g.client.length,'karar, belge, imza',g.client)+
-    pill('p-ep','Export Partners\'ta',g.ep.length,'sıradaki adım bizde',g.ep)+
-    pill('p-third','Üçüncü tarafta',g.third.length,'Amazon, Taxually, Payoneer',g.third)+
-    pill('p-done','Tamamlanan',`${done}/${rows.length}`,'',[]);
+    pill('p-urgent','Acil',urgent.length,urgent)+
+    pill('p-client','Firmada bekleyen',g.client.length,g.client)+
+    pill('p-ep','Export Partners\'ta bekleyen',g.ep.length,g.ep)+
+    pill('p-third','Üçüncü tarafta bekleyen',g.third.length,g.third)+
+    pill('p-done','Tamamlanan',`${done}/${rows.length}`,[]);
 }
 function renderUrgentBar(){
   const el=document.getElementById('urgentBar'); if(!el)return;
