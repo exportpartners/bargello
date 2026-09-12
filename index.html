@@ -54,7 +54,17 @@
   .st-notstarted{background:var(--gray)}.st-onhold{background:#a34d64}.st-overdue{background:var(--red)}
   .st-urgent{background:var(--red);animation:epblink 1.05s ease-in-out infinite}
   #pillBar{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
-  .pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:6px 14px 6px 8px;font-size:12px;font-weight:700;letter-spacing:.02em;border:1.5px solid var(--line);background:var(--card);color:var(--text);cursor:default}
+  .pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:6px 14px 6px 8px;font-size:12px;font-weight:700;letter-spacing:.02em;border:1.5px solid var(--line);background:var(--card);color:var(--text);cursor:pointer;user-select:none}
+  .pill:hover{box-shadow:0 2px 8px rgba(14,27,61,.14);transform:translateY(-1px)}
+  .pitem{display:flex;align-items:flex-start;gap:12px;padding:10px 4px;border-top:1px solid var(--line);cursor:pointer}
+  .pitem:first-child{border-top:none}
+  .pitem:hover .ptask{text-decoration:underline}
+  .ptask{font-weight:700;font-size:13.5px;color:var(--text);flex:1}
+  .ptask small{display:block;font-weight:600;font-size:11px;color:var(--muted);margin-top:3px;letter-spacing:.04em;text-transform:uppercase}
+  .pwhy{display:block;font-weight:500;font-size:12px;color:#5b6475;margin-top:4px}
+  .pdl{font-size:12px;font-weight:700;white-space:nowrap;color:var(--muted)}
+  .pdl.neg{color:var(--red)}
+  .pempty{color:var(--muted);font-size:13px;padding:8px 4px}
   .pill .pv{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border-radius:999px;padding:0 8px;font-size:13px;font-weight:900;color:#fff;background:var(--gray)}
   .pill.p-client{border-color:rgba(192,57,43,.45)} .pill.p-client .pv{background:var(--red)}
   .pill.p-ep{border-color:rgba(255,125,7,.5)} .pill.p-ep .pv{background:var(--orange)}
@@ -487,6 +497,12 @@
   </footer>
 </div>
 <div id="toast"></div>
+<div class="modal-bg" id="pillBg">
+  <div class="modal">
+    <div class="mhead"><div class="mtitle" id="pillTitle">Liste</div><button class="mclose" onclick="closePill()">✕</button></div>
+    <div class="mbody" id="pillBody" style="max-height:64vh"></div>
+  </div>
+</div>
 <div class="modal-bg" id="logBg" onclick="if(event.target===this)closeLog()">
   <div class="modal">
     <div class="mhead"><div class="mtitle">Son Değişiklikler<small>ACTIVITY LOG</small></div><button class="mclose" onclick="closeLog()">✕</button></div>
@@ -896,27 +912,51 @@ const EP_BLOCKED=[
   ['Dolaylı temsil (IOR)','IOR kararı verilince ilk sevkiyat planlanacak'],
   ['FBA\'ya geçiş','FBM stabil olup IOR kurulunca depo girişi yapılacak']
 ];
+let pillData={};
 function renderPillBar(){
   const el=document.getElementById('pillBar'); if(!el)return;
-  const rows=state.sections.flatMap(s=>s.rows);
   const name=r=>r.task.replace(/^ACİL\s*·\s*/,'');
+  const items=[];
+  state.sections.forEach((s,si)=>s.rows.forEach((r,ri)=>items.push({s,si,r,ri})));
   /* Yalnizca ELDEKI is sayilir: 'Not Started' satirlar (FR/IT/ES ambalaj,
      Pan-EU, UK gibi ileri tarihli plan kalemleri) bekleyen is degildir. */
-  const active=rows.filter(r=>r.status!=='Complete'&&r.status!=='Not Started');
-  const client=active.filter(r=>whoWaits(r)==='client');
-  const third=active.filter(r=>whoWaits(r)==='third');
+  const active=items.filter(x=>x.r.status!=='Complete'&&x.r.status!=='Not Started');
+  const urgent=active.filter(x=>x.r.status==='Urgent'||x.r.status==='Over Due');
+  const client=active.filter(x=>whoWaits(x.r)==='client');
+  const third=active.filter(x=>whoWaits(x.r)==='third');
   const ep=[];
-  active.forEach(r=>{const n=name(r);const m=EP_BLOCKED.find(([k])=>n.startsWith(k));if(m)ep.push(n+' ← '+m[1]);});
-  const urgent=active.filter(r=>r.status==='Urgent'||r.status==='Over Due').map(name);
-  const done=rows.filter(r=>r.status==='Complete').length;
-  const pill=(cls,label,n,list)=>`<span class="pill ${cls}" title="${esc((list||[]).join('\n'))}"><span class="pv">${n}</span>${label}</span>`;
+  active.forEach(x=>{const n=name(x.r);const m=EP_BLOCKED.find(([k])=>n.startsWith(k));if(m)ep.push(Object.assign({},x,{why:m[1]}));});
+  pillData={
+    urgent:{title:'Urgent',sub:'ACİL VE GECİKMİŞ KALEMLER',list:urgent},
+    client:{title:'Waiting on client',sub:'FİRMADAN KARAR, BELGE YA DA İMZA BEKLEYEN',list:client},
+    third:{title:'Waiting on third party',sub:'AMAZON, TAXUALLY, PAYONEER GİBİ ÜÇÜNCÜ TARAFTA',list:third},
+    ep:{title:'Export Partners awaiting for input',sub:'BİZİM YAPACAĞIMIZ, GİRDİ GELİNCE BAŞLAYACAK İŞLER',list:ep}
+  };
+  const pill=(key,cls,label,n)=>`<span class="pill ${cls}" onclick="openPill('${key}')" title="Tıkla, listeyi aç"><span class="pv">${n}</span>${label}</span>`;
   el.innerHTML=
-    pill('p-urgent','Urgent',urgent.length,urgent)+
-    pill('p-client','Waiting on client',client.length,client.map(name))+
-    pill('p-third','Waiting on third party',third.length,third.map(name))+
-    pill('p-ep','Export Partners awaiting for input',ep.length,ep)+
-    pill('p-done','Completed',`${done}/${rows.length}`,[]);
+    pill('urgent','p-urgent','Urgent',urgent.length)+
+    pill('client','p-client','Waiting on client',client.length)+
+    pill('third','p-third','Waiting on third party',third.length)+
+    pill('ep','p-ep','Export Partners awaiting for input',ep.length);
 }
+function openPill(key){
+  const d=pillData[key]; if(!d)return;
+  const name=r=>r.task.replace(/^ACİL\s*·\s*/,'');
+  document.getElementById('pillTitle').innerHTML=esc(d.title)+' · '+d.list.length+'<small>'+esc(d.sub)+'</small>';
+  const body=document.getElementById('pillBody');
+  if(!d.list.length){body.innerHTML='<div class="pempty">Bu başlıkta kalem yok.</div>';}
+  else body.innerHTML=d.list.map(x=>{
+    const dl=daysLeft(x.r.deadline);
+    const dlt=(dl===null)?'':(dl<0?`${Math.abs(dl)} gün gecikti`:(dl===0?'bugün':`${dl} gün kaldı`));
+    const acts=(x.r.actions||[]).join(', ');
+    return `<div class="pitem" onclick="closePill();openNote(${x.si},${x.ri})">
+      <div class="ptask">${esc(name(x.r))}<small>${esc(x.s.name)}${acts?' · '+esc(acts):''}</small>${x.why?`<span class="pwhy">← ${esc(x.why)}</span>`:''}</div>
+      <div class="pdl ${dl!==null&&dl<0?'neg':''}">${dlt}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('pillBg').classList.add('show');
+}
+function closePill(){document.getElementById('pillBg').classList.remove('show');}
 function renderUrgentBar(){
   const el=document.getElementById('urgentBar'); if(!el)return;
   const items=[];
