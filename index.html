@@ -889,23 +889,25 @@ function whoWaits(r){
 function renderPillBar(){
   const el=document.getElementById('pillBar'); if(!el)return;
   const rows=state.sections.flatMap(s=>s.rows);
-  const open=rows.filter(r=>r.status!=='Complete');
-  const g={client:[],ep:[],third:[]};
-  open.forEach(r=>{
-    /* Yalnizca ELDEKI is sayilir: 'Not Started' satirlar (FR/IT/ES ambalaj,
-       Pan-EU, UK gibi ileri tarihli plan kalemleri) bekleyen is degildir. */
-    if(r.status==='Not Started') return;
-    g[whoWaits(r)].push(r.task.replace(/^ACİL\s*·\s*/,''));
-  });
-  const urgent=open.filter(r=>r.status==='Urgent'||r.status==='Over Due').map(r=>r.task.replace(/^ACİL\s*·\s*/,''));
+  const name=r=>r.task.replace(/^ACİL\s*·\s*/,'');
+  /* Yalnizca ELDEKI is sayilir: 'Not Started' satirlar (FR/IT/ES ambalaj,
+     Pan-EU, UK gibi ileri tarihli plan kalemleri) bekleyen is degildir. */
+  const active=rows.filter(r=>r.status!=='Complete'&&r.status!=='Not Started');
+  const client=active.filter(r=>whoWaits(r)==='client');
+  const third=active.filter(r=>whoWaits(r)==='third');
+  /* Export Partners: yuruyen her isin icrasi bizde. Girdi firmadan ya da
+     ucuncu taraftan gelince sonraki adim yine bizde; bu yuzden bekleyenler de
+     burada sayilir, ipucunda neyi bekledigi yazar. */
+  const ep=active.map(r=>{const w=whoWaits(r);return name(r)+(w==='client'?' (next step after client input)':w==='third'?' (next step after third-party reply)':'');});
+  const urgent=active.filter(r=>r.status==='Urgent'||r.status==='Over Due').map(name);
   const done=rows.filter(r=>r.status==='Complete').length;
   const pill=(cls,label,n,list)=>`<span class="pill ${cls}" title="${esc((list||[]).join(' · '))}"><span class="pv">${n}</span>${label}</span>`;
   el.innerHTML=
-    pill('p-urgent','Acil',urgent.length,urgent)+
-    pill('p-client','Firmada bekleyen',g.client.length,g.client)+
-    pill('p-ep','Export Partners\'ta bekleyen',g.ep.length,g.ep)+
-    pill('p-third','Üçüncü tarafta bekleyen',g.third.length,g.third)+
-    pill('p-done','Tamamlanan',`${done}/${rows.length}`,[]);
+    pill('p-urgent','Urgent',urgent.length,urgent)+
+    pill('p-client','Waiting on client',client.length,client.map(name))+
+    pill('p-third','Waiting on third party',third.length,third.map(name))+
+    pill('p-ep','Export Partners, in progress',ep.length,ep)+
+    pill('p-done','Completed',`${done}/${rows.length}`,[]);
 }
 function renderUrgentBar(){
   const el=document.getElementById('urgentBar'); if(!el)return;
