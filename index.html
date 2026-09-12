@@ -886,6 +886,16 @@ function whoWaits(r){
   if(a.some(x=>ACT_THIRD.includes(x))) return 'third';
   return 'ep';
 }
+/* Export Partners'in icra edecegi ama bir girdiye takili isler. Anahtar: gorev
+   adinin basi; deger: neyin engelledigi. Buraya girmeyen satir "bizde bekleyen"
+   sayilmaz (imza, karar gibi tamamen firma tarafindaki isler burada yok). */
+const EP_BLOCKED=[
+  ['DE FBM satış açılışı','LUCID numarası ve GPSR sorumlu kişi bilgisi gelince listeler aktive edilecek'],
+  ['LUCID ambalaj kaydı','temsilcilik sözleşmesi imzalanınca ve ambalaj ağırlıkları gelince başvuru yapılacak'],
+  ['GPSR uyum bilgisi','Obelis sorumlu kişi yazısı gelince Seller Central alanı doldurulacak'],
+  ['Dolaylı temsil (IOR)','IOR kararı verilince ilk sevkiyat planlanacak'],
+  ['FBA\'ya geçiş','FBM stabil olup IOR kurulunca depo girişi yapılacak']
+];
 function renderPillBar(){
   const el=document.getElementById('pillBar'); if(!el)return;
   const rows=state.sections.flatMap(s=>s.rows);
@@ -895,18 +905,16 @@ function renderPillBar(){
   const active=rows.filter(r=>r.status!=='Complete'&&r.status!=='Not Started');
   const client=active.filter(r=>whoWaits(r)==='client');
   const third=active.filter(r=>whoWaits(r)==='third');
-  /* Export Partners: yuruyen her isin icrasi bizde. Girdi firmadan ya da
-     ucuncu taraftan gelince sonraki adim yine bizde; bu yuzden bekleyenler de
-     burada sayilir, ipucunda neyi bekledigi yazar. */
-  const ep=active.map(r=>{const w=whoWaits(r);return name(r)+(w==='client'?' (next step after client input)':w==='third'?' (next step after third-party reply)':'');});
+  const ep=[];
+  active.forEach(r=>{const n=name(r);const m=EP_BLOCKED.find(([k])=>n.startsWith(k));if(m)ep.push(n+' ← '+m[1]);});
   const urgent=active.filter(r=>r.status==='Urgent'||r.status==='Over Due').map(name);
   const done=rows.filter(r=>r.status==='Complete').length;
-  const pill=(cls,label,n,list)=>`<span class="pill ${cls}" title="${esc((list||[]).join(' · '))}"><span class="pv">${n}</span>${label}</span>`;
+  const pill=(cls,label,n,list)=>`<span class="pill ${cls}" title="${esc((list||[]).join('\n'))}"><span class="pv">${n}</span>${label}</span>`;
   el.innerHTML=
     pill('p-urgent','Urgent',urgent.length,urgent)+
     pill('p-client','Waiting on client',client.length,client.map(name))+
     pill('p-third','Waiting on third party',third.length,third.map(name))+
-    pill('p-ep','Export Partners, in progress',ep.length,ep)+
+    pill('p-ep','Export Partners, blocked',ep.length,ep)+
     pill('p-done','Completed',`${done}/${rows.length}`,[]);
 }
 function renderUrgentBar(){
