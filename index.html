@@ -914,7 +914,7 @@ function renderPillBar(){
     pill('p-urgent','Urgent',urgent.length,urgent)+
     pill('p-client','Waiting on client',client.length,client.map(name))+
     pill('p-third','Waiting on third party',third.length,third.map(name))+
-    pill('p-ep','Export Partners, blocked',ep.length,ep)+
+    pill('p-ep','Export Partners, ready, waiting for input',ep.length,ep)+
     pill('p-done','Completed',`${done}/${rows.length}`,[]);
 }
 function renderUrgentBar(){
