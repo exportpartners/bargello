@@ -744,6 +744,9 @@ function uaShort(){
 }
 function noteVisit(){
   if(!visRef||!gateOk())return;
+  // Otomatik test tarayicisi (headless Chrome, CDP) ziyaret sayilmaz:
+  // 13 Eylul 2026'da yedi test kosusu yedi "cihaz" olarak listeye dustu.
+  if(navigator.webdriver||/HeadlessChrome/.test(navigator.userAgent))return;
   const id=devId(), now=Date.now();
   visRef.child(id).once('value').then(sn=>{
     const v=sn.val()||{};
