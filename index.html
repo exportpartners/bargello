@@ -752,9 +752,12 @@ function noteVisit(){
     const v=sn.val()||{};
     // Ayni oturumda sayfa yenilemeleri ziyaret sayisini sismesin diye 30 dakikalik pencere.
     const yeni=(now-(v.last||0))>30*60*1000;
-    visRef.child(id).set({first:v.first||now,last:now,n:(v.n||0)+(yeni||!v.n?1:0),ua:uaShort()});
+    const kayit={first:v.first||now,last:now,n:(v.n||0)+(yeni||!v.n?1:0),ua:uaShort()};
+    if(v.ad)kayit.ad=v.ad;
+    visRef.child(id).set(kayit);
   }).catch(()=>{});
 }
+function visAd(v){return (v&&v.ad)?v.ad:'Bargello';}
 function visList(){
   return Object.keys(visits||{}).map(k=>Object.assign({id:k},visits[k]||{}))
     .filter(v=>v.last).sort((a,b)=>b.last-a.last);
@@ -778,8 +781,10 @@ function openVis(){
     +'<br>Cihaz sayılır, kişi değil: aynı kişinin telefonu ve bilgisayarı iki cihaz görünür.</div>';
   b.innerHTML=ust+(L.length?L.map((v,i)=>{
     const bu=v.id===ben?' <span style="color:var(--red);font-weight:700">(bu cihaz)</span>':'';
-    return '<div class="logrow"><span class="logwho">'+esc(v.ua||'Cihaz')+bu+'</span>'
-      +'<span class="logmsg">'+v.n+' ziyaret · ilk: '+new Date(v.first||v.last).toLocaleDateString('tr-TR')+'</span>'
+    // Cihazin adi Firebase'deki 'ad' alanindan gelir (Admin2, Fatih...);
+    // adi olmayan her cihaz Bargello sayilir. 13 Eylul 2026, Mustafa.
+    return '<div class="logrow"><span class="logwho">'+esc(visAd(v))+bu+'</span>'
+      +'<span class="logmsg">'+esc(v.ua||'Cihaz')+' · '+v.n+' ziyaret · ilk: '+new Date(v.first||v.last).toLocaleDateString('tr-TR')+'</span>'
       +'<span class="logtime">'+agoTxt(v.last)+'</span></div>';
   }).join(''):'<div style="color:var(--muted);font-size:13px;padding:10px 2px">Henüz ziyaret kaydı yok.</div>');
   document.getElementById('visBg').classList.add('show');
@@ -789,12 +794,13 @@ function closeVis(){document.getElementById('visBg').classList.remove('show');vi
 /* ---------- activity log ---------- */
 const USER_KEY='brg_user';
 function whoAmI(){
+  // Degisiklik kaydindaki ad, cihazin Firebase'deki 'ad' alanidir
+  // (Admin2, Fatih); adi olmayan herkes Bargello. Isim sorulmaz.
+  // Betikle yazilan kayitlarda ad Admin'dir. 13 Eylul 2026, Mustafa.
+  const v=(visits||{})[devId()];
+  if(v&&v.ad)return v.ad;
   let u='';try{u=localStorage.getItem(USER_KEY)||'';}catch(e){}
-  if(!u){
-    u=(prompt('Adınız (değişiklik kayıtlarında görünecek):')||'').trim().slice(0,24)||'Anonim';
-    try{localStorage.setItem(USER_KEY,u);}catch(e){}
-  }
-  return u;
+  return u||'Bargello';
 }
 let _lastTlLog=0;
 function logChange(m){
