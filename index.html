@@ -781,7 +781,7 @@ function openVis(){
     +'<br>Cihaz sayılır, kişi değil: aynı kişinin telefonu ve bilgisayarı iki cihaz görünür.</div>';
   b.innerHTML=ust+(L.length?L.map((v,i)=>{
     const bu=v.id===ben?' <span style="color:var(--red);font-weight:700">(bu cihaz)</span>':'';
-    // Cihazin adi Firebase'deki 'ad' alanindan gelir (Admin2, Fatih...);
+    // Cihazin adi Firebase'deki 'ad' alanindan gelir (Admin, Opr...);
     // adi olmayan her cihaz Bargello sayilir. 13 Eylul 2026, Mustafa.
     return '<div class="logrow"><span class="logwho">'+esc(visAd(v))+bu+'</span>'
       +'<span class="logmsg">'+esc(v.ua||'Cihaz')+' · '+v.n+' ziyaret · ilk: '+new Date(v.first||v.last).toLocaleDateString('tr-TR')+'</span>'
@@ -795,8 +795,8 @@ function closeVis(){document.getElementById('visBg').classList.remove('show');vi
 const USER_KEY='brg_user';
 function whoAmI(){
   // Degisiklik kaydindaki ad, cihazin Firebase'deki 'ad' alanidir
-  // (Admin2, Fatih); adi olmayan herkes Bargello. Isim sorulmaz.
-  // Betikle yazilan kayitlarda ad Admin'dir. 13 Eylul 2026, Mustafa.
+  // (Admin, Opr); adi olmayan herkes Bargello. Isim sorulmaz.
+  // Betikle yazilan kayitlarda ad Admin2'dir. 16 Eylul 2026, Mustafa.
   const v=(visits||{})[devId()];
   if(v&&v.ad)return v.ad;
   let u='';try{u=localStorage.getItem(USER_KEY)||'';}catch(e){}
