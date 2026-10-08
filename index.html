@@ -501,7 +501,7 @@
       <h3>1) ABD şirket kurulumu</h3>
       <p class="dnote">Şirket kurulumu ve EIN için Gökhan Çıkılı (Troy Business Services) aşağıdaki bilgileri istiyor.</p>
       <label>Şirket adı (önerilen)<input id="f_ad" placeholder="Ör. Bargello USA LLC"></label>
-      <label>Alternatif şirket adı <span class="dnote">(opsiyonel)</span><input id="f_alt" placeholder="İlk ad uygun değilse"></label>
+      <label>Alternatif şirket adı<input id="f_alt" placeholder="İlk ad uygun değilse"></label>
       <label>Şirket sahibinin adı soyadı<input id="f_sahip" placeholder="Cemalettin ..."></label>
       <label>Türkiye adresi<textarea id="f_adres" rows="3" placeholder="Açık adres"></textarea></label>
       <button class="btn-save" onclick="formKaydet()">Kaydet</button> <span id="f_durum" class="dnote"></span>
@@ -509,7 +509,7 @@
         Neden gerekli: ABD'de kurulan şirketin resmi yazışmaları (IRS ve EIN yazıları, eyalet bildirimleri, banka mektupları) için ABD'de bir posta adresi gerekir. iPostal1 bu adresi sağlar; gelen mektuplar taranarak çevrim içi olarak iletilir.<br>
         Kim yapar: kayıt şirket adına, Gökhan Çıkılı'nın (Troy Business Services) ilettiği aşağıdaki bağlantıdan yapılır. Kayıt sırasında abonelik ödemesi ve posta vekalet formu (USPS Form 1583) için şirket sahibinin imzası ve kimlik doğrulaması istenir; form kayıt ekranında hazır gelir, ayrıca indirilmesi gerekmez.<br>
         <a href="https://my.ipostal1.com/signup/TroyBusinessServices" target="_blank" rel="noopener">my.ipostal1.com/signup/TroyBusinessServices</a>
-        <label style="display:flex;gap:8px;align-items:center;font-weight:700"><input type="checkbox" id="f_ipostal" style="width:auto;margin:0"> iPostal1 kaydı tamamlandı <span class="dnote">(opsiyonel)</span></label></div>
+        <label style="display:flex;gap:8px;align-items:center;font-weight:700"><input type="checkbox" id="f_ipostal" style="width:auto;margin:0"> iPostal1 kaydı tamamlandı</label></div>
     </div>
     <div class="dcard">
       <h3>2) GPSR / AB sorumlu kişi</h3>
@@ -530,8 +530,8 @@
       <label>Plastik <span class="dnote">(plastik poşetler, ambalaj filmleri, shrink film, plastik kapaklar vb.)</span><input id="l_plastik" inputmode="decimal" placeholder="kg/yıl"></label>
       <label>Cam <span class="dnote">(cam şişe, kavanoz vb.)</span><input id="l_cam" inputmode="decimal" placeholder="kg/yıl"></label>
       <label>Metal <span class="dnote">(metal kapak, kutu, alüminyum parçalar vb.)</span><input id="l_metal" inputmode="decimal" placeholder="kg/yıl"></label>
-      <label>Ahşap <span class="dnote">(ahşap ambalaj, sandık, palet vb.; opsiyonel)</span><input id="l_ahsap" inputmode="decimal" placeholder="kg/yıl"></label>
-      <label>Diğer ambalaj malzemeleri <span class="dnote">(yukarıdaki kategorilere girmeyen ambalajlar; opsiyonel)</span><input id="l_diger" inputmode="decimal" placeholder="kg/yıl"></label>
+      <label>Ahşap <span class="dnote">(ahşap ambalaj, sandık, palet vb.)</span><input id="l_ahsap" inputmode="decimal" placeholder="kg/yıl"></label>
+      <label>Diğer ambalaj malzemeleri <span class="dnote">(yukarıdaki kategorilere girmeyen ambalajlar)</span><input id="l_diger" inputmode="decimal" placeholder="kg/yıl"></label>
       <label>Kargo / taşıma ambalajları <span class="dnote">(koli, dolgu malzemesi, bant, film vb.)</span><input id="l_kargo" inputmode="decimal" placeholder="kg/yıl"></label>
       <button class="btn-save" onclick="lucidKaydet()">Kaydet</button> <span id="l_durum" class="dnote"></span>
     </div>
@@ -546,19 +546,19 @@
       <p class="dnote">Dosya başına en fazla 7 MB. PDF, JPG, PNG, Excel ya da Word.</p>
       <p class="dnote">MSDS, ürün etiketleri ve danışman yorumları mevzuat birimimizin talebidir. Sorularınız için: <a href="mailto:opr@exportpartners.com.tr">opr@exportpartners.com.tr</a></p>
       <div class="dslot" style="border:1px solid #1f8a4c;border-radius:10px;padding:10px 12px;margin:8px 0 12px">
-        <b>Şirket sahibinin pasaport görüntüsü (zorunlu, şifreli yükleme)</b>
+        <b>Şirket sahibinin pasaport görüntüsü (şifreli yükleme)</b>
         <p class="dnote" style="margin:4px 0">Gizlilik: pasaport görüntüsü yüklenmeden önce tarayıcınızda şifrelenir ve panelde şifreli olarak saklanır. Panel üzerinden kimse açamaz; yalnızca Export Partners LLC açabilir. Belge yalnızca ABD şirket kurulumu ve EIN başvurusu için Gökhan Çıkılı'ya (Troy Business Services) iletilir, iletildikten sonra panelden silinir.</p>
         <span id="pasaportListe"></span>
         <label class="addbtn" style="margin:0">+ Şifreli yükle<input type="file" accept="image/*,application/pdf" style="display:none" onchange="pasaportYukle(event)"></label>
       </div>
       <p class="dnote"><b>Kişisel verilerin korunması hakkında bilgilendirme.</b> Bu panelde paylaşılan bilgi ve belgeler, Export Partners LLC tarafından yalnızca ABD şirket kurulumu, Amazon pazar girişi ve bunlara bağlı resmi kayıt süreçlerinin yürütülmesi amacıyla işlenir. Bilgiler, bu süreçlerin gerektirdiği ölçüde ilgili hizmet sağlayıcılarıyla (şirket kurulum hizmeti, Almanya ambalaj ve LUCID temsilcisi) paylaşılır; başka bir amaçla kullanılmaz ve üçüncü kişilere aktarılmaz. Süreç tamamlandıktan sonra talebiniz üzerine silinir. Bilgi ve talepleriniz için: deniz@exportpartners.com.tr</p>
       <div id="dSlots"></div>
-      <label>Danışman yorumları <span class="dnote">(opsiyonel; ürünler hakkında daha önce alınan uyum ya da danışman görüşleri)</span><textarea id="f_danisman" rows="5"></textarea></label>
+      <label>Danışman yorumları <span class="dnote">(ürünler hakkında daha önce alınan uyum ya da danışman görüşleri)</span><textarea id="f_danisman" rows="5"></textarea></label>
       <button class="btn-save" onclick="danismanKaydet()">Kaydet</button> <span id="f_danisman_durum" class="dnote"></span>
     </div>
     <div class="dcard" id="teslimKart">
       <h3>Tamamla ve gönder</h3>
-      <p class="dnote">Tüm alanlar dolduğunda ve pasaport ile MSDS yüklendiğinde bilgiler tek seferde Export Partners'a gönderilir. "(opsiyonel)" yazan alanlar zorunlu değildir.</p>
+      <p class="dnote">Hazır olan bilgi ve belgeleri istediğiniz zaman gönderebilirsiniz; eksik kalanları daha sonra tamamlayıp tekrar gönderebilirsiniz.</p>
       <div id="teslimEksik" class="dnote"></div>
       <button id="teslimBtn" onclick="teslimEt()" style="background:#1f8a4c;color:#fff;border:none;border-radius:9px;padding:12px 26px;font-weight:800;font-size:15px;cursor:pointer">Gönder</button> <span id="teslimDurum" class="dnote"></span>
     </div>
@@ -1410,8 +1410,8 @@ function applyOverdue(){
 
 /* ---------- belgeler ---------- */
 let abdForm={},gpsrForm={},lucidForm={},danisman={},vatD={},teslimD={},dosyaListe={};
-const SLOTLAR=[['msds','MSDS (güvenlik bilgi formu, zorunlu)'],
-  ['etiket','Ürün etiketleri (opsiyonel)'],['diger','Diğer belgeler (opsiyonel)']];
+const SLOTLAR=[['msds','MSDS (güvenlik bilgi formu)'],
+  ['etiket','Ürün etiketleri'],['diger','Diğer belgeler']];
 function formCiz(){[['f_ad','sirket_adi'],['f_alt','alternatif'],['f_sahip','sahip'],['f_adres','tr_adres']].forEach(([id,k])=>{
   const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=abdForm[k]||'';});
   const ip=document.getElementById('f_ipostal');if(ip)ip.checked=!!abdForm.ipostal;
@@ -1450,12 +1450,12 @@ function teslimEksikler(){const v=id=>(document.getElementById(id)||{}).value||'
    ['l_kagit','LUCID Kâğıt/Karton'],['l_plastik','LUCID Plastik'],['l_cam','LUCID Cam'],['l_metal','LUCID Metal'],['l_kargo','LUCID Kargo ambalajı'],
    ['f_vat','VAT son durum notu']].forEach(([id,ad])=>{if(!v(id).trim())e.push(ad);});
   const yuk=k=>Object.values(dosyaListe).some(m=>m.kalem===k);
-  if(!yuk('pasaport'))e.push('Pasaport (şifreli yükleme)');if(!yuk('msds'))e.push('MSDS yüklemesi');return e;}
+  if(!yuk('pasaport'))e.push('Pasaport');if(!yuk('msds'))e.push('MSDS yüklemesi');return e;}
 function teslimCiz(){const e=teslimEksikler();const b=document.getElementById('teslimBtn');const k=document.getElementById('teslimEksik');if(!b)return;
-  b.style.opacity=e.length?'.45':'1';k.textContent=e.length?('Eksik: '+e.join(', ')):'Tüm zorunlu alanlar tamam.';
+  k.textContent=e.length?('Henüz girilmeyen: '+e.join(', ')):'Tüm bilgi ve belgeler girildi.';
   const d=document.getElementById('teslimDurum');if(d)d.textContent=teslimD.ts?('Gönderildi: '+new Date(teslimD.ts).toLocaleString('tr-TR')+' · '+(teslimD.u||'')):'';}
 function teslimEt(){if(!dbRef){toast('Bağlantı yok');return;}if(!hazirMi())return;
-  const e=teslimEksikler();if(e.length){alert('Göndermeden önce şu alanları tamamlayınız:\n- '+e.join('\n- '));return;}
+  
   if(!confirm('Bilgi ve belgeler Export Partners\'a gönderilecek. Onaylıyor musunuz?'))return;
   const v=id=>document.getElementById(id).value.trim(),ts=Date.now(),u=whoAmI();
   const lf={ts,u};LUCID_ALAN.forEach(id=>{lf[id]=v(id);});
