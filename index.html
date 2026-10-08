@@ -558,7 +558,7 @@
     </div>
     <div class="dcard" id="teslimKart">
       <h3>Tamamla ve gönder</h3>
-      <p class="dnote">Tüm alanlar dolduğunda ve pasaport, MSDS ile ürün etiketleri yüklendiğinde bilgiler tek seferde Export Partners'a gönderilir. "(opsiyonel)" yazan alanlar zorunlu değildir.</p>
+      <p class="dnote">Tüm alanlar dolduğunda ve pasaport ile MSDS yüklendiğinde bilgiler tek seferde Export Partners'a gönderilir. "(opsiyonel)" yazan alanlar zorunlu değildir.</p>
       <div id="teslimEksik" class="dnote"></div>
       <button id="teslimBtn" onclick="teslimEt()" style="background:#1f8a4c;color:#fff;border:none;border-radius:9px;padding:12px 26px;font-weight:800;font-size:15px;cursor:pointer">Gönder</button> <span id="teslimDurum" class="dnote"></span>
     </div>
@@ -1411,7 +1411,7 @@ function applyOverdue(){
 /* ---------- belgeler ---------- */
 let abdForm={},gpsrForm={},lucidForm={},danisman={},vatD={},teslimD={},dosyaListe={};
 const SLOTLAR=[['msds','MSDS (güvenlik bilgi formu, zorunlu)'],
-  ['etiket','Ürün etiketleri (zorunlu)'],['diger','Diğer belgeler (opsiyonel)']];
+  ['etiket','Ürün etiketleri (opsiyonel)'],['diger','Diğer belgeler (opsiyonel)']];
 function formCiz(){[['f_ad','sirket_adi'],['f_alt','alternatif'],['f_sahip','sahip'],['f_adres','tr_adres']].forEach(([id,k])=>{
   const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=abdForm[k]||'';});
   const ip=document.getElementById('f_ipostal');if(ip)ip.checked=!!abdForm.ipostal;
@@ -1450,7 +1450,7 @@ function teslimEksikler(){const v=id=>(document.getElementById(id)||{}).value||'
    ['l_kagit','LUCID Kâğıt/Karton'],['l_plastik','LUCID Plastik'],['l_cam','LUCID Cam'],['l_metal','LUCID Metal'],['l_kargo','LUCID Kargo ambalajı'],
    ['f_vat','VAT son durum notu']].forEach(([id,ad])=>{if(!v(id).trim())e.push(ad);});
   const yuk=k=>Object.values(dosyaListe).some(m=>m.kalem===k);
-  if(!yuk('pasaport'))e.push('Pasaport (şifreli yükleme)');if(!yuk('msds'))e.push('MSDS yüklemesi');if(!yuk('etiket'))e.push('Ürün etiketleri yüklemesi');return e;}
+  if(!yuk('pasaport'))e.push('Pasaport (şifreli yükleme)');if(!yuk('msds'))e.push('MSDS yüklemesi');return e;}
 function teslimCiz(){const e=teslimEksikler();const b=document.getElementById('teslimBtn');const k=document.getElementById('teslimEksik');if(!b)return;
   b.style.opacity=e.length?'.45':'1';k.textContent=e.length?('Eksik: '+e.join(', ')):'Tüm zorunlu alanlar tamam.';
   const d=document.getElementById('teslimDurum');if(d)d.textContent=teslimD.ts?('Gönderildi: '+new Date(teslimD.ts).toLocaleString('tr-TR')+' · '+(teslimD.u||'')):'';}
