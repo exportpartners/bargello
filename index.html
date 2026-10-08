@@ -1438,6 +1438,7 @@ function importData(ev){const f=ev.target.files[0];if(!f)return;const r=new File
 
 try{localStorage.removeItem('brg_vis_on');}catch(e){}
 gateInit();
+if(location.hash==='#belgeler')showTab('docs');
 boot();
 </script>
 </body></html>
