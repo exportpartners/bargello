@@ -161,6 +161,15 @@
   .bignote ul,.bignote ol{margin:6px 0;padding-left:24px}
   .bignote li{margin:2px 0}
   .mfoot{padding:11px 16px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;background:#f8fafc}
+  .dcard{background:#fff;border:1px solid #E6E8EC;border-radius:12px;padding:18px 20px;margin:0 0 16px;max-width:760px}
+  .dcard h3{margin:0 0 6px;font-size:16px;color:#232F3E}
+  .dcard label{display:block;font-size:12px;font-weight:700;color:#232F3E;margin:10px 0 0}
+  .dcard input,.dcard textarea{display:block;width:100%;box-sizing:border-box;margin-top:4px;padding:9px 11px;border:1px solid #D5D9E0;border-radius:8px;font:inherit;font-size:14px}
+  .dnote{font-size:12px;color:#6B7280}
+  .dlink{margin-top:14px;font-size:13px}
+  .dslot{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #F0F1F4}
+  .dslot b{min-width:230px;font-size:13px;color:#232F3E}
+  .dfile{font-size:12px;background:#F4F5F7;border-radius:6px;padding:3px 8px;cursor:pointer}
   .btn-save{background:var(--orange);color:#fff;border:none;border-radius:9px;padding:9px 20px;font-weight:800;font-size:13px;cursor:pointer;box-shadow:0 1px 5px rgba(255,125,7,.35)}
   .btn-save:active{opacity:.85}
 
@@ -314,6 +323,7 @@
     <button class="tab" id="tab-calc" onclick="showTab('calc')">Profitability</button>
     <button class="tab" id="tab-ship" onclick="showTab('ship')">Shipment Plan</button>
     <button class="tab" id="tab-strategy" onclick="showTab('strategy')">Launch Studio</button>
+    <button class="tab" id="tab-docs" onclick="showTab('docs')">Belgeler</button>
   </div>
 
   <section id="view-tasks">
@@ -483,6 +493,24 @@
       </div>
 
       <div class="repfoot">Bu rapor Export Partners tarafından CC Kimya / Bargello için hazırlanmıştır. Ürün seçkisi katalog yapısına göre temsilidir; nihai SKU listesi kârlılık analizi (Profitability sekmesi) ve firma onayı ile kesinleşir. Tarihler Track Tasks sekmesindeki güncel takvimle birlikte okunmalıdır.</div>
+    </div>
+  </section>
+  <section id="view-docs" style="display:none">
+    <div class="dcard">
+      <h3>1) ABD şirket kurulumu</h3>
+      <p class="dnote">Şirket kurulumu ve EIN için Gökhan Çıkılı (Troy Business Services) aşağıdaki bilgileri istiyor.</p>
+      <label>Şirket adı (önerilen)<input id="f_ad" placeholder="Ör. Bargello USA LLC"></label>
+      <label>Alternatif şirket adı<input id="f_alt" placeholder="İlk ad uygun değilse"></label>
+      <label>Şirket sahibinin adı soyadı<input id="f_sahip" placeholder="Cemalettin ..."></label>
+      <label>Türkiye adresi<textarea id="f_adres" rows="3" placeholder="Açık adres"></textarea></label>
+      <button class="btn-save" onclick="formKaydet()">Kaydet</button> <span id="f_durum" class="dnote"></span>
+      <div class="dlink">ABD posta adresi için iPostal1 kaydı (Gökhan Bey'in linki):<br>
+        <a href="https://my.ipostal1.com/signup/TroyBusinessServices" target="_blank" rel="noopener">my.ipostal1.com/signup/TroyBusinessServices</a></div>
+    </div>
+    <div class="dcard">
+      <h3>2) Belge yükleme</h3>
+      <p class="dnote">Dosya başına en fazla 7 MB. PDF, JPG, PNG, Excel ya da Word.</p>
+      <div id="dSlots"></div>
     </div>
   </section>
 
@@ -677,7 +705,10 @@ let dbRef=null;
 function fbReady(){return !FIREBASE_CONFIG.apiKey.includes('YOUR_') && typeof firebase!=='undefined' && firebase.database;}
 function localData(){let d=JSON.parse(localStorage.getItem('bargello_v9')||'null');return d?normalize(d):normalize(SEED);}
 function setSync(m){const el=document.getElementById('sync');if(el){el.textContent=m==='cloud'?'● Cloud sync active — shared live with your team':'● Local only on this device';el.style.color=m==='cloud'?'#1f8a4c':'#9aa1ad';}}
-function save(){localStorage.setItem('bargello_v9',JSON.stringify(state));if(dbRef){try{dbRef.set(state);}catch(e){}}}
+/* 8 Ekim 2026: Belgeler sekmesi. Dosyalar bargello_tracker_v2/dosyalar altinda (yalnizca tiklaninca indirilir);
+   liste ve ABD formu ayri dugumlerde. Bu yuzden kayit set() degil update(): set butun dugumu ezer ve dosyalari silerdi. */
+const ANA=['sections','timeline','weeks','calc','ship','strategy','log'];
+function save(){localStorage.setItem('bargello_v9',JSON.stringify(state));if(dbRef){try{const u={};ANA.forEach(k=>u[k]=state[k]);dbRef.update(u);}catch(e){}}}
 function initData(){
   if(fbReady()){
     try{
@@ -686,11 +717,14 @@ function initData(){
       visRef=firebase.database().ref('bargello_visits_v1');
       visRef.on('value',sn=>{visits=sn.val()||{};renderVisBtn();},()=>{});
       noteVisit();
-      dbRef.on('value',snap=>{
-        const v=snap.val();
-        if(v){state=normalize(v);}else{state=localData();try{dbRef.set(state);}catch(e){}}
-        setSync('cloud');renderAll();
-      },err=>{console.error(err);dbRef=null;state=localData();setSync('local');renderAll();});
+      const ham={};let gelen=0,ilk=true,zam=null;
+      const ciz=()=>{clearTimeout(zam);zam=setTimeout(()=>{
+        if(ilk&&!ham.sections){state=localData();save();}else{state=normalize(ham);}
+        ilk=false;setSync('cloud');renderAll();},60);};
+      ANA.forEach(k=>dbRef.child(k).on('value',sn=>{ham[k]=sn.val();if(++gelen>=ANA.length||!ilk)ciz();},
+        err=>{console.error(err);dbRef=null;state=localData();setSync('local');renderAll();}));
+      dbRef.child('abd_form').on('value',sn=>{abdForm=sn.val()||{};formCiz();});
+      dbRef.child('dosya_liste').on('value',sn=>{dosyaListe=sn.val()||{};slotCiz();});
       return;
     }catch(e){console.error(e);dbRef=null;}
   }
@@ -850,7 +884,7 @@ function gateInit(){if(gateOk())gateHide();else gateShow();}
 
 /* ---------- tabs ---------- */
 function showTab(t){
-  ['tasks','timeline','calc','ship','strategy'].forEach(k=>{
+  ['tasks','timeline','calc','ship','strategy','docs'].forEach(k=>{
     document.getElementById('view-'+k).style.display=t===k?'':'none';
     document.getElementById('tab-'+k).classList.toggle('on',t===k);
   });
@@ -1315,6 +1349,35 @@ function applyOverdue(){
   }));
   if(ch)save();
 }
+
+/* ---------- belgeler ---------- */
+let abdForm={},dosyaListe={};
+const SLOTLAR=[['pasaport','Şirket sahibinin pasaport görüntüsü'],['msds','MSDS (güvenlik bilgi formu)'],
+  ['etiket','Ürün etiketleri'],['danisman','Danışman yorumları'],['ambalaj','LUCID: 2026 tahmini ambalaj miktarları'],['diger','Diğer']];
+function formCiz(){[['f_ad','sirket_adi'],['f_alt','alternatif'],['f_sahip','sahip'],['f_adres','tr_adres']].forEach(([id,k])=>{
+  const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=abdForm[k]||'';});
+  const d=document.getElementById('f_durum');if(d)d.textContent=abdForm.ts?('Son kayıt: '+new Date(abdForm.ts).toLocaleString('tr-TR')+' · '+(abdForm.u||'')):'';}
+function formKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}
+  const v=id=>document.getElementById(id).value.trim();
+  const f={sirket_adi:v('f_ad'),alternatif:v('f_alt'),sahip:v('f_sahip'),tr_adres:v('f_adres'),ts:Date.now(),u:whoAmI()};
+  dbRef.child('abd_form').set(f).then(()=>{logChange('ABD şirket formu güncellendi');save();toast('Kaydedildi');});}
+function slotCiz(){const k=document.getElementById('dSlots');if(!k)return;
+  k.innerHTML=SLOTLAR.map(([id,ad])=>{
+    const dosyalar=Object.entries(dosyaListe).filter(([,m])=>m.kalem===id).sort((a,b)=>a[1].ts-b[1].ts);
+    return `<div class="dslot"><b>${ad}</b>${dosyalar.map(([fid,m])=>`<span class="dfile" onclick="dosyaAc('${fid}')" title="${esc(new Date(m.ts).toLocaleString('tr-TR'))}">📎 ${esc(m.ad)}</span>`).join('')}
+      <label class="addbtn" style="margin:0">+ Yükle<input type="file" style="display:none" onchange="dosyaYukle(event,'${id}')"></label></div>`;}).join('');}
+function dosyaYukle(ev,kalem){const f=ev.target.files[0];ev.target.value='';if(!f)return;
+  if(!dbRef){toast('Bağlantı yok');return;}
+  if(f.size>7*1024*1024){alert('Dosya 7 MB sınırını aşıyor.');return;}
+  const r=new FileReader();r.onload=()=>{const id='d'+Date.now().toString(36);
+    toast('Yükleniyor...');
+    dbRef.child('dosyalar/'+id).set({ad:f.name,tip:f.type,veri:r.result}).then(()=>
+      dbRef.child('dosya_liste/'+id).set({ad:f.name,kalem:kalem,boyut:f.size,ts:Date.now(),u:whoAmI()})).then(()=>{
+      logChange('Belge yüklendi: '+(SLOTLAR.find(x=>x[0]===kalem)||['',''])[1]+' · '+f.name);save();toast('Yüklendi');
+    }).catch(e=>{console.error(e);alert('Yüklenemedi: '+e.message);});};
+  r.readAsDataURL(f);}
+function dosyaAc(id){dbRef.child('dosyalar/'+id).once('value').then(sn=>{const d=sn.val();if(!d)return;
+  const a=document.createElement('a');a.href=d.veri;a.download=d.ad;document.body.appendChild(a);a.click();a.remove();});}
 function renderAll(){applyOverdue();renderTasks();renderTimeline();renderCalc();renderShip();renderStudio();renderLastUpd();}
 function toast(m){const t=document.getElementById('toast');if(!t)return;t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
 function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bargello-tracker-backup.json';a.click();}
