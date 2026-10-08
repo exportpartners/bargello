@@ -745,7 +745,10 @@ function setSync(m){const el=document.getElementById('sync');if(el){el.textConte
 /* 8 Ekim 2026: Belgeler sekmesi. Dosyalar bargello_tracker_v2/dosyalar altinda (yalnizca tiklaninca indirilir);
    liste ve ABD formu ayri dugumlerde. Bu yuzden kayit set() degil update(): set butun dugumu ezer ve dosyalari silerdi. */
 const ANA=['sections','timeline','weeks','calc','ship','strategy','log'];
-function save(){localStorage.setItem('bargello_v9',JSON.stringify(state));if(dbRef){try{const u={};ANA.forEach(k=>u[k]=state[k]);dbRef.update(u);}catch(e){}}}
+/* 8 Ekim 2026: veri buluttan yuklenmeden bulut yazilmaz; yuklenmeden yapilan bir kayit butun paneli bosaltmisti. */
+let BULUT_HAZIR=false;
+function hazirMi(){if(dbRef&&!BULUT_HAZIR){toast('Veriler yükleniyor, birkaç saniye sonra tekrar deneyin');return false;}return true;}
+function save(){localStorage.setItem('bargello_v9',JSON.stringify(state));if(dbRef&&BULUT_HAZIR){try{const u={};ANA.forEach(k=>u[k]=state[k]);dbRef.update(u);}catch(e){}}}
 function initData(){
   if(fbReady()){
     try{
@@ -756,7 +759,7 @@ function initData(){
       noteVisit();
       const ham={};let gelen=0,ilk=true,zam=null;
       const ciz=()=>{clearTimeout(zam);zam=setTimeout(()=>{
-        if(ilk&&!ham.sections){state=localData();save();}else{state=normalize(ham);}
+        if(ilk&&!ham.sections){state=localData();BULUT_HAZIR=true;save();}else{state=normalize(ham);BULUT_HAZIR=true;}
         ilk=false;setSync('cloud');renderAll();},60);};
       ANA.forEach(k=>dbRef.child(k).on('value',sn=>{ham[k]=sn.val();if(++gelen>=ANA.length||!ilk)ciz();},
         err=>{console.error(err);dbRef=null;state=localData();setSync('local');renderAll();}));
@@ -1399,41 +1402,41 @@ function formCiz(){[['f_ad','sirket_adi'],['f_alt','alternatif'],['f_sahip','sah
   const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=abdForm[k]||'';});
   const ip=document.getElementById('f_ipostal');if(ip)ip.checked=!!abdForm.ipostal;
   const d=document.getElementById('f_durum');if(d)d.textContent=abdForm.ts?('Son gönderim: '+new Date(abdForm.ts).toLocaleString('tr-TR')+' · '+(abdForm.u||'')):'';}
-function formKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}
+function formKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}if(!hazirMi())return;
   const v=id=>document.getElementById(id).value.trim();
   const f={sirket_adi:v('f_ad'),alternatif:v('f_alt'),sahip:v('f_sahip'),tr_adres:v('f_adres'),ipostal:document.getElementById('f_ipostal').checked,ts:Date.now(),u:whoAmI()};
   dbRef.child('abd_form').set(f).then(()=>{logChange('ABD şirket formu gönderildi: '+(f.sirket_adi||'-')+(f.ipostal?' · iPostal1 tamam':''));save();toast('Gönderildi');});}
 function gpsrCiz(){[['f_gpsr_unvan','unvan'],['f_gpsr_adres','adres'],['f_gpsr_mail','mail']].forEach(([id,k])=>{
   const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=gpsrForm[k]||'';});
   const d=document.getElementById('f_gpsr_durum');if(d)d.textContent=gpsrForm.ts?('Son gönderim: '+new Date(gpsrForm.ts).toLocaleString('tr-TR')+' · '+(gpsrForm.u||'')):'';}
-function gpsrKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}
+function gpsrKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}if(!hazirMi())return;
   const v=id=>document.getElementById(id).value.trim();
   const f={unvan:v('f_gpsr_unvan'),adres:v('f_gpsr_adres'),mail:v('f_gpsr_mail'),ts:Date.now(),u:whoAmI()};
   dbRef.child('gpsr_form').set(f).then(()=>{logChange('GPSR formu gönderildi: '+(f.unvan||'-'));save();toast('Gönderildi');});}
 const LUCID_ALAN=["l_kagit", "l_plastik", "l_cam", "l_metal", "l_ahsap", "l_diger", "l_kargo"];
 function lucidCiz(){LUCID_ALAN.forEach(id=>{const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=lucidForm[id]||'';});
   const d=document.getElementById('l_durum');if(d)d.textContent=lucidForm.ts?('Son gönderim: '+new Date(lucidForm.ts).toLocaleString('tr-TR')+' · '+(lucidForm.u||'')):'';}
-function lucidKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}
+function lucidKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}if(!hazirMi())return;
   const f={ts:Date.now(),u:whoAmI()};LUCID_ALAN.forEach(id=>{f[id]=document.getElementById(id).value.trim();});
   dbRef.child('lucid_form').set(f).then(()=>{logChange('LUCID ambalaj bilgileri gönderildi: '+LUCID_ALAN.filter(k=>f[k]).length+'/7 kalem dolu');save();toast('Gönderildi');});}
 function danismanCiz(){const e=document.getElementById('f_danisman');if(e&&document.activeElement!==e)e.value=danisman.metin||'';
   const d=document.getElementById('f_danisman_durum');if(d)d.textContent=danisman.ts?('Son gönderim: '+new Date(danisman.ts).toLocaleString('tr-TR')+' · '+(danisman.u||'')):'';}
-function danismanKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}
+function danismanKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}if(!hazirMi())return;
   dbRef.child('danisman_yorum').set({metin:document.getElementById('f_danisman').value.trim(),ts:Date.now(),u:whoAmI()})
   .then(()=>{logChange('Danışman yorumları gönderildi: '+document.getElementById('f_danisman').value.trim().slice(0,90));save();toast('Gönderildi');});}
 function vatCiz(){const e=document.getElementById('f_vat');if(e&&document.activeElement!==e)e.value=vatD.metin||'';
   const d=document.getElementById('f_vat_durum');if(d)d.textContent=vatD.ts?('Son gönderim: '+new Date(vatD.ts).toLocaleString('tr-TR')+' · '+(vatD.u||'')):'';}
-function vatKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}
+function vatKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}if(!hazirMi())return;
   const m=document.getElementById('f_vat').value.trim();
   dbRef.child('vat_durum').set({metin:m,ts:Date.now(),u:whoAmI()})
   .then(()=>{logChange('VAT son durum: '+m.slice(0,120));save();toast('Gönderildi');});}
 function slotCiz(){const k=document.getElementById('dSlots');if(!k)return;
   k.innerHTML=SLOTLAR.map(([id,ad])=>{
     const dosyalar=Object.entries(dosyaListe).filter(([,m])=>m.kalem===id).sort((a,b)=>a[1].ts-b[1].ts);
-    return `<div class="dslot"><b>${ad}</b>${dosyalar.map(([fid,m])=>`<span class="dfile" onclick="dosyaAc('${fid}')" title="${esc(new Date(m.ts).toLocaleString('tr-TR'))}">📎 ${esc(m.ad)}</span>`).join('')}
+    return `<div class="dslot"><b>${ad}</b>${dosyalar.map(([fid,m])=>`<span class="dfile" onclick="dosyaAc('${fid}')" title="${esc(new Date(m.ts).toLocaleString('tr-TR'))}">📎 ${esc(m.ad)}</span><span class="dfile" style="color:#C0392B;cursor:pointer" title="Sil" onclick="dosyaSil('${fid}')">✕</span>`).join('')}
       <label class="addbtn" style="margin:0">+ Yükle<input type="file" style="display:none" onchange="dosyaYukle(event,'${id}')"></label></div>`;}).join('');}
 function dosyaYukle(ev,kalem){const f=ev.target.files[0];ev.target.value='';if(!f)return;
-  if(!dbRef){toast('Bağlantı yok');return;}
+  if(!dbRef){toast('Bağlantı yok');return;}if(!hazirMi())return;
   if(f.size>7*1024*1024){alert('Dosya 7 MB sınırını aşıyor.');return;}
   const r=new FileReader();r.onload=()=>{const id='d'+Date.now().toString(36);
     toast('Yükleniyor...');
@@ -1442,6 +1445,10 @@ function dosyaYukle(ev,kalem){const f=ev.target.files[0];ev.target.value='';if(!
       logChange('Belge yüklendi: '+(SLOTLAR.find(x=>x[0]===kalem)||['',''])[1]+' · '+f.name);save();toast('Yüklendi');
     }).catch(e=>{console.error(e);alert('Yüklenemedi: '+e.message);});};
   r.readAsDataURL(f);}
+function dosyaSil(id){if(!dbRef){toast('Bağlantı yok');return;}if(!hazirMi())return;const m=dosyaListe[id];if(!m)return;
+  if(!confirm('"'+m.ad+'" silinsin mi?'))return;
+  dbRef.child('dosya_liste/'+id).remove().then(()=>dbRef.child('dosyalar/'+id).remove()).then(()=>{
+    logChange('Belge silindi: '+m.ad);save();toast('Silindi');}).catch(e=>alert('Silinemedi: '+e.message));}
 function dosyaAc(id){dbRef.child('dosyalar/'+id).once('value').then(sn=>{const d=sn.val();if(!d)return;
   const a=document.createElement('a');a.href=d.veri;a.download=d.ad;document.body.appendChild(a);a.click();a.remove();});}
 function renderAll(){applyOverdue();renderTasks();renderTimeline();renderCalc();renderShip();renderStudio();renderLastUpd();gpsrCiz();lucidCiz();danismanCiz();vatCiz();}
