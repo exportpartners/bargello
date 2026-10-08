@@ -918,6 +918,19 @@ function renderLastUpd(){
 function openLog(){
   const b=document.getElementById('logBody');
   const L=state.log||[];
+  /* 9 Ekim 2026, Mustafa: "Updates'te her degisikligi gosterme yabancilara, gece ne yaptigimi gormesinler."
+     Ekip cihazlari (Admin, Admin2, Opr, Fatih, Kaan) tam listeyi gorur; digerleri gun basina tek satir ozet,
+     saat ve kimin yaptigi olmadan. */
+  const EKIP=['Admin','Admin2','Opr','Fatih','Kaan'];
+  if(!EKIP.includes(whoAmI())){
+    const G={};L.forEach(e=>{const d=new Date(e.t);const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');(G[k]=G[k]||[]).push(e);});
+    const gunler=Object.keys(G).sort().reverse().slice(0,30);
+    b.innerHTML=gunler.length?gunler.map(k=>{const d=new Date(k+'T12:00:00');const n=G[k].length;
+      return `<div class="logrow"><span class="logmsg">${d.toLocaleDateString('tr-TR',{day:'numeric',month:'long'})}: ${n} güncelleme yapıldı</span></div>`;}).join('')
+      :'<div style="color:var(--muted);font-size:13px;padding:10px 2px">Henüz kayıtlı değişiklik yok.</div>';
+    document.getElementById('logBg').classList.add('show');
+    return;
+  }
   b.innerHTML=L.length?L.map(e=>`<div class="logrow"><span class="logwho">${esc(e.u)}</span><span class="logmsg">${esc(e.m)}</span><span class="logtime">${agoTxt(e.t)}</span></div>`).join(''):'<div style="color:var(--muted);font-size:13px;padding:10px 2px">Henüz kayıtlı değişiklik yok.</div>';
   document.getElementById('logBg').classList.add('show');
 }
