@@ -816,9 +816,11 @@ function tapLog(){
   const now=Date.now();
   if(now-_logTapT>10000)_logTaps=0;
   _logTapT=now;_logTaps++;
-  if(_logTaps>=3&&!visShown()){
+  /* 8 Ekim 2026, Mustafa: "3 kez tiklayinca gelsin, goremiyorum." Ucuncu tikta ziyaret listesi dogrudan acilir. */
+  if(_logTaps>=3){
     _logTaps=0;
-    visReveal();toast('Ziyaret sayacı açıldı · kapatınca kaybolur');
+    closeLog();visReveal();openVis();
+    return;
   }
   openLog();
 }
