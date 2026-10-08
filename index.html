@@ -534,6 +534,8 @@
     <div class="dcard">
       <h3>4) Belge yükleme</h3>
       <p class="dnote">Dosya başına en fazla 7 MB. PDF, JPG, PNG, Excel ya da Word.</p>
+      <p class="dnote"><b>Pasaport ve kimlik belgeleri bu alana yüklenmez.</b> Şirket kurulumu için gereken pasaport görüntüsü, Gökhan Çıkılı (Troy Business Services) tarafından iletilen güvenli bağlantı ya da doğrudan e-posta yoluyla paylaşılır.</p>
+      <p class="dnote"><b>Kişisel verilerin korunması hakkında bilgilendirme.</b> Bu panelde paylaşılan bilgi ve belgeler, Export Partners LLC tarafından yalnızca ABD şirket kurulumu, Amazon pazar girişi ve bunlara bağlı resmi kayıt süreçlerinin yürütülmesi amacıyla işlenir. Bilgiler, bu süreçlerin gerektirdiği ölçüde ilgili hizmet sağlayıcılarıyla (şirket kurulum hizmeti, Almanya ambalaj ve LUCID temsilcisi) paylaşılır; başka bir amaçla kullanılmaz ve üçüncü kişilere aktarılmaz. Süreç tamamlandıktan sonra talebiniz üzerine silinir. Bilgi ve talepleriniz için: deniz@exportpartners.com.tr</p>
       <div id="dSlots"></div>
     </div>
   </section>
@@ -1378,7 +1380,7 @@ function applyOverdue(){
 
 /* ---------- belgeler ---------- */
 let abdForm={},gpsrForm={},lucidForm={},dosyaListe={};
-const SLOTLAR=[['pasaport','Şirket sahibinin pasaport görüntüsü'],['msds','MSDS (güvenlik bilgi formu)'],
+const SLOTLAR=[['msds','MSDS (güvenlik bilgi formu)'],
   ['etiket','Ürün etiketleri'],['danisman','Danışman yorumları'],['diger','Diğer']];
 function formCiz(){[['f_ad','sirket_adi'],['f_alt','alternatif'],['f_sahip','sahip'],['f_adres','tr_adres']].forEach(([id,k])=>{
   const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=abdForm[k]||'';});
