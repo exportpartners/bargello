@@ -545,7 +545,12 @@
       <h3>5) Belge yükleme</h3>
       <p class="dnote">Dosya başına en fazla 7 MB. PDF, JPG, PNG, Excel ya da Word.</p>
       <p class="dnote">MSDS, ürün etiketleri ve danışman yorumları mevzuat birimimizin talebidir. Sorularınız için: <a href="mailto:opr@exportpartners.com.tr">opr@exportpartners.com.tr</a></p>
-      <p class="dnote"><b>Pasaport ve kimlik belgeleri bu alana yüklenmez.</b> Şirket kurulumu için gereken pasaport görüntüsü, Gökhan Çıkılı (Troy Business Services) tarafından iletilen güvenli bağlantı ya da doğrudan e-posta yoluyla paylaşılır.</p>
+      <div class="dslot" style="border:1px solid #1f8a4c;border-radius:10px;padding:10px 12px;margin:8px 0 12px">
+        <b>Şirket sahibinin pasaport görüntüsü (zorunlu, şifreli yükleme)</b>
+        <p class="dnote" style="margin:4px 0">Gizlilik: pasaport görüntüsü yüklenmeden önce tarayıcınızda şifrelenir ve panelde şifreli olarak saklanır. Panel üzerinden kimse açamaz; yalnızca Export Partners LLC açabilir. Belge yalnızca ABD şirket kurulumu ve EIN başvurusu için Gökhan Çıkılı'ya (Troy Business Services) iletilir, iletildikten sonra panelden silinir.</p>
+        <span id="pasaportListe"></span>
+        <label class="addbtn" style="margin:0">+ Şifreli yükle<input type="file" accept="image/*,application/pdf" style="display:none" onchange="pasaportYukle(event)"></label>
+      </div>
       <p class="dnote"><b>Kişisel verilerin korunması hakkında bilgilendirme.</b> Bu panelde paylaşılan bilgi ve belgeler, Export Partners LLC tarafından yalnızca ABD şirket kurulumu, Amazon pazar girişi ve bunlara bağlı resmi kayıt süreçlerinin yürütülmesi amacıyla işlenir. Bilgiler, bu süreçlerin gerektirdiği ölçüde ilgili hizmet sağlayıcılarıyla (şirket kurulum hizmeti, Almanya ambalaj ve LUCID temsilcisi) paylaşılır; başka bir amaçla kullanılmaz ve üçüncü kişilere aktarılmaz. Süreç tamamlandıktan sonra talebiniz üzerine silinir. Bilgi ve talepleriniz için: deniz@exportpartners.com.tr</p>
       <div id="dSlots"></div>
       <label>Danışman yorumları <span class="dnote">(opsiyonel; ürünler hakkında daha önce alınan uyum ya da danışman görüşleri)</span><textarea id="f_danisman" rows="5"></textarea></label>
@@ -553,7 +558,7 @@
     </div>
     <div class="dcard" id="teslimKart">
       <h3>Tamamla ve gönder</h3>
-      <p class="dnote">Tüm alanlar dolduğunda ve MSDS ile ürün etiketleri yüklendiğinde bilgiler tek seferde Export Partners'a gönderilir. "(opsiyonel)" yazan alanlar zorunlu değildir.</p>
+      <p class="dnote">Tüm alanlar dolduğunda ve pasaport, MSDS ile ürün etiketleri yüklendiğinde bilgiler tek seferde Export Partners'a gönderilir. "(opsiyonel)" yazan alanlar zorunlu değildir.</p>
       <div id="teslimEksik" class="dnote"></div>
       <button id="teslimBtn" onclick="teslimEt()" style="background:#1f8a4c;color:#fff;border:none;border-radius:9px;padding:12px 26px;font-weight:800;font-size:15px;cursor:pointer">Gönder</button> <span id="teslimDurum" class="dnote"></span>
     </div>
@@ -1445,7 +1450,7 @@ function teslimEksikler(){const v=id=>(document.getElementById(id)||{}).value||'
    ['l_kagit','LUCID Kâğıt/Karton'],['l_plastik','LUCID Plastik'],['l_cam','LUCID Cam'],['l_metal','LUCID Metal'],['l_kargo','LUCID Kargo ambalajı'],
    ['f_vat','VAT son durum notu']].forEach(([id,ad])=>{if(!v(id).trim())e.push(ad);});
   const yuk=k=>Object.values(dosyaListe).some(m=>m.kalem===k);
-  if(!yuk('msds'))e.push('MSDS yüklemesi');if(!yuk('etiket'))e.push('Ürün etiketleri yüklemesi');return e;}
+  if(!yuk('pasaport'))e.push('Pasaport (şifreli yükleme)');if(!yuk('msds'))e.push('MSDS yüklemesi');if(!yuk('etiket'))e.push('Ürün etiketleri yüklemesi');return e;}
 function teslimCiz(){const e=teslimEksikler();const b=document.getElementById('teslimBtn');const k=document.getElementById('teslimEksik');if(!b)return;
   b.style.opacity=e.length?'.45':'1';k.textContent=e.length?('Eksik: '+e.join(', ')):'Tüm zorunlu alanlar tamam.';
   const d=document.getElementById('teslimDurum');if(d)d.textContent=teslimD.ts?('Gönderildi: '+new Date(teslimD.ts).toLocaleString('tr-TR')+' · '+(teslimD.u||'')):'';}
@@ -1463,7 +1468,28 @@ function teslimEt(){if(!dbRef){toast('Bağlantı yok');return;}if(!hazirMi())ret
     dbRef.child('teslim').set({ts,u})
   ]).then(()=>{logChange('Belgeler sekmesi tamamlandı ve gönderildi');save();toast('Gönderildi');})
   .catch(er=>alert('Gönderilemedi: '+er.message));}
-function slotCiz(){setTimeout(teslimCiz,0);const k=document.getElementById('dSlots');if(!k)return;
+const PASAPORT_PUB='MIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEAxeDEqt5u7PucSmXJngH9rXIxQftfCPvFZ5dAk5HHCvEC0X++dpbF0iqFJvXKN7eN1thq3qa3UuyfxbCs7YH8jPLz4Tu8/JfXXQfSM+dVVKR18DM1kSdrWK/xGHe0zpCKy3GZFfmszITCc9fM8gWg//yyOfxjh2DYECF6MOOVw5SXgkswqgYbZbNqF0ACC0T92ZPtyNG7pY181uCk5AhcOeOPq5IpeqMG3l6QjCPbwBpXel569mmq9tw1IPjVoHNgOLC7911RTOHbIINxRaqlNDsbkoj2iuhjlQBPJ8Avym37xjg6JlMV5E5gdNWrAHAUW6+eNt0ZQlhfQUwEZTAtKsAX775H8vza0HA+uMZU+grPN6FXkjTBXuxVw6+ffz6zBVCBM6Bls7Vhudf5YLYfvaYnpBsxLX7/lI2DLmeO1jnN6bdPlniQV7uxY1o7RWbbFIAncOjiCZ8AlhKa1fYwGcBwi8CeSDqN/4cqWr09WsTXGKWcOkis0V4zDROUiI4BAgMBAAE=';
+function b64(buf){let s='';const b=new Uint8Array(buf);for(let i=0;i<b.length;i+=0x8000)s+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));return btoa(s);}
+function pasaportCiz(){const k=document.getElementById('pasaportListe');if(!k)return;
+  k.innerHTML=Object.entries(dosyaListe).filter(([,m])=>m.kalem==='pasaport').map(([fid,m])=>`<span class="dfile" title="Şifreli">🔒 ${esc(m.ad)}</span><span class="dfile" style="color:#C0392B;cursor:pointer" title="Sil" onclick="dosyaSil('${fid}')">✕</span>`).join('');}
+async function pasaportYukle(ev){const f=ev.target.files[0];ev.target.value='';if(!f)return;
+  if(!dbRef){toast('Bağlantı yok');return;}if(!hazirMi())return;
+  if(f.size>7*1024*1024){alert('Dosya 7 MB sınırını aşıyor.');return;}
+  if(!(window.crypto&&crypto.subtle)){alert('Tarayıcınız şifreli yüklemeyi desteklemiyor.');return;}
+  try{toast('Şifreleniyor...');
+    const der=Uint8Array.from(atob(PASAPORT_PUB),c=>c.charCodeAt(0));
+    const pub=await crypto.subtle.importKey('spki',der,{name:'RSA-OAEP',hash:'SHA-256'},false,['encrypt']);
+    const ak=await crypto.subtle.generateKey({name:'AES-GCM',length:256},true,['encrypt']);
+    const iv=crypto.getRandomValues(new Uint8Array(12));
+    const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},ak,await f.arrayBuffer());
+    const ham=await crypto.subtle.exportKey('raw',ak);
+    const sar=await crypto.subtle.encrypt({name:'RSA-OAEP'},pub,ham);
+    const id='p'+Date.now().toString(36);
+    await dbRef.child('gizli/'+id).set({ad:f.name,tip:f.type,iv:b64(iv),anahtar:b64(sar),veri:b64(ct)});
+    await dbRef.child('dosya_liste/'+id).set({ad:f.name,kalem:'pasaport',sifreli:true,boyut:f.size,ts:Date.now(),u:whoAmI()});
+    logChange('Pasaport şifreli olarak yüklendi');save();toast('Şifreli olarak yüklendi');
+  }catch(e){console.error(e);alert('Yüklenemedi: '+e.message);}}
+function slotCiz(){setTimeout(teslimCiz,0);pasaportCiz();const k=document.getElementById('dSlots');if(!k)return;
   k.innerHTML=SLOTLAR.map(([id,ad])=>{
     const dosyalar=Object.entries(dosyaListe).filter(([,m])=>m.kalem===id).sort((a,b)=>a[1].ts-b[1].ts);
     return `<div class="dslot"><b>${ad}</b>${dosyalar.map(([fid,m])=>`<span class="dfile" onclick="dosyaAc('${fid}')" title="${esc(new Date(m.ts).toLocaleString('tr-TR'))}">📎 ${esc(m.ad)}</span><span class="dfile" style="color:#C0392B;cursor:pointer" title="Sil" onclick="dosyaSil('${fid}')">✕</span>`).join('')}
@@ -1480,7 +1506,7 @@ function dosyaYukle(ev,kalem){const f=ev.target.files[0];ev.target.value='';if(!
   r.readAsDataURL(f);}
 function dosyaSil(id){if(!dbRef){toast('Bağlantı yok');return;}if(!hazirMi())return;const m=dosyaListe[id];if(!m)return;
   if(!confirm('"'+m.ad+'" silinsin mi?'))return;
-  dbRef.child('dosya_liste/'+id).remove().then(()=>dbRef.child('dosyalar/'+id).remove()).then(()=>{
+  dbRef.child('dosya_liste/'+id).remove().then(()=>dbRef.child((m.sifreli?'gizli/':'dosyalar/')+id).remove()).then(()=>{
     logChange('Belge silindi: '+m.ad);save();toast('Silindi');}).catch(e=>alert('Silinemedi: '+e.message));}
 function dosyaAc(id){dbRef.child('dosyalar/'+id).once('value').then(sn=>{const d=sn.val();if(!d)return;
   const a=document.createElement('a');a.href=d.veri;a.download=d.ad;document.body.appendChild(a);a.click();a.remove();});}
