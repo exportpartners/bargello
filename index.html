@@ -1483,7 +1483,7 @@ function dosyaSil(id){if(!dbRef){toast('Bağlantı yok');return;}if(!hazirMi())r
     logChange('Belge silindi: '+m.ad);save();toast('Silindi');}).catch(e=>alert('Silinemedi: '+e.message));}
 function dosyaAc(id){dbRef.child('dosyalar/'+id).once('value').then(sn=>{const d=sn.val();if(!d)return;
   const a=document.createElement('a');a.href=d.veri;a.download=d.ad;document.body.appendChild(a);a.click();a.remove();});}
-function renderAll(){applyOverdue();renderTasks();renderTimeline();renderCalc();renderShip();renderStudio();renderLastUpd();gpsrCiz();lucidCiz();danismanCiz();vatCiz();teslimCiz();}
+function renderAll(){applyOverdue();renderTasks();renderTimeline();renderCalc();renderShip();renderStudio();renderLastUpd();teslimCiz();}
 function toast(m){const t=document.getElementById('toast');if(!t)return;t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
 function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bargello-tracker-backup.json';a.click();}
 function importData(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);state=normalize(d);save();renderAll();toast('Backup restored');}catch(e){alert('Invalid backup file.');}};r.readAsText(f);ev.target.value='';}
