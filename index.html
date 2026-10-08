@@ -496,7 +496,7 @@
       <div class="repfoot">Bu rapor Export Partners tarafından CC Kimya / Bargello için hazırlanmıştır. Ürün seçkisi katalog yapısına göre temsilidir; nihai SKU listesi kârlılık analizi (Profitability sekmesi) ve firma onayı ile kesinleşir. Tarihler Track Tasks sekmesindeki güncel takvimle birlikte okunmalıdır.</div>
     </div>
   </section>
-  <section id="view-docs" style="display:none">
+  <section id="view-docs" style="display:none" oninput="teslimCiz()">
     <div class="dcard">
       <h3>1) ABD şirket kurulumu</h3>
       <p class="dnote">Şirket kurulumu ve EIN için Gökhan Çıkılı (Troy Business Services) aşağıdaki bilgileri istiyor.</p>
@@ -504,7 +504,7 @@
       <label>Alternatif şirket adı<input id="f_alt" placeholder="İlk ad uygun değilse"></label>
       <label>Şirket sahibinin adı soyadı<input id="f_sahip" placeholder="Cemalettin ..."></label>
       <label>Türkiye adresi<textarea id="f_adres" rows="3" placeholder="Açık adres"></textarea></label>
-      <button class="btn-save" onclick="formKaydet()">Gönder</button> <span id="f_durum" class="dnote"></span>
+      <button class="btn-save" onclick="formKaydet()">Kaydet</button> <span id="f_durum" class="dnote"></span>
       <div class="dlink"><b>ABD posta adresi (iPostal1)</b><br>
         Neden gerekli: ABD'de kurulan şirketin resmi yazışmaları (IRS ve EIN yazıları, eyalet bildirimleri, banka mektupları) için ABD'de bir posta adresi gerekir. iPostal1 bu adresi sağlar; gelen mektuplar taranarak çevrim içi olarak iletilir.<br>
         Kim yapar: kayıt şirket adına, Gökhan Çıkılı'nın (Troy Business Services) ilettiği aşağıdaki bağlantıdan yapılır. Kayıt sırasında abonelik ödemesi ve posta vekalet formu (USPS Form 1583) için şirket sahibinin imzası ve kimlik doğrulaması istenir; form kayıt ekranında hazır gelir, ayrıca indirilmesi gerekmez.<br>
@@ -517,7 +517,7 @@
       <label>Obelis unvanı<input id="f_gpsr_unvan"></label>
       <label>AB adresi<textarea id="f_gpsr_adres" rows="3"></textarea></label>
       <label>E-posta<input id="f_gpsr_mail"></label>
-      <button class="btn-save" onclick="gpsrKaydet()">Gönder</button> <span id="f_gpsr_durum" class="dnote"></span>
+      <button class="btn-save" onclick="gpsrKaydet()">Kaydet</button> <span id="f_gpsr_durum" class="dnote"></span>
     </div>
     <div class="dcard">
       <h3>3) LUCID / Almanya ambalaj bilgileri</h3>
@@ -533,13 +533,13 @@
       <label>Ahşap <span class="dnote">(ahşap ambalaj, sandık, palet vb. (varsa))</span><input id="l_ahsap" inputmode="decimal" placeholder="kg/yıl"></label>
       <label>Diğer ambalaj malzemeleri <span class="dnote">(yukarıdaki kategorilere girmeyen ambalajlar (varsa))</span><input id="l_diger" inputmode="decimal" placeholder="kg/yıl"></label>
       <label>Kargo / taşıma ambalajları <span class="dnote">(koli, dolgu malzemesi, bant, film vb.)</span><input id="l_kargo" inputmode="decimal" placeholder="kg/yıl"></label>
-      <button class="btn-save" onclick="lucidKaydet()">Gönder</button> <span id="l_durum" class="dnote"></span>
+      <button class="btn-save" onclick="lucidKaydet()">Kaydet</button> <span id="l_durum" class="dnote"></span>
     </div>
     <div class="dcard">
       <h3>4) Almanya VAT son durum</h3>
       <p class="dnote">Taxually tarafındaki VAT kaydının son durumunu kısaca yazınız (başvuru aşaması, numara geldiyse numara, beklenen tarih).</p>
       <label>VAT son durum notu<textarea id="f_vat" rows="3"></textarea></label>
-      <button class="btn-save" onclick="vatKaydet()">Gönder</button> <span id="f_vat_durum" class="dnote"></span>
+      <button class="btn-save" onclick="vatKaydet()">Kaydet</button> <span id="f_vat_durum" class="dnote"></span>
     </div>
     <div class="dcard">
       <h3>5) Belge yükleme</h3>
@@ -548,7 +548,13 @@
       <p class="dnote"><b>Kişisel verilerin korunması hakkında bilgilendirme.</b> Bu panelde paylaşılan bilgi ve belgeler, Export Partners LLC tarafından yalnızca ABD şirket kurulumu, Amazon pazar girişi ve bunlara bağlı resmi kayıt süreçlerinin yürütülmesi amacıyla işlenir. Bilgiler, bu süreçlerin gerektirdiği ölçüde ilgili hizmet sağlayıcılarıyla (şirket kurulum hizmeti, Almanya ambalaj ve LUCID temsilcisi) paylaşılır; başka bir amaçla kullanılmaz ve üçüncü kişilere aktarılmaz. Süreç tamamlandıktan sonra talebiniz üzerine silinir. Bilgi ve talepleriniz için: deniz@exportpartners.com.tr</p>
       <div id="dSlots"></div>
       <label>Danışman yorumları <span class="dnote">(Kaan Bey'in istediği; ürünler hakkında daha önce alınan uyum ya da danışman görüşleri, varsa)</span><textarea id="f_danisman" rows="5"></textarea></label>
-      <button class="btn-save" onclick="danismanKaydet()">Gönder</button> <span id="f_danisman_durum" class="dnote"></span>
+      <button class="btn-save" onclick="danismanKaydet()">Kaydet</button> <span id="f_danisman_durum" class="dnote"></span>
+    </div>
+    <div class="dcard" id="teslimKart">
+      <h3>Tamamla ve gönder</h3>
+      <p class="dnote">Tüm alanlar dolduğunda ve MSDS ile ürün etiketleri yüklendiğinde bilgiler tek seferde Export Partners'a gönderilir. "Diğer belgeler", danışman yorumları ve "(varsa)" yazan alanlar zorunlu değildir.</p>
+      <div id="teslimEksik" class="dnote"></div>
+      <button id="teslimBtn" onclick="teslimEt()" style="background:#1f8a4c;color:#fff;border:none;border-radius:9px;padding:12px 26px;font-weight:800;font-size:15px;cursor:pointer">Gönder</button> <span id="teslimDurum" class="dnote"></span>
     </div>
   </section>
 
@@ -769,6 +775,7 @@ function initData(){
       dbRef.child('lucid_form').on('value',sn=>{lucidForm=sn.val()||{};lucidCiz();});
       dbRef.child('danisman_yorum').on('value',sn=>{danisman=sn.val()||{};danismanCiz();});
       dbRef.child('vat_durum').on('value',sn=>{vatD=sn.val()||{};vatCiz();});
+      dbRef.child('teslim').on('value',sn=>{teslimD=sn.val()||{};teslimCiz();});
       dbRef.child('dosya_liste').on('value',sn=>{dosyaListe=sn.val()||{};slotCiz();});
       return;
     }catch(e){console.error(e);dbRef=null;}
@@ -1396,42 +1403,66 @@ function applyOverdue(){
 }
 
 /* ---------- belgeler ---------- */
-let abdForm={},gpsrForm={},lucidForm={},danisman={},vatD={},dosyaListe={};
+let abdForm={},gpsrForm={},lucidForm={},danisman={},vatD={},teslimD={},dosyaListe={};
 const SLOTLAR=[['msds','MSDS (güvenlik bilgi formu)'],
   ['etiket','Ürün etiketleri'],['diger','Diğer belgeler (yukarıdakilere girmeyen)']];
 function formCiz(){[['f_ad','sirket_adi'],['f_alt','alternatif'],['f_sahip','sahip'],['f_adres','tr_adres']].forEach(([id,k])=>{
   const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=abdForm[k]||'';});
   const ip=document.getElementById('f_ipostal');if(ip)ip.checked=!!abdForm.ipostal;
-  const d=document.getElementById('f_durum');if(d)d.textContent=abdForm.ts?('Son gönderim: '+new Date(abdForm.ts).toLocaleString('tr-TR')+' · '+(abdForm.u||'')):'';}
+  const d=document.getElementById('f_durum');if(d)d.textContent=abdForm.ts?('Son kayıt: '+new Date(abdForm.ts).toLocaleString('tr-TR')+' · '+(abdForm.u||'')):'';}
 function formKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}if(!hazirMi())return;
   const v=id=>document.getElementById(id).value.trim();
   const f={sirket_adi:v('f_ad'),alternatif:v('f_alt'),sahip:v('f_sahip'),tr_adres:v('f_adres'),ipostal:document.getElementById('f_ipostal').checked,ts:Date.now(),u:whoAmI()};
-  dbRef.child('abd_form').set(f).then(()=>{logChange('ABD şirket formu gönderildi: '+(f.sirket_adi||'-')+(f.ipostal?' · iPostal1 tamam':''));save();toast('Gönderildi');});}
+  dbRef.child('abd_form').set(f).then(()=>{logChange('ABD şirket formu kaydedildi: '+(f.sirket_adi||'-')+(f.ipostal?' · iPostal1 tamam':''));save();toast('Kaydedildi');});}
 function gpsrCiz(){[['f_gpsr_unvan','unvan'],['f_gpsr_adres','adres'],['f_gpsr_mail','mail']].forEach(([id,k])=>{
   const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=gpsrForm[k]||'';});
-  const d=document.getElementById('f_gpsr_durum');if(d)d.textContent=gpsrForm.ts?('Son gönderim: '+new Date(gpsrForm.ts).toLocaleString('tr-TR')+' · '+(gpsrForm.u||'')):'';}
+  const d=document.getElementById('f_gpsr_durum');if(d)d.textContent=gpsrForm.ts?('Son kayıt: '+new Date(gpsrForm.ts).toLocaleString('tr-TR')+' · '+(gpsrForm.u||'')):'';}
 function gpsrKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}if(!hazirMi())return;
   const v=id=>document.getElementById(id).value.trim();
   const f={unvan:v('f_gpsr_unvan'),adres:v('f_gpsr_adres'),mail:v('f_gpsr_mail'),ts:Date.now(),u:whoAmI()};
-  dbRef.child('gpsr_form').set(f).then(()=>{logChange('GPSR formu gönderildi: '+(f.unvan||'-'));save();toast('Gönderildi');});}
+  dbRef.child('gpsr_form').set(f).then(()=>{logChange('GPSR formu kaydedildi: '+(f.unvan||'-'));save();toast('Kaydedildi');});}
 const LUCID_ALAN=["l_kagit", "l_plastik", "l_cam", "l_metal", "l_ahsap", "l_diger", "l_kargo"];
 function lucidCiz(){LUCID_ALAN.forEach(id=>{const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=lucidForm[id]||'';});
-  const d=document.getElementById('l_durum');if(d)d.textContent=lucidForm.ts?('Son gönderim: '+new Date(lucidForm.ts).toLocaleString('tr-TR')+' · '+(lucidForm.u||'')):'';}
+  const d=document.getElementById('l_durum');if(d)d.textContent=lucidForm.ts?('Son kayıt: '+new Date(lucidForm.ts).toLocaleString('tr-TR')+' · '+(lucidForm.u||'')):'';}
 function lucidKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}if(!hazirMi())return;
   const f={ts:Date.now(),u:whoAmI()};LUCID_ALAN.forEach(id=>{f[id]=document.getElementById(id).value.trim();});
-  dbRef.child('lucid_form').set(f).then(()=>{logChange('LUCID ambalaj bilgileri gönderildi: '+LUCID_ALAN.filter(k=>f[k]).length+'/7 kalem dolu');save();toast('Gönderildi');});}
+  dbRef.child('lucid_form').set(f).then(()=>{logChange('LUCID ambalaj bilgileri kaydedildi: '+LUCID_ALAN.filter(k=>f[k]).length+'/7 kalem dolu');save();toast('Kaydedildi');});}
 function danismanCiz(){const e=document.getElementById('f_danisman');if(e&&document.activeElement!==e)e.value=danisman.metin||'';
-  const d=document.getElementById('f_danisman_durum');if(d)d.textContent=danisman.ts?('Son gönderim: '+new Date(danisman.ts).toLocaleString('tr-TR')+' · '+(danisman.u||'')):'';}
+  const d=document.getElementById('f_danisman_durum');if(d)d.textContent=danisman.ts?('Son kayıt: '+new Date(danisman.ts).toLocaleString('tr-TR')+' · '+(danisman.u||'')):'';}
 function danismanKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}if(!hazirMi())return;
   dbRef.child('danisman_yorum').set({metin:document.getElementById('f_danisman').value.trim(),ts:Date.now(),u:whoAmI()})
-  .then(()=>{logChange('Danışman yorumları gönderildi: '+document.getElementById('f_danisman').value.trim().slice(0,90));save();toast('Gönderildi');});}
+  .then(()=>{logChange('Danışman yorumları kaydedildi: '+document.getElementById('f_danisman').value.trim().slice(0,90));save();toast('Kaydedildi');});}
 function vatCiz(){const e=document.getElementById('f_vat');if(e&&document.activeElement!==e)e.value=vatD.metin||'';
-  const d=document.getElementById('f_vat_durum');if(d)d.textContent=vatD.ts?('Son gönderim: '+new Date(vatD.ts).toLocaleString('tr-TR')+' · '+(vatD.u||'')):'';}
+  const d=document.getElementById('f_vat_durum');if(d)d.textContent=vatD.ts?('Son kayıt: '+new Date(vatD.ts).toLocaleString('tr-TR')+' · '+(vatD.u||'')):'';}
 function vatKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}if(!hazirMi())return;
   const m=document.getElementById('f_vat').value.trim();
   dbRef.child('vat_durum').set({metin:m,ts:Date.now(),u:whoAmI()})
-  .then(()=>{logChange('VAT son durum: '+m.slice(0,120));save();toast('Gönderildi');});}
-function slotCiz(){const k=document.getElementById('dSlots');if(!k)return;
+  .then(()=>{logChange('VAT son durum: '+m.slice(0,120));save();toast('Kaydedildi');});}
+function teslimEksikler(){const v=id=>(document.getElementById(id)||{}).value||'';const e=[];
+  [['f_ad','Şirket adı'],['f_sahip','Şirket sahibinin adı soyadı'],['f_adres','Türkiye adresi'],
+   ['f_gpsr_unvan','Obelis unvanı'],['f_gpsr_adres','Obelis AB adresi'],['f_gpsr_mail','Obelis e-posta'],
+   ['l_kagit','LUCID Kâğıt/Karton'],['l_plastik','LUCID Plastik'],['l_cam','LUCID Cam'],['l_metal','LUCID Metal'],['l_kargo','LUCID Kargo ambalajı'],
+   ['f_vat','VAT son durum notu']].forEach(([id,ad])=>{if(!v(id).trim())e.push(ad);});
+  const yuk=k=>Object.values(dosyaListe).some(m=>m.kalem===k);
+  if(!yuk('msds'))e.push('MSDS yüklemesi');if(!yuk('etiket'))e.push('Ürün etiketleri yüklemesi');return e;}
+function teslimCiz(){const e=teslimEksikler();const b=document.getElementById('teslimBtn');const k=document.getElementById('teslimEksik');if(!b)return;
+  b.style.opacity=e.length?'.45':'1';k.textContent=e.length?('Eksik: '+e.join(', ')):'Tüm zorunlu alanlar tamam.';
+  const d=document.getElementById('teslimDurum');if(d)d.textContent=teslimD.ts?('Gönderildi: '+new Date(teslimD.ts).toLocaleString('tr-TR')+' · '+(teslimD.u||'')):'';}
+function teslimEt(){if(!dbRef){toast('Bağlantı yok');return;}if(!hazirMi())return;
+  const e=teslimEksikler();if(e.length){alert('Göndermeden önce şu alanları tamamlayınız:\n- '+e.join('\n- '));return;}
+  if(!confirm('Bilgi ve belgeler Export Partners\'a gönderilecek. Onaylıyor musunuz?'))return;
+  const v=id=>document.getElementById(id).value.trim(),ts=Date.now(),u=whoAmI();
+  const lf={ts,u};LUCID_ALAN.forEach(id=>{lf[id]=v(id);});
+  Promise.all([
+    dbRef.child('abd_form').set({sirket_adi:v('f_ad'),alternatif:v('f_alt'),sahip:v('f_sahip'),tr_adres:v('f_adres'),ipostal:document.getElementById('f_ipostal').checked,ts,u}),
+    dbRef.child('gpsr_form').set({unvan:v('f_gpsr_unvan'),adres:v('f_gpsr_adres'),mail:v('f_gpsr_mail'),ts,u}),
+    dbRef.child('lucid_form').set(lf),
+    dbRef.child('vat_durum').set({metin:v('f_vat'),ts,u}),
+    dbRef.child('danisman_yorum').set({metin:v('f_danisman'),ts,u}),
+    dbRef.child('teslim').set({ts,u})
+  ]).then(()=>{logChange('Belgeler sekmesi tamamlandı ve gönderildi');save();toast('Gönderildi');})
+  .catch(er=>alert('Gönderilemedi: '+er.message));}
+function slotCiz(){setTimeout(teslimCiz,0);const k=document.getElementById('dSlots');if(!k)return;
   k.innerHTML=SLOTLAR.map(([id,ad])=>{
     const dosyalar=Object.entries(dosyaListe).filter(([,m])=>m.kalem===id).sort((a,b)=>a[1].ts-b[1].ts);
     return `<div class="dslot"><b>${ad}</b>${dosyalar.map(([fid,m])=>`<span class="dfile" onclick="dosyaAc('${fid}')" title="${esc(new Date(m.ts).toLocaleString('tr-TR'))}">📎 ${esc(m.ad)}</span><span class="dfile" style="color:#C0392B;cursor:pointer" title="Sil" onclick="dosyaSil('${fid}')">✕</span>`).join('')}
@@ -1452,7 +1483,7 @@ function dosyaSil(id){if(!dbRef){toast('Bağlantı yok');return;}if(!hazirMi())r
     logChange('Belge silindi: '+m.ad);save();toast('Silindi');}).catch(e=>alert('Silinemedi: '+e.message));}
 function dosyaAc(id){dbRef.child('dosyalar/'+id).once('value').then(sn=>{const d=sn.val();if(!d)return;
   const a=document.createElement('a');a.href=d.veri;a.download=d.ad;document.body.appendChild(a);a.click();a.remove();});}
-function renderAll(){applyOverdue();renderTasks();renderTimeline();renderCalc();renderShip();renderStudio();renderLastUpd();gpsrCiz();lucidCiz();danismanCiz();vatCiz();}
+function renderAll(){applyOverdue();renderTasks();renderTimeline();renderCalc();renderShip();renderStudio();renderLastUpd();gpsrCiz();lucidCiz();danismanCiz();vatCiz();teslimCiz();}
 function toast(m){const t=document.getElementById('toast');if(!t)return;t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
 function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bargello-tracker-backup.json';a.click();}
 function importData(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);state=normalize(d);save();renderAll();toast('Backup restored');}catch(e){alert('Invalid backup file.');}};r.readAsText(f);ev.target.value='';}
