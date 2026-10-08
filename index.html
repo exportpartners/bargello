@@ -504,8 +504,11 @@
       <label>Şirket sahibinin adı soyadı<input id="f_sahip" placeholder="Cemalettin ..."></label>
       <label>Türkiye adresi<textarea id="f_adres" rows="3" placeholder="Açık adres"></textarea></label>
       <button class="btn-save" onclick="formKaydet()">Kaydet</button> <span id="f_durum" class="dnote"></span>
-      <div class="dlink">ABD posta adresi için iPostal1 kaydı (Gökhan Bey'in linki):<br>
-        <a href="https://my.ipostal1.com/signup/TroyBusinessServices" target="_blank" rel="noopener">my.ipostal1.com/signup/TroyBusinessServices</a></div>
+      <div class="dlink"><b>ABD posta adresi (iPostal1)</b><br>
+        Neden gerekli: ABD'de kurulan şirketin resmi yazışmaları (IRS ve EIN yazıları, eyalet bildirimleri, banka mektupları) için ABD'de bir posta adresi gerekir. iPostal1 bu adresi sağlar; gelen mektuplar taranarak çevrim içi olarak iletilir.<br>
+        Kim yapar: kayıt şirket sahibi adına yapılır; hesap açma, ödeme ve kimlik doğrulaması kayıt sırasında istenir. Kayıt, Gökhan Çıkılı'nın (Troy Business Services) ilettiği aşağıdaki bağlantıdan yapılır.<br>
+        <a href="https://my.ipostal1.com/signup/TroyBusinessServices" target="_blank" rel="noopener">my.ipostal1.com/signup/TroyBusinessServices</a>
+        <label style="display:flex;gap:8px;align-items:center;font-weight:700"><input type="checkbox" id="f_ipostal" style="width:auto;margin:0"> iPostal1 kaydı tamamlandı</label></div>
     </div>
     <div class="dcard">
       <h3>2) GPSR / AB sorumlu kişi</h3>
@@ -1384,10 +1387,11 @@ const SLOTLAR=[['msds','MSDS (güvenlik bilgi formu)'],
   ['etiket','Ürün etiketleri'],['danisman','Danışman yorumları'],['diger','Diğer']];
 function formCiz(){[['f_ad','sirket_adi'],['f_alt','alternatif'],['f_sahip','sahip'],['f_adres','tr_adres']].forEach(([id,k])=>{
   const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=abdForm[k]||'';});
+  const ip=document.getElementById('f_ipostal');if(ip)ip.checked=!!abdForm.ipostal;
   const d=document.getElementById('f_durum');if(d)d.textContent=abdForm.ts?('Son kayıt: '+new Date(abdForm.ts).toLocaleString('tr-TR')+' · '+(abdForm.u||'')):'';}
 function formKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}
   const v=id=>document.getElementById(id).value.trim();
-  const f={sirket_adi:v('f_ad'),alternatif:v('f_alt'),sahip:v('f_sahip'),tr_adres:v('f_adres'),ts:Date.now(),u:whoAmI()};
+  const f={sirket_adi:v('f_ad'),alternatif:v('f_alt'),sahip:v('f_sahip'),tr_adres:v('f_adres'),ipostal:document.getElementById('f_ipostal').checked,ts:Date.now(),u:whoAmI()};
   dbRef.child('abd_form').set(f).then(()=>{logChange('ABD şirket formu güncellendi');save();toast('Kaydedildi');});}
 function gpsrCiz(){[['f_gpsr_unvan','unvan'],['f_gpsr_adres','adres'],['f_gpsr_mail','mail']].forEach(([id,k])=>{
   const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=gpsrForm[k]||'';});
