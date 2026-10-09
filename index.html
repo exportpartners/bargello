@@ -789,7 +789,7 @@ function initData(){
       dbRef.child('vat_durum').on('value',sn=>{vatD=sn.val()||{};vatCiz();});
       dbRef.child('teslim').on('value',sn=>{teslimD=sn.val()||{};teslimCiz();});
       dbRef.child('dosya_liste').on('value',sn=>{dosyaListe=sn.val()||{};slotCiz();});
-      dbRef.child('belge_linkleri').on('value',sn=>{belgeLink=sn.val()||{};const e=document.getElementById('f_link_msds');if(!e||document.activeElement!==e)slotCiz();});
+      dbRef.child('belge_linkleri').on('value',sn=>{belgeLink=sn.val()||{};teslimCiz();const e=document.getElementById('f_link_msds');if(!e||document.activeElement!==e)slotCiz();});
       return;
     }catch(e){console.error(e);dbRef=null;}
   }
@@ -1473,7 +1473,7 @@ function teslimEksikler(){const v=id=>(document.getElementById(id)||{}).value||'
    ['l_kagit','LUCID Kâğıt/Karton'],['l_plastik','LUCID Plastik'],['l_cam','LUCID Cam'],['l_metal','LUCID Metal'],['l_kargo','LUCID Kargo ambalajı'],
    ['f_vat','VAT son durum notu']].forEach(([id,ad])=>{if(!v(id).trim())e.push(ad);});
   const yuk=k=>Object.values(dosyaListe).some(m=>m.kalem===k);
-  if(!yuk('pasaport'))e.push('Pasaport');if(!yuk('msds'))e.push('MSDS yüklemesi');return e;}
+  if(!yuk('pasaport'))e.push('Pasaport');if(!yuk('msds')&&!/^https?:\/\//.test(belgeLink.msds||''))e.push('MSDS (Drive klasörü)');return e;}
 function teslimCiz(){const e=teslimEksikler();const b=document.getElementById('teslimBtn');const k=document.getElementById('teslimEksik');if(!b)return;
   k.textContent=e.length?('Henüz girilmeyen: '+e.join(', ')):'Tüm bilgi ve belgeler girildi.';
   const d=document.getElementById('teslimDurum');if(d)d.textContent=teslimD.ts?('Gönderildi: '+new Date(teslimD.ts).toLocaleString('tr-TR')+' · '+(teslimD.u||'')):'';}
@@ -1516,7 +1516,7 @@ function slotCiz(){setTimeout(teslimCiz,0);pasaportCiz();const k=document.getEle
   k.innerHTML=SLOTLAR.map(([id,ad,aciklama])=>{
     const dosyalar=Object.entries(dosyaListe).filter(([,m])=>m.kalem===id).sort((a,b)=>a[1].ts-b[1].ts);
     return `<div class="dslot"><b>${ad}</b>${aciklama?`<div style="flex-basis:100%;font-size:12px;line-height:1.5;color:var(--muted);white-space:pre-line">${esc(aciklama)}</div>`:''}${dosyalar.map(([fid,m])=>`<span class="dfile" onclick="dosyaAc('${fid}')" title="${esc(new Date(m.ts).toLocaleString('tr-TR'))}">📎 ${esc(m.ad)}</span><span class="dfile" style="color:#C0392B;cursor:pointer" title="Sil" onclick="dosyaSil('${fid}')">✕</span>`).join('')}
-      <label class="addbtn" style="margin:0">+ Yükle<input type="file" style="display:none" onchange="dosyaYukle(event,'${id}')"></label>${id==='msds'?`<div style="flex-basis:100%;display:flex;gap:8px;align-items:center"><input type="text" id="f_link_msds" placeholder="Klasör bağlantısı (Google Drive, OneDrive, Dropbox...)" value="${esc(belgeLink.msds||'')}" style="flex:1;min-width:0;padding:7px 10px;border:1px solid var(--line);border-radius:6px;font-size:13px"><button class="addbtn" style="margin:0" onclick="belgeLinkKaydet('msds')">Kaydet</button>${/^https?:\/\//.test(belgeLink.msds||'')?`<a class="addbtn" style="margin:0;text-decoration:none" href="${esc(belgeLink.msds)}" target="_blank" rel="noopener">📁 Klasörü aç</a>`:''}</div>`:''}</div>`;}).join('');}
+      ${id==='msds'?'':`<label class="addbtn" style="margin:0">+ Yükle<input type="file" style="display:none" onchange="dosyaYukle(event,'${id}')"></label>`}${id==='msds'?`<div style="flex-basis:100%;display:flex;gap:8px;align-items:center"><input type="text" id="f_link_msds" placeholder="Klasör bağlantısı (Google Drive, OneDrive, Dropbox...)" value="${esc(belgeLink.msds||'')}" style="flex:1;min-width:0;padding:7px 10px;border:1px solid var(--line);border-radius:6px;font-size:13px"><button class="addbtn" style="margin:0" onclick="belgeLinkKaydet('msds')">Kaydet</button>${/^https?:\/\//.test(belgeLink.msds||'')?`<a class="addbtn" style="margin:0;text-decoration:none" href="${esc(belgeLink.msds)}" target="_blank" rel="noopener">📁 Drive klasörüne yükle</a>`:''}</div>`:''}</div>`;}).join('');}
 /* 10 Ekim 2026: MSDS slotuna klasor baglantisi. Deger bargello_tracker_v2/belge_linkleri/<slot> altinda. */
 function belgeLinkKaydet(slot){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}if(!hazirMi())return;
   const v=(document.getElementById('f_link_'+slot)||{}).value||'';
