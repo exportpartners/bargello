@@ -761,6 +761,12 @@ const ANA=['sections','timeline','weeks','calc','ship','strategy','log'];
 /* 8 Ekim 2026: veri buluttan yuklenmeden bulut yazilmaz; yuklenmeden yapilan bir kayit butun paneli bosaltmisti. */
 let BULUT_HAZIR=false;
 function hazirMi(){if(dbRef&&!BULUT_HAZIR){toast('Veriler yükleniyor, birkaç saniye sonra tekrar deneyin');return false;}return true;}
+/* 10 Ekim 2026: tek seferlik goc. COMPLIANCE & REGISTRATIONS bolumunde basliginda "Gefahrgut" gecen satir yoksa ekler;
+   tekrar calisma kontrolu yalnizca bu satir-var-mi kontroludur, ayri bayrak tutulmaz. */
+function gefahrgutGoc(){const b=(state.sections||[]).find(s=>s.name==='COMPLIANCE & REGISTRATIONS');if(!b)return false;
+  b.rows=b.rows||[];if(b.rows.some(r=>(r.task||'').includes('Gefahrgut')))return false;
+  b.rows.push({id:id(),status:'Not Started',deadline:'2026-10-23',days:'',task:'FBA tehlikeli madde sınıflandırması (Gefahrgut)',note:"Amazon, alkol bazlı parfümü UN 1266 / Sınıf 3 yanıcı sıvı olarak\nsınıflandırıyor. ASIN'ler FBA'ya geçmeden önce Seller Central üzerinde\ntehlikeli madde sınıflandırma başvurusunun tamamlanması gerekiyor.\n\nSıra: güvenlik bilgi formlarının ürün bazında toplanması, Seller Central >\nTehlikeli Madde Sınıflandırmasını Yönet ekranından yüklenmesi, Amazon'un\nsınıflandırma incelemesi, onay sonrası ASIN'in FBA'ya uygun hale gelmesi.\n\nİnceleme süresi Amazon tarafında birkaç gün olarak belirtiliyor; pratikte\nek bilgi talepleriyle birlikte iki ile dört hafta arasında seyrediyor.\nOnay çıkmadan lojistik merkezine mal gönderilmesi sevkiyatın reddine yol\naçabileceği için 6 Kasım depo girişi bu kaleme bağlı. Ürünün olduğundan\nağır sınıflandırılması halinde Uyumluluk Panosu üzerinden itiraz yolu\naçık.",actions:[]});
+  logChange('Yeni kalem eklendi: FBA tehlikeli madde sınıflandırması (Gefahrgut)');save();return true;}
 function save(){localStorage.setItem('bargello_v9',JSON.stringify(state));if(dbRef&&BULUT_HAZIR){try{const u={};ANA.forEach(k=>u[k]=state[k]);dbRef.update(u);}catch(e){}}}
 function initData(){
   if(fbReady()){
@@ -773,7 +779,7 @@ function initData(){
       const ham={};let gelen=0,ilk=true,zam=null;
       const ciz=()=>{clearTimeout(zam);zam=setTimeout(()=>{
         if(ilk&&!ham.sections){state=localData();BULUT_HAZIR=true;save();}else{state=normalize(ham);BULUT_HAZIR=true;}
-        ilk=false;setSync('cloud');renderAll();},60);};
+        gefahrgutGoc();ilk=false;setSync('cloud');renderAll();},60);};
       ANA.forEach(k=>dbRef.child(k).on('value',sn=>{ham[k]=sn.val();if(++gelen>=ANA.length||!ilk)ciz();},
         err=>{console.error(err);dbRef=null;state=localData();setSync('local');renderAll();}));
       dbRef.child('abd_form').on('value',sn=>{abdForm=sn.val()||{};formCiz();});
@@ -783,10 +789,11 @@ function initData(){
       dbRef.child('vat_durum').on('value',sn=>{vatD=sn.val()||{};vatCiz();});
       dbRef.child('teslim').on('value',sn=>{teslimD=sn.val()||{};teslimCiz();});
       dbRef.child('dosya_liste').on('value',sn=>{dosyaListe=sn.val()||{};slotCiz();});
+      dbRef.child('belge_linkleri').on('value',sn=>{belgeLink=sn.val()||{};const e=document.getElementById('f_link_msds');if(e&&document.activeElement!==e)e.value=belgeLink.msds||'';else if(!e)slotCiz();});
       return;
     }catch(e){console.error(e);dbRef=null;}
   }
-  state=localData();setSync('local');renderAll();
+  state=localData();gefahrgutGoc();setSync('local');renderAll();
 }
 function loadScript(src){return new Promise(res=>{var s=document.createElement('script');s.src=src;s.onload=()=>res(1);s.onerror=()=>res(0);document.head.appendChild(s);});}
 async function boot(){
@@ -1424,8 +1431,9 @@ function applyOverdue(){
 }
 
 /* ---------- belgeler ---------- */
-let abdForm={},gpsrForm={},lucidForm={},danisman={},vatD={},teslimD={},dosyaListe={};
-const SLOTLAR=[['msds','MSDS (güvenlik bilgi formu)'],
+let abdForm={},gpsrForm={},lucidForm={},danisman={},vatD={},teslimD={},dosyaListe={},belgeLink={};
+const SLOTLAR=[['msds','Güvenlik bilgi formları (MSDS / SDS) — satışa açılacak her ürün için',
+    "Amazon, alkol bazlı parfümü nakliyede tehlikeli madde kapsamında\ndeğerlendiriyor (UN 1266, Sınıf 3 yanıcı sıvı) ve FBA'ya geçişte her ürün\niçin güvenlik bilgi formu talep ediyor. Form üretici ya da tedarikçi\ntarafından düzenlenmiş olmalı, 16 bölümlü standart formatta ve son 5 yıl\niçinde tarihli olmalı, üzerindeki ürün ve marka adı listedeki ürünle\nbirebir aynı olmalı, GHS/CLP tehlike bilgisiyle birlikte UN numarası ve\nalevlenme noktası görünmeli. Avrupa Birliği için REACH Ek II düzenine göre\nhazırlanmış versiyon gerekiyor; ABD için düzenlenen form geçerli olmuyor.\nAlmanca tercih edilir, İngilizce de kabul ediliyor. Formlar formülasyon\nbaşına düzenlendiği için tek bir belge yeterli olmuyor; satışa açılacak\nürün listesinin tamamı için ayrı ayrı gerekiyor.\n\nDosya sayısı yüksek olduğu için tek tek yükleme yerine formların tamamını\nbir klasöre koyup klasör bağlantısını aşağıdaki alana yapıştırmanız\nyeterli. Dosya adlarında ürün kodunun bulunması eşleştirmeyi hızlandırır."],
   ['etiket','Ürün etiketleri'],['diger','Diğer belgeler']];
 function formCiz(){[['f_ad','sirket_adi'],['f_alt','alternatif'],['f_sahip','sahip'],['f_adres','tr_adres']].forEach(([id,k])=>{
   const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=abdForm[k]||'';});
@@ -1505,10 +1513,14 @@ async function pasaportYukle(ev){const f=ev.target.files[0];ev.target.value='';i
     logChange('Pasaport şifreli olarak yüklendi');save();toast('Şifreli olarak yüklendi');
   }catch(e){console.error(e);alert('Yüklenemedi: '+e.message);}}
 function slotCiz(){setTimeout(teslimCiz,0);pasaportCiz();const k=document.getElementById('dSlots');if(!k)return;
-  k.innerHTML=SLOTLAR.map(([id,ad])=>{
+  k.innerHTML=SLOTLAR.map(([id,ad,aciklama])=>{
     const dosyalar=Object.entries(dosyaListe).filter(([,m])=>m.kalem===id).sort((a,b)=>a[1].ts-b[1].ts);
-    return `<div class="dslot"><b>${ad}</b>${dosyalar.map(([fid,m])=>`<span class="dfile" onclick="dosyaAc('${fid}')" title="${esc(new Date(m.ts).toLocaleString('tr-TR'))}">📎 ${esc(m.ad)}</span><span class="dfile" style="color:#C0392B;cursor:pointer" title="Sil" onclick="dosyaSil('${fid}')">✕</span>`).join('')}
-      <label class="addbtn" style="margin:0">+ Yükle<input type="file" style="display:none" onchange="dosyaYukle(event,'${id}')"></label></div>`;}).join('');}
+    return `<div class="dslot"><b>${ad}</b>${aciklama?`<div style="flex-basis:100%;font-size:12px;line-height:1.5;color:var(--muted);white-space:pre-line">${esc(aciklama)}</div>`:''}${dosyalar.map(([fid,m])=>`<span class="dfile" onclick="dosyaAc('${fid}')" title="${esc(new Date(m.ts).toLocaleString('tr-TR'))}">📎 ${esc(m.ad)}</span><span class="dfile" style="color:#C0392B;cursor:pointer" title="Sil" onclick="dosyaSil('${fid}')">✕</span>`).join('')}
+      <label class="addbtn" style="margin:0">+ Yükle<input type="file" style="display:none" onchange="dosyaYukle(event,'${id}')"></label>${id==='msds'?`<div style="flex-basis:100%;display:flex;gap:8px;align-items:center"><input type="text" id="f_link_msds" placeholder="Klasör bağlantısı (Google Drive, OneDrive, Dropbox...)" value="${esc(belgeLink.msds||'')}" style="flex:1;min-width:0;padding:7px 10px;border:1px solid var(--line);border-radius:6px;font-size:13px"><button class="addbtn" style="margin:0" onclick="belgeLinkKaydet('msds')">Kaydet</button></div>`:''}</div>`;}).join('');}
+/* 10 Ekim 2026: MSDS slotuna klasor baglantisi. Deger bargello_tracker_v2/belge_linkleri/<slot> altinda. */
+function belgeLinkKaydet(slot){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}if(!hazirMi())return;
+  const v=(document.getElementById('f_link_'+slot)||{}).value||'';
+  dbRef.child('belge_linkleri/'+slot).set(v.trim()).then(()=>{logChange('Belge klasör bağlantısı kaydedildi: '+(SLOTLAR.find(x=>x[0]===slot)||['',slot])[1].split(' — ')[0]);save();toast('Kaydedildi');});}
 function dosyaYukle(ev,kalem){const f=ev.target.files[0];ev.target.value='';if(!f)return;
   if(!dbRef){toast('Bağlantı yok');return;}if(!hazirMi())return;
   if(f.size>7*1024*1024){alert('Dosya 7 MB sınırını aşıyor.');return;}
