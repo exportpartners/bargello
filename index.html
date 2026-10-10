@@ -201,6 +201,8 @@
   .dcard label{display:block;font-size:12px;font-weight:700;color:#232F3E;margin:10px 0 0}
   .dcard input,.dcard textarea{display:block;width:100%;box-sizing:border-box;margin-top:4px;padding:9px 11px;border:1px solid #D5D9E0;border-radius:8px;font:inherit;font-size:14px}
   .dnote{font-size:12px;color:#6B7280}
+  .anadon{position:fixed;right:24px;top:calc(var(--hh,0px) + var(--th,0px) + 16px);z-index:50;background:#232F3E;color:#fff;border:0;border-radius:10px;padding:11px 18px;font:inherit;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(14,27,61,.18)}
+  @media (max-width:900px){.anadon{top:auto;bottom:18px;right:16px}}
   .acikla{flex-basis:100%;font-size:12.5px;color:var(--muted)}
   .acikla summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#8A93A3;padding:2px 0;user-select:none}
   .acikla summary::-webkit-details-marker{display:none}
@@ -540,6 +542,7 @@
     </div>
   </section>
   <section id="view-docs" style="display:none" oninput="teslimCiz()">
+    <button class="anadon" onclick="showTab('tasks');window.scrollTo({top:0,behavior:'smooth'})">← Back to Track Tasks</button>
     <div class="dgrup"><span>ABD</span><small>Bargello USA LLC · Amazon.com</small></div>
     <details class="dcard dsec" id="dsec1">
       <summary><h3>ABD şirket kurulumu (Bargello USA LLC)</h3><span class="drozet" id="drozet1"></span></summary><div class="dbody">
