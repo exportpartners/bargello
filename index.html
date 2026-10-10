@@ -815,7 +815,7 @@ let BULUT_HAZIR=false;
 function hazirMi(){if(dbRef&&!BULUT_HAZIR){toast('Veriler yükleniyor, birkaç saniye sonra tekrar deneyin');return false;}return true;}
 /* 10 Ekim 2026: tek seferlik goc. COMPLIANCE & REGISTRATIONS bolumunde basliginda "Gefahrgut" gecen satir yoksa ekler;
    tekrar calisma kontrolu yalnizca bu satir-var-mi kontroludur, ayri bayrak tutulmaz. */
-function gefahrgutGoc(){const b=(state.sections||[]).find(s=>s.name==='COMPLIANCE & REGISTRATIONS');if(!b)return false;
+function gefahrgutGoc(){return false;/* 10 Ekim 2026: kalem MSDS ozet kalemine katildi, goc kapali */const b=(state.sections||[]).find(s=>s.name==='COMPLIANCE & REGISTRATIONS');if(!b)return false;
   b.rows=b.rows||[];if(b.rows.some(r=>(r.task||'').includes('Gefahrgut')))return false;
   b.rows.push({id:id(),status:'Not Started',deadline:'2026-10-23',days:'',task:'FBA tehlikeli madde sınıflandırması (Gefahrgut)',note:"Amazon, alkol bazlı parfümü UN 1266 / Sınıf 3 yanıcı sıvı olarak\nsınıflandırıyor. ASIN'ler FBA'ya geçmeden önce Seller Central üzerinde\ntehlikeli madde sınıflandırma başvurusunun tamamlanması gerekiyor.\n\nSıra: güvenlik bilgi formlarının ürün bazında toplanması, Seller Central >\nTehlikeli Madde Sınıflandırmasını Yönet ekranından yüklenmesi, Amazon'un\nsınıflandırma incelemesi, onay sonrası ASIN'in FBA'ya uygun hale gelmesi.\n\nİnceleme süresi Amazon'a bağlı; formlar eksiksiz olursa süreç hızlanıyor.\nOnay çıkmadan lojistik merkezine mal gönderilmesi sevkiyatın reddine yol\naçabileceği için 6 Kasım depo girişi bu kaleme bağlı. Ürünün olduğundan\nağır sınıflandırılması halinde Uyumluluk Panosu üzerinden itiraz yolu\naçık.",actions:[]});
   logChange('Yeni kalem eklendi: FBA tehlikeli madde sınıflandırması (Gefahrgut)');save();return true;}
