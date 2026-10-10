@@ -203,6 +203,10 @@
   .dnote{font-size:12px;color:#6B7280}
   .anadon{position:fixed;right:24px;top:calc(var(--hh,0px) + var(--th,0px) + 16px);z-index:50;background:#232F3E;color:#fff;border:0;border-radius:10px;padding:11px 18px;font:inherit;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(14,27,61,.18)}
   @media (max-width:900px){.anadon{top:auto;bottom:18px;right:16px}}
+  .opendoc{margin-left:auto;font-weight:700;font-size:12px;letter-spacing:0;color:#7A1F2B;text-decoration:none;border:2px solid #7A1F2B;border-radius:999px;padding:4px 12px;background:#fff;animation:opendocNabiz 1.6s ease-in-out infinite}
+  .opendoc:hover{background:#7A1F2B;color:#fff;animation:none}
+  @keyframes opendocNabiz{0%,100%{box-shadow:0 0 0 0 rgba(122,31,43,.55);border-color:#7A1F2B}50%{box-shadow:0 0 0 6px rgba(122,31,43,0);border-color:#B04556}}
+  @media (prefers-reduced-motion:reduce){.opendoc{animation:none}}
   .acikla{flex-basis:100%;font-size:12.5px;color:var(--muted)}
   .acikla summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:#232F3E;background:#F1F3F7;border:1px solid #D5DAE3;border-radius:999px;padding:5px 12px 5px 10px;margin:2px 0;user-select:none;transition:background .15s,border-color .15s}
   .acikla summary:hover{background:#E7EBF2;border-color:#B9C1CF}
@@ -1570,7 +1574,7 @@ function belgeBarCiz(){
   const rozet=k=>{const ad=(DSEC[k]||[]);if(!ad.length)return '';const n=ad.filter(x=>e.includes(x)).length;return `<span class="drozet ${n?'eksik':'tamam'}">${n?n+' eksik':'Tamam'}</span>`;};
   const ac=k=>belgeAcik[k]?' open':'';
   bb.innerHTML=`<details class="ubox bbox" data-k="ana"${ac('ana')} ontoggle="belgeAcik.ana=this.open" style="margin:0 0 14px">
-    <summary class="uhead"><span class="udot"></span>DOCUMENTS PENDING${e.length?' · '+e.length:''}<a href="#" onclick="event.preventDefault();event.stopPropagation();showTab('docs')" style="margin-left:auto;font-weight:700;font-size:12px;letter-spacing:0;color:#232F3E;text-decoration:none">Open Documents →</a><span class="uchev" style="margin-left:10px">▾</span></summary>
+    <summary class="uhead"><span class="udot"></span>DOCUMENTS PENDING${e.length?' · '+e.length:''}<a href="#" onclick="event.preventDefault();event.stopPropagation();showTab('docs')" class="opendoc">Open Documents →</a><span class="uchev" style="margin-left:10px">▾</span></summary>
     ${BELGE_REHBER.map(([k,bas,adim])=>`<details class="brehber"${ac('b'+k)} ontoggle="belgeAcik['b${k}']=this.open"><summary><b>${bas}</b>${rozet(k)}</summary><ul>${adim.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></details>`).join('')}
   </details>`;
 }
