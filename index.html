@@ -13,7 +13,9 @@
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--paper);color:var(--text)}
-  header{background:var(--ink);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:16px;border-bottom:3px solid var(--orange)}
+  header{background:var(--ink);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:16px;border-bottom:3px solid var(--orange);position:sticky;top:0;z-index:60}
+  .tabs{position:sticky;top:var(--hh,0px);z-index:55;background:var(--paper);padding:8px 0 10px;margin-top:-4px!important}
+  #pillBar{position:sticky;top:calc(var(--hh,0px) + var(--th,0px));z-index:54;background:var(--paper);padding:2px 0 10px}
   header .logo{height:36px;width:auto;display:block}
   .htitle{font-size:12px;font-weight:600;color:#cdd6e4;letter-spacing:.5px;border-left:1px solid #2c3d66;padding-left:16px}
   .htitle small{display:block;color:#7a86a0;font-size:9.5px;letter-spacing:.6px;margin-top:2px}
@@ -74,7 +76,12 @@
   #urgentBar{margin:0 0 14px}
   .ubox{border:1px solid #E1E5EB;border-radius:10px;background:#F8F9FB;padding:11px 14px}
   .uhead{display:flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.14em;font-weight:800;color:#232F3E;margin-bottom:8px}
-  .udot{width:8px;height:8px;border-radius:50%;background:var(--orange)}
+  .udot{width:9px;height:9px;border-radius:50%;background:var(--red)}
+  details.ubox>summary{cursor:pointer;list-style:none;margin-bottom:0}
+  details.ubox>summary::-webkit-details-marker{display:none}
+  details.ubox[open]>summary{margin-bottom:8px}
+  .uchev{margin-left:auto;color:#8A93A3;font-size:12px;transition:transform .15s}
+  details.ubox[open] .uchev{transform:rotate(180deg)}
   .uitem{display:flex;align-items:baseline;gap:10px;padding:5px 0;cursor:pointer;border-top:1px solid #E9ECF1}
   .uitem:first-of-type{border-top:none}
   .uitem:hover .utask{text-decoration:underline}
@@ -351,11 +358,11 @@
 
 <div class="wrap">
   <div class="tabs">
-    <button class="tab on" id="tab-tasks" onclick="showTab('tasks')">Track Tasks</button>
-    <button class="tab" id="tab-timeline" onclick="showTab('timeline')">Timeline</button>
-    <button class="tab" id="tab-calc" onclick="showTab('calc')">Profitability</button>
-    <button class="tab" id="tab-ship" onclick="showTab('ship')">Shipment Plan</button>
-    <button class="tab" id="tab-strategy" onclick="showTab('strategy')">Launch Studio</button>
+    <button class="tab on" id="tab-tasks" onclick="showTab('tasks')">Takip</button>
+    <button class="tab" id="tab-timeline" onclick="showTab('timeline')">Zaman çizelgesi</button>
+    <button class="tab" id="tab-calc" onclick="showTab('calc')">Kârlılık</button>
+    <button class="tab" id="tab-ship" onclick="showTab('ship')">Sevkiyat planı</button>
+    <button class="tab" id="tab-strategy" onclick="showTab('strategy')">Lansman stratejisi</button>
     <button class="tab" id="tab-docs" onclick="showTab('docs')">Belgeler</button>
   </div>
 
@@ -364,15 +371,15 @@
     <div id="urgentBar"></div>
     <div id="belgeBar"></div>
     <div class="stat">
-      <button class="addbtn" onclick="addSection()">+ Section</button>
+      <button class="addbtn" onclick="addSection()">+ Bölüm</button>
     </div>
     <div class="scroll">
       <table>
-        <thead><tr><th style="width:118px">STATUS</th><th style="width:128px">EST. DEADLINE</th><th style="width:52px">DAYS</th><th>TASK</th><th style="width:250px">ACTION</th><th style="width:310px">NOTE</th><th style="width:36px"></th></tr></thead>
+        <thead><tr><th style="width:118px">DURUM</th><th style="width:128px">TAHMİNİ TARİH</th><th style="width:52px">GÜN</th><th>İŞ</th><th style="width:250px">BEKLENEN</th><th style="width:310px">NOT</th><th style="width:36px"></th></tr></thead>
         <tbody id="taskBody"></tbody>
       </table>
     </div>
-    <div class="hint">Use the filters on each section header to isolate Complete / On Hold items. Click any note to open the full editor.</div>
+    <div class="hint">Notun tamamı için nota tıklayın.</div>
   </section>
 
   <section id="view-timeline" style="display:none">
@@ -677,7 +684,9 @@ const FIREBASE_CONFIG={
 };
 /* ===================================================== */
 
-const STATUSES=['Complete','In Progress','Not Started','On Hold','Urgent'];
+const STATUSES=['Urgent','In Progress','Not Started','Complete'];
+const ST_TR={'Urgent':'Yapılacak','In Progress':'Devam ediyor','Not Started':'Sırada','Complete':'Tamamlandı'};
+const ACT_TR={'Awaiting Client Info':'Firmadan bilgi bekleniyor','Awaiting Documents':'Belge bekleniyor','Collecting Requested Files':'Belgeler toplanıyor','Client Approval Pending':'Firma onayı bekleniyor','Waiting on Amazon':"Amazon'da bekliyor",'Awaiting Third-Party Approval':'Üçüncü taraf onayı bekleniyor','Revision Requested':'Düzeltme istendi','Payment Pending':'Ödeme bekleniyor'};
 const SCLASS={'Complete':'st-complete','In Progress':'st-inprogress','Not Started':'st-notstarted','On Hold':'st-onhold','Over Due':'st-overdue','Urgent':'st-urgent'};
 const ACTIONS=['Awaiting Client Info','Awaiting Documents','Collecting Requested Files','Client Approval Pending','Waiting on Amazon','Awaiting Third-Party Approval','Revision Requested','Payment Pending'];
 const ACT_RED=['Awaiting Client Info','Payment Pending'];
@@ -981,7 +990,9 @@ function openLog(){
     document.getElementById('logBg').classList.add('show');
     return;
   }
-  b.innerHTML=L.length?L.map(e=>`<div class="logrow"><span class="logwho">${esc(e.u)}</span><span class="logmsg">${esc(e.m)}</span><span class="logtime">${agoTxt(e.t)}</span></div>`).join(''):'<div style="color:var(--muted);font-size:13px;padding:10px 2px">Henüz kayıtlı değişiklik yok.</div>';
+  /* 10 Ekim 2026, Mustafa: Updates'te yalniz musterinin (ekip ve Sistem disi) degisiklikleri. */
+  const M=L.filter(e=>!EKIP.includes(e.u)&&!/^sistem$/i.test(e.u||''));
+  b.innerHTML=M.length?M.map(e=>`<div class="logrow"><span class="logwho">${esc(e.u)}</span><span class="logmsg">${esc(e.m)}</span><span class="logtime">${agoTxt(e.t)}</span></div>`).join(''):'<div style="color:var(--muted);font-size:13px;padding:10px 2px">Müşteri tarafında kayıtlı değişiklik yok.</div>';
   document.getElementById('logBg').classList.add('show');
 }
 function closeLog(){document.getElementById('logBg').classList.remove('show');}
@@ -1020,8 +1031,8 @@ function daysLeft(dl){
   const now=new Date();now.setHours(12,0,0,0);
   return Math.round((d-now)/86400000);
 }
-function statusOpts(sel){return STATUSES.map(s=>`<option value="${s}" ${s===sel?'selected':''}>${s==='Complete'?'Completed':(s==='Urgent'?'Yapılacak':s)}</option>`).join('');}
-function addOpts(list,have){return '<option value="">+ Action</option>'+list.filter(x=>!have.includes(x)).map(x=>`<option>${x}</option>`).join('');}
+function statusOpts(sel){return STATUSES.map(s=>`<option value="${s}" ${s===sel?'selected':''}>${ST_TR[s]||s}</option>`).join('');}
+function addOpts(list,have){return '<option value="">+ Ekle</option>'+list.filter(x=>!have.includes(x)).map(x=>`<option value="${x}">${ACT_TR[x]||x}</option>`).join('');}
 function actClass(a){if(ACT_RED.includes(a))return 'a-red';if(ACT_ORANGE.includes(a))return 'a-orange';if(ACT_BLUE.includes(a))return 'a-blue';if(ACT_GREEN.includes(a))return 'a-green';return '';}
 const SORT_RANK={'Urgent':-1,'Over Due':0,'On Hold':1,'In Progress':2,'Complete':3,'Not Started':4};
 function rowCmp(a,b){
@@ -1046,13 +1057,13 @@ function toggleFilter(sid,st){
 }
 function clearFilter(sid){secFilter[sid]=[];renderTasks();}
 function rowHtml(si,ri,r){
-  const chips=(r.actions||[]).map((a,j)=>`<span class="chip ${actClass(a)}">${esc(a)}<span onclick="rmAction(${si},${ri},${j})">✕</span></span>`).join('');
+  const chips=(r.actions||[]).map((a,j)=>`<span class="chip ${actClass(a)}">${esc(ACT_TR[a]||a)}<span onclick="rmAction(${si},${ri},${j})">✕</span></span>`).join('');
   const notePrev=textOf(r.note||'');
   return `<tr class="${r.status==='Urgent'?'urgentrow':''}">
     <td><select class="status ${SCLASS[r.status]}" onchange="updRow(${si},${ri},'status',this.value);renderTasks()">${statusOpts(r.status)}</select></td>
-    <td>${(r.status==='Complete'||r.status==='Not Started')?'<span style="color:#b6bcc8;font-size:12px">—</span>':`<input class="cell dl ${r.status==='In Progress'&&!r.deadline?'needdl':''}" type="date" value="${esc(r.deadline)}" title="${r.status==='In Progress'&&!r.deadline?'In Progress için deadline girilmesi önerilir':''}" onchange="updRow(${si},${ri},'deadline',this.value)">`}</td>
+    <td>${(r.status==='Complete')?'<span style="color:#b6bcc8;font-size:12px">—</span>':`<input class="cell dl ${r.status==='In Progress'&&!r.deadline?'needdl':''}" type="date" value="${esc(r.deadline)}" title="${r.status==='In Progress'&&!r.deadline?'Devam eden iş için tarih girilmesi önerilir':''}" onchange="updRow(${si},${ri},'deadline',this.value)">`}</td>
     <td>${(()=>{const dlv=r.status==='Complete'?null:daysLeft(r.deadline);if(dlv===null)return `<input class="cell days" value="${esc(r.days)}" placeholder="—" onchange="updRow(${si},${ri},'days',this.value)">`;if(dlv<0)return `<span class="res mut" style="display:block;text-align:center">—</span>`;const cls=dlv<=3?'':'mut';return `<span class="res ${cls}" style="display:block;text-align:center" title="Est. deadline'a göre otomatik">${dlv}</span>`;})()}</td>
-    <td><input class="cell task" value="${esc(r.task)}" placeholder="Task" onchange="updRow(${si},${ri},'task',this.value)"></td>
+    <td><input class="cell task" value="${esc(r.task)}" placeholder="İş" onchange="updRow(${si},${ri},'task',this.value)"></td>
     <td><div class="chips">${chips}<select class="add-sel" onchange="addAction(${si},${ri},this.value);this.selectedIndex=0">${addOpts(ACTIONS,r.actions||[])}</select></div></td>
     <td><div class="notewrap">${notePrev?`<div class="noteprev ${r.status==='Urgent'?'urgent':''}" onclick="openNote(${si},${ri})" title="Open note">${esc(notePrev)}</div>`:''}<button class="npen" onclick="openNote(${si},${ri})" title="${notePrev?'Edit note':'Add note'}">✏️</button></div></td>
     <td><button class="del" onclick="delRow(${si},${ri})" title="Delete row">✕</button></td>
@@ -1092,17 +1103,17 @@ function renderPillBar(){
   const ep=[];
   active.forEach(x=>{const n=name(x.r);const m=EP_BLOCKED.find(([k])=>n.startsWith(k));if(m)ep.push(Object.assign({},x,{why:m[1]}));});
   pillData={
-    urgent:{title:'Yapılacaklar',sub:'ÖNCELİKLİ KALEMLER',list:urgent},
-    client:{title:'Waiting on client',sub:'FİRMADAN KARAR, BELGE YA DA İMZA BEKLEYEN',list:client},
-    third:{title:'Waiting on third party',sub:'AMAZON, TAXUALLY, PAYONEER GİBİ ÜÇÜNCÜ TARAFTA',list:third},
-    ep:{title:'Export Partners awaiting for input',sub:'BİZİM YAPACAĞIMIZ, GİRDİ GELİNCE BAŞLAYACAK İŞLER',list:ep}
+    urgent:{title:'Yapılacaklar',sub:'ŞİMDİ YAPILMASI GEREKENLER',list:urgent},
+    client:{title:'Firmadan bekleniyor',sub:'FİRMADAN KARAR, BELGE YA DA İMZA BEKLEYEN',list:client},
+    third:{title:'Üçüncü tarafta',sub:'AMAZON, TAXUALLY, PAYONEER GİBİ ÜÇÜNCÜ TARAFTA',list:third},
+    ep:{title:"Export Partners'ta",sub:'BİZİM YAPACAĞIMIZ, GİRDİ GELİNCE BAŞLAYACAK İŞLER',list:ep}
   };
   const pill=(key,cls,label,n)=>`<span class="pill ${cls}" onclick="openPill('${key}')" title="Tıkla, listeyi aç"><span class="pv">${n}</span>${label}</span>`;
   el.innerHTML=
     pill('urgent','p-urgent','Yapılacaklar',urgent.length)+
-    pill('client','p-client','Waiting on client',client.length)+
-    pill('third','p-third','Waiting on third party',third.length)+
-    pill('ep','p-ep','Export Partners awaiting for input',ep.length);
+    pill('client','p-client','Firmadan bekleniyor',client.length)+
+    pill('third','p-third','Üçüncü tarafta',third.length)+
+    pill('ep','p-ep',"Export Partners'ta",ep.length);
 }
 function openPill(key){
   const d=pillData[key]; if(!d)return;
@@ -1127,7 +1138,7 @@ function renderUrgentBar(){
   const items=[];
   state.sections.forEach((s,si)=>s.rows.forEach((r,ri)=>{ if(r.status==='Urgent'||r.status==='Over Due') items.push({s,si,r,ri}); }));
   if(!items.length){ el.innerHTML=''; return; }
-  el.innerHTML='<div class="ubox"><div class="uhead"><span class="udot"></span>YAPILACAKLAR</div>'+
+  el.innerHTML='<details class="ubox"><summary class="uhead"><span class="udot"></span>YAPILACAKLAR · '+items.length+'<span class="uchev">▾</span></summary>'+
     items.map(({s,si,r,ri})=>{
       const d=daysLeft(r.deadline);
       const dl=(d===null||d<0)?'':(d===0?'bugün':`${d} gün kaldı`);
@@ -1136,7 +1147,7 @@ function renderUrgentBar(){
         <span class="usec">${esc(s.name)}</span>
         <span class="udl">${dl}</span>
       </div>`;
-    }).join('')+'</div>';
+    }).join('')+'</details>';
 }
 function renderTasks(){
   renderPillBar();
@@ -1153,13 +1164,13 @@ function renderTasks(){
         <span class="n">${s.rows.filter(r=>r.status!=='Complete').length} açık</span>
       </span>
       <span class="fchips">
-        <button class="fchip ${f.length===0?'on':''}" onclick="clearFilter('${s.id}')">All</button>
-        ${['In Progress','Not Started','On Hold'].map(st=>`<button class="fchip ${f.includes(st)?'on':''}" onclick="toggleFilter('${s.id}','${st.replace(/'/g,"\\'")}')">${f.includes(st)?'✓ ':''}${st==='Complete'?'Completed':st}</button>`).join('')}
+        <button class="fchip ${f.length===0?'on':''}" onclick="clearFilter('${s.id}')">Tümü</button>
+        ${['Urgent','In Progress','Not Started'].map(st=>`<button class="fchip ${f.includes(st)?'on':''}" onclick="toggleFilter('${s.id}','${st}')">${f.includes(st)?'✓ ':''}${ST_TR[st]}</button>`).join('')}
       </span>
       <button class="del" onclick="delSection(${si})" title="Delete section" style="float:right">✕</button>
     </td></tr>`;
     if(open){
-      html+=`<tr><td colspan="7" style="padding:0"><button class="addrow" onclick="addRow(${si})">+ Add row</button></td></tr>`;
+      html+=`<tr><td colspan="7" style="padding:0"><button class="addrow" onclick="addRow(${si})">+ Satır ekle</button></td></tr>`;
       html+=shown.map(x=>rowHtml(si,x.ri,x.r)).join('');
     }
   });
@@ -1175,10 +1186,9 @@ function updRow(si,ri,k,v){
   if(old!==v){
     if(k==='status'){
       logChange(r.task+' → '+v);r.isNew=false;
-      if(v==='Not Started'){r.deadline='';r.days='';r.odMuted=false;}  /* Not Started: tarihi temizle */
       const dl=daysLeft(r.deadline);
       r.odMuted=(v!=='Over Due'&&dl!==null&&dl<0);
-      if(v==='In Progress'&&!r.deadline)toast('⚠ Bu iş In Progress: lütfen Est. Deadline girin');
+      if(v==='In Progress'&&!r.deadline)toast('Devam eden işe tahmini tarih girin');
     }
     if(k==='deadline'){r.odMuted=false;}
     else if(k==='deadline')logChange('Deadline: '+r.task+' → '+(v||'—'));
@@ -1596,7 +1606,9 @@ function dosyaSil(id){if(!dbRef){toast('Bağlantı yok');return;}if(!hazirMi())r
     logChange('Belge silindi: '+m.ad);save();toast('Silindi');}).catch(e=>alert('Silinemedi: '+e.message));}
 function dosyaAc(id){dbRef.child('dosyalar/'+id).once('value').then(sn=>{const d=sn.val();if(!d)return;
   const a=document.createElement('a');a.href=d.veri;a.download=d.ad;document.body.appendChild(a);a.click();a.remove();});}
-function renderAll(){applyOverdue();renderTasks();renderTimeline();renderCalc();renderShip();renderStudio();renderLastUpd();teslimCiz();}
+function ustSabit(){const h=document.querySelector('header'),t=document.querySelector('.tabs');if(!h||!t)return;document.documentElement.style.setProperty('--hh',h.offsetHeight+'px');document.documentElement.style.setProperty('--th',t.offsetHeight+'px');}
+window.addEventListener('resize',ustSabit);window.addEventListener('load',ustSabit);
+function renderAll(){ustSabit();applyOverdue();renderTasks();renderTimeline();renderCalc();renderShip();renderStudio();renderLastUpd();teslimCiz();}
 function toast(m){const t=document.getElementById('toast');if(!t)return;t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
 function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bargello-tracker-backup.json';a.click();}
 function importData(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);state=normalize(d);save();renderAll();toast('Backup restored');}catch(e){alert('Invalid backup file.');}};r.readAsText(f);ev.target.value='';}
