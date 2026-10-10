@@ -770,7 +770,7 @@ function normalize(d){
   const sections=(d.sections||[]).map(s=>({id:s.id||id(),name:s.name||'',rows:(s.rows||[]).map(r=>({
     id:r.id||id(),status:STATUSES.includes(r.status)?r.status:'Not Started',
     deadline:r.deadline||'',days:r.days||'',task:r.task||'',note:r.note||'',
-    actions:Array.isArray(r.actions)?r.actions.filter(a=>ACTIONS.includes(a)):[],isNew:!!r.isNew,odMuted:!!r.odMuted
+    actions:Array.isArray(r.actions)?r.actions.filter(a=>ACTIONS.includes(a)):[],isNew:!!r.isNew,odMuted:!!r.odMuted,...(r.onc!=null&&r.onc!==''&&isFinite(+r.onc)?{onc:+r.onc}:{})
   }))}));
   const timeline=(d.timeline||[]).map(t=>{
     let cells=Array.isArray(t.cells)?t.cells.slice(0,nw):[];
@@ -1040,6 +1040,7 @@ function rowCmp(a,b){
   if(a.r.isNew&&b.r.isNew)return a.ri-b.ri;             /* en son eklenen en üstte */
   const ra=SORT_RANK[a.r.status],rb=SORT_RANK[b.r.status];
   if(ra!==rb)return ra-rb;
+  const oa=a.r.onc!=null?a.r.onc:99,ob=b.r.onc!=null?b.r.onc:99;if(oa!==ob)return oa-ob;   /* 10 Ekim 2026: en acil beklenen en ustte */
   if(a.r.status==='Complete')return a.ri-b.ri;            /* completed: girildiği sıra */
   const da=a.r.deadline?new Date(a.r.deadline+'T12:00:00').getTime():Infinity;
   const db=b.r.deadline?new Date(b.r.deadline+'T12:00:00').getTime():Infinity;
@@ -1097,7 +1098,7 @@ function renderPillBar(){
   /* Yalnizca ELDEKI is sayilir: 'Not Started' satirlar (FR/IT/ES ambalaj,
      Pan-EU, UK gibi ileri tarihli plan kalemleri) bekleyen is degildir. */
   const active=items.filter(x=>x.r.status!=='Complete'&&x.r.status!=='Not Started');
-  const urgent=active.filter(x=>x.r.status==='Urgent'||x.r.status==='Over Due');
+  const urgent=active.filter(x=>x.r.status==='Urgent'||x.r.status==='Over Due').sort((a,b)=>((a.r.onc!=null?a.r.onc:99)-(b.r.onc!=null?b.r.onc:99))||String(a.r.deadline||'9').localeCompare(String(b.r.deadline||'9')));
   const client=active.filter(x=>whoWaits(x.r)==='client');
   const third=active.filter(x=>whoWaits(x.r)==='third');
   const ep=[];
@@ -1138,6 +1139,7 @@ function renderUrgentBar(){
   const items=[];
   state.sections.forEach((s,si)=>s.rows.forEach((r,ri)=>{ if(r.status==='Urgent'||r.status==='Over Due') items.push({s,si,r,ri}); }));
   if(!items.length){ el.innerHTML=''; return; }
+  items.sort((a,b)=>((a.r.onc!=null?a.r.onc:99)-(b.r.onc!=null?b.r.onc:99))||String(a.r.deadline||'9').localeCompare(String(b.r.deadline||'9')));
   el.innerHTML='<details class="ubox"><summary class="uhead"><span class="udot"></span>YAPILACAKLAR · '+items.length+'<span class="uchev">▾</span></summary>'+
     items.map(({s,si,r,ri})=>{
       const d=daysLeft(r.deadline);
