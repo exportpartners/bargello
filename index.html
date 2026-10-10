@@ -210,6 +210,9 @@
   .dpill{display:inline-flex;align-items:center;gap:8px;border:2px solid #7A1F2B;border-radius:999px;padding:4px 14px 4px 10px;color:#7A1F2B;animation:opendocNabiz 1.6s ease-in-out infinite}
   .dpill .udot{margin:0}
   @media (prefers-reduced-motion:reduce){.dpill{animation:none}}
+  .dsay{display:inline-block;margin-left:6px;font-size:11px;font-weight:800;padding:1px 8px;border-radius:999px;border:1.5px solid #C9CFDA;color:#5A6475;vertical-align:1px}
+  .dsay.yeni{border:2px solid #7A1F2B;color:#7A1F2B;background:#fff;animation:opendocNabiz 1.6s ease-in-out infinite}
+  @media (prefers-reduced-motion:reduce){.dsay.yeni{animation:none}}
   .acikla{flex-basis:100%;font-size:12.5px;color:var(--muted)}
   .acikla summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:#232F3E;background:#F1F3F7;border:1px solid #D5DAE3;border-radius:999px;padding:5px 12px 5px 10px;margin:2px 0;user-select:none;transition:background .15s,border-color .15s}
   .acikla summary:hover{background:#E7EBF2;border-color:#B9C1CF}
@@ -366,9 +369,8 @@
   </div>
 </div>
 <header>
-  <img class="logo" title="Track Tasks" style="cursor:pointer" onclick="showTab('tasks');window.scrollTo({top:0,behavior:'smooth'})" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATgAAABKCAYAAAAv4kgUAAAETElEQVR42u3d64rcMAxA4XHI+7+y+qtQynaaiy+y/R0oFNpNHFs6kTIZb4mIz01+/0D5AEBijgc/U/4SHQAsI7ifqjkAWE5wtSRHlABSCK6VjEgOQFXOShKKT50PHWodp7VQs46xDJqPnnNydbxlYHy8ma/oPM+RcG2/je/WWM5PPuKT/xPaSBQAWeaux5zEw/9bForzGfKj5RrfirOzUXDtILmf5sarM20EE9Znq3ip5oqj4sljUPBmWyTPEuuucSQZB3LGx9e8OwYHRVgwQdx5Hq3NugVB3BXcnZMXgdikrSJ+knPDe3jcY2AQhEXccl4jyXWQ3AZ5dwguuDFg1fU9yE2yLkD54w/WXN9HeXdWSsayaLIXwrq0zvEg+Eqj8dzZDOLtOAi17Q2//OPvl49xNAz6VcXwpFJYXYo1q6eoHHfYp2r7Krhsr4OUHRZgMSEWY0GHtbu8tkeH1jQWTv6sSRSLzwl54VIeHI2DrLY4Y5OWb4vgMwVozVPBjZDb3/8mQQBt7H8F12JLnjDRWjSVJEbP9ZEsscrNCRKcpA9Ub1F7t6bfjrua5HpveAgQ3GfcczdovYDHgrsil9Fyk6wAmlRw5Ea+K6N7WJizwuJnkFtsGKiFXMkL1yq4onKTaMCOLSq55Wl3yyLXAXQXXOkQwK3kViTydONT1aJ7BedVkPrykMjAIM5/JGTtl2pb7hln2yJVI3CpgvsmDbv95qtaVYfAzQpulsote4LvKJ+Y9NylwzndjBJVcOTWX26zf4Iq2TFdBUdu84+t5UvQnrdhWsGRG1oIzfpheItKbu8koLIBklZw5JazNVxBmqo3pKjgsrU4syaGSo7ckKiCy/j90pIsKVtIa4dfDA0MFRy53R9TXLz20dcxcgxl4HlikWvDyxZ1Jrlleoi/87c0VKeYRnDZ7l62VAJQtUXNUrnc3bZpdJuw0866I9pAoGsFN+vOIFo1gOBSyy0WFMfs4/c4AUu0qCq3uSUS5hkquLxyi00rBFICOrWoo9oQLc78WEMME1xp3B6NOLY2VpUJghsmIHID3IS7Ca7FLrTk5hqBtBUcuRHq6kLXXm8kuAx7unnNRPsBNKvgyn+C1VbjpKG1xxQxcHRKrpVfEpZs5gtJC4SjQ3CuvKVQtl+Vp+IjUmt3sYLLXrmNTuiQgEPXg8D2jZHLa39OHOxFEj2+puy/VzZurk95uF5lcHyUAectE5zvp7V91DGdSRJu9VZM69hWsqo57WrXFnX0br/QxmDf9S0tBUdudcZcBK9x4h21N7wkN4lbq/UQS+L09XEPQTNkET0zGhdT4nTd9S1vKzhVyfXxZh5zbJoE5Lbu+v54nPPhgUI7IYFuxkiNefU1wbUlV/2NijNJAM8cmNqoMXMdk89h2eScLdb38nWUiFeeikoTF5IcQG3ePoMjIQDLCq6W5ApxAsgouF2eDwAguCqS854YgOUEp5IDUI1fl5UPw6ijueMAAAAASUVORK5CYII=" alt="Bargello">
+  <img class="logo" title="Track Tasks" style="cursor:pointer" onclick="logoTik();showTab('tasks');window.scrollTo({top:0,behavior:'smooth'})" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATgAAABKCAYAAAAv4kgUAAAETElEQVR42u3d64rcMAxA4XHI+7+y+qtQynaaiy+y/R0oFNpNHFs6kTIZb4mIz01+/0D5AEBijgc/U/4SHQAsI7ifqjkAWE5wtSRHlABSCK6VjEgOQFXOShKKT50PHWodp7VQs46xDJqPnnNydbxlYHy8ma/oPM+RcG2/je/WWM5PPuKT/xPaSBQAWeaux5zEw/9bForzGfKj5RrfirOzUXDtILmf5sarM20EE9Znq3ip5oqj4sljUPBmWyTPEuuucSQZB3LGx9e8OwYHRVgwQdx5Hq3NugVB3BXcnZMXgdikrSJ+knPDe3jcY2AQhEXccl4jyXWQ3AZ5dwguuDFg1fU9yE2yLkD54w/WXN9HeXdWSsayaLIXwrq0zvEg+Eqj8dzZDOLtOAi17Q2//OPvl49xNAz6VcXwpFJYXYo1q6eoHHfYp2r7Krhsr4OUHRZgMSEWY0GHtbu8tkeH1jQWTv6sSRSLzwl54VIeHI2DrLY4Y5OWb4vgMwVozVPBjZDb3/8mQQBt7H8F12JLnjDRWjSVJEbP9ZEsscrNCRKcpA9Ub1F7t6bfjrua5HpveAgQ3GfcczdovYDHgrsil9Fyk6wAmlRw5Ea+K6N7WJizwuJnkFtsGKiFXMkL1yq4onKTaMCOLSq55Wl3yyLXAXQXXOkQwK3kViTydONT1aJ7BedVkPrykMjAIM5/JGTtl2pb7hln2yJVI3CpgvsmDbv95qtaVYfAzQpulsote4LvKJ+Y9NylwzndjBJVcOTWX26zf4Iq2TFdBUdu84+t5UvQnrdhWsGRG1oIzfpheItKbu8koLIBklZw5JazNVxBmqo3pKjgsrU4syaGSo7ckKiCy/j90pIsKVtIa4dfDA0MFRy53R9TXLz20dcxcgxl4HlikWvDyxZ1Jrlleoi/87c0VKeYRnDZ7l62VAJQtUXNUrnc3bZpdJuw0866I9pAoGsFN+vOIFo1gOBSyy0WFMfs4/c4AUu0qCq3uSUS5hkquLxyi00rBFICOrWoo9oQLc78WEMME1xp3B6NOLY2VpUJghsmIHID3IS7Ca7FLrTk5hqBtBUcuRHq6kLXXm8kuAx7unnNRPsBNKvgyn+C1VbjpKG1xxQxcHRKrpVfEpZs5gtJC4SjQ3CuvKVQtl+Vp+IjUmt3sYLLXrmNTuiQgEPXg8D2jZHLa39OHOxFEj2+puy/VzZurk95uF5lcHyUAectE5zvp7V91DGdSRJu9VZM69hWsqo57WrXFnX0br/QxmDf9S0tBUdudcZcBK9x4h21N7wkN4lbq/UQS+L09XEPQTNkET0zGhdT4nTd9S1vKzhVyfXxZh5zbJoE5Lbu+v54nPPhgUI7IYFuxkiNefU1wbUlV/2NijNJAM8cmNqoMXMdk89h2eScLdb38nWUiFeeikoTF5IcQG3ePoMjIQDLCq6W5ApxAsgouF2eDwAguCqS854YgOUEp5IDUI1fl5UPw6ijueMAAAAASUVORK5CYII=" alt="Bargello">
   <div class="htitle">AMAZON LAUNCH TRACKER<small>PREPARED BY EXPORT PARTNERS LLC · CLIENT: CC KİMYA</small><small style="font-size:10px;opacity:.75;letter-spacing:0;text-transform:none">San Antonio, Texas 78228, ABD · Barbaros Mah. Mor Sümbül Sk. Nidakule Blok No:7/3F, Ataşehir, İstanbul</small></div>
-  <button class="logbtn" onclick="tapLog()">🕑 Updates</button>
   <button class="logbtn" onclick="location.href=location.pathname+'?v='+Date.now()+location.hash" title="Sayfanın en güncel halini yükler">⟳ Refresh</button>
   <button class="logbtn" onclick="openVis()" id="visBtn" title="Paneli acan cihaz sayisi" style="display:none">👁 Ziyaret</button>
 </header>
@@ -380,7 +382,7 @@
     <button class="tab" id="tab-calc" onclick="showTab('calc')">Profitability</button>
     <button class="tab" id="tab-ship" onclick="showTab('ship')">Shipment Plan</button>
     <button class="tab" id="tab-strategy" onclick="showTab('strategy')">Launch Studio</button>
-    <button class="tab" id="tab-docs" onclick="showTab('docs')">Documents</button>
+    <button class="tab" id="tab-docs" onclick="showTab('docs')">Documents <span id="docSay" class="dsay"></span></button>
   </div>
 
   <section id="view-tasks">
@@ -901,6 +903,15 @@ function tapLog(){
   }
   openLog();
 }
+/* 10 Ekim 2026, Mustafa: Updates sekmesi kalkti. Gizli ziyaret listesi logoya 10 sn icinde 3 tikla acilir. */
+let _logoTik=0,_logoT=0;
+function logoTik(){const n=Date.now();if(n-_logoT>10000)_logoTik=0;_logoT=n;if(++_logoTik>=3){_logoTik=0;visReveal();openVis();}}
+/* Documents sekmesinde tamamlanan/toplam sayisi; son bakistan beri yeni belge girildiyse yanip soner, sekme acilinca durur. */
+function docSayCiz(e){const el=document.getElementById('docSay');if(!el)return;const hep=Object.values(DSEC).flat();const n=hep.length-e.filter(x=>hep.includes(x)).length;
+  el.textContent=n+'/'+hep.length;let g=null;try{g=localStorage.getItem('brg_doc_gor');}catch(_){}
+  if(g===null){try{localStorage.setItem('brg_doc_gor',n);}catch(_){}g=n;}
+  el.classList.toggle('yeni',n>+g);window._docN=n;}
+function docGoruldu(){try{localStorage.setItem('brg_doc_gor',window._docN||0);}catch(_){}const el=document.getElementById('docSay');if(el)el.classList.remove('yeni');}
 function visHide(){clearTimeout(_visTimer);visOn=false;renderVisBtn();}
 /* 10 Ekim 2026, Mustafa: "benim bilgisayar ve iPhone girince mail olmasin". Bir kez ?cihaz=ep-mdk ile acilan cihaz Admin sayilir. */
 (function(){try{const q=new URLSearchParams(location.search);if(q.get('cihaz')==='ep-mdk'){localStorage.setItem('brg_admin','1');q.delete('cihaz');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:'')+location.hash);}}catch(e){}})();
@@ -1041,6 +1052,7 @@ function gateInit(){if(gateOk())gateHide();else gateShow();}
 
 /* ---------- tabs ---------- */
 function showTab(t){
+  if(t==='docs')docGoruldu();
   ['tasks','timeline','calc','ship','strategy','docs'].forEach(k=>{
     document.getElementById('view-'+k).style.display=t===k?'':'none';
     document.getElementById('tab-'+k).classList.toggle('on',t===k);
@@ -1581,7 +1593,7 @@ function belgeBarCiz(){
     ${BELGE_REHBER.map(([k,bas,adim])=>`<details class="brehber"${ac('b'+k)} ontoggle="belgeAcik['b${k}']=this.open"><summary><b>${bas}</b>${rozet(k)}</summary><ul>${adim.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></details>`).join('')}
   </details>`;
 }
-function teslimCiz(){const e=teslimEksikler();dsecCiz(e);belgeBarCiz();const b=document.getElementById('teslimBtn');const k=document.getElementById('teslimEksik');if(!b)return;
+function teslimCiz(){const e=teslimEksikler();dsecCiz(e);docSayCiz(e);belgeBarCiz();const b=document.getElementById('teslimBtn');const k=document.getElementById('teslimEksik');if(!b)return;
   k.textContent=e.length?('Henüz girilmeyen: '+e.join(', ')):'Tüm bilgi ve belgeler girildi.';
   const d=document.getElementById('teslimDurum');if(d)d.textContent=teslimD.ts?('Gönderildi: '+new Date(teslimD.ts).toLocaleString('tr-TR')+' · '+(teslimD.u||'')):'';}
 function teslimEt(){if(!dbRef){toast('Bağlantı yok');return;}if(!hazirMi())return;
