@@ -187,6 +187,13 @@
   .msdsadim li::before{content:counter(a);flex:0 0 24px;height:24px;border-radius:50%;background:#232F3E;color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center}
   .msdsadim li span{flex:1;min-width:200px}
   .bigbtn{display:inline-flex;align-items:center;gap:6px;background:#fff;color:#232F3E!important;border:1px solid #232F3E;text-decoration:none;border-radius:9px;padding:9px 16px;font-weight:700;font-size:13px;white-space:nowrap}
+  .brehber{border-top:1px solid #E9ECF1;padding:8px 0}
+  .brehber>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;font-size:13.5px;color:#232F3E}
+  .brehber>summary::-webkit-details-marker{display:none}
+  .brehber>summary::after{content:"▸";margin-left:auto;color:#8A93A3;font-size:11px}
+  .brehber[open]>summary::after{content:"▾"}
+  .brehber ul{margin:8px 0 2px;padding-left:22px;font-size:13px;color:#3d4552;line-height:1.55}
+  .brehber li{margin:2px 0}
   .drozet{font-size:11px;font-weight:700;border-radius:999px;padding:3px 9px;white-space:nowrap}
   .drozet.onem{background:#C0392B;color:#fff}
   .drozet.tamam{background:#E7F5EC;color:#1f8a4c}
@@ -884,6 +891,9 @@ function tapLog(){
   openLog();
 }
 function visHide(){clearTimeout(_visTimer);visOn=false;renderVisBtn();}
+/* 10 Ekim 2026, Mustafa: "benim bilgisayar ve iPhone girince mail olmasin". Bir kez ?cihaz=ep-mdk ile acilan cihaz Admin sayilir. */
+(function(){try{const q=new URLSearchParams(location.search);if(q.get('cihaz')==='ep-mdk'){localStorage.setItem('brg_admin','1');q.delete('cihaz');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:'')+location.hash);}}catch(e){}})();
+function adminCihaz(){try{return localStorage.getItem('brg_admin')==='1';}catch(e){return false;}}
 function devId(){
   let d='';try{d=localStorage.getItem(DEV_KEY)||'';}catch(e){}
   if(!d){d=Date.now().toString(36)+Math.random().toString(36).slice(2,8);try{localStorage.setItem(DEV_KEY,d);}catch(e){}}
@@ -907,6 +917,7 @@ function noteVisit(){
     const yeni=(now-(v.last||0))>30*60*1000;
     const kayit={first:v.first||now,last:now,n:(v.n||0)+(yeni||!v.n?1:0),ua:uaShort()};
     if(v.ad)kayit.ad=v.ad;
+    if(adminCihaz())kayit.ad='Admin';
     visRef.child(id).set(kayit);
   }).catch(()=>{});
 }
@@ -951,6 +962,7 @@ function whoAmI(){
   // (Admin, Opr); adi olmayan herkes Bargello. Isim sorulmaz.
   // Betikle yazilan kayitlarda ad Admin2'dir. 16 Eylul 2026, Mustafa.
   const v=(visits||{})[devId()];
+  if(adminCihaz())return 'Admin';
   if(v&&v.ad)return v.ad;
   let u='';try{u=localStorage.getItem(USER_KEY)||'';}catch(e){}
   return u||'Bargello';
@@ -1538,10 +1550,25 @@ const DSEC={0:[],1:['Şirket adı','Şirket sahibinin adı soyadı','Türkiye ad
 function dsecCiz(e){let ilk=0;for(const [no,ad] of Object.entries(DSEC)){const k=ad.filter(x=>e.includes(x)).length;
   const r=document.getElementById('drozet'+no);if(!r)continue;if(!ad.length){r.textContent='';r.className='drozet';continue;}r.className='drozet '+(k?'eksik':'tamam');r.textContent=k?(k+' eksik'):'Tamam';if(k&&!ilk)ilk=no;}
 }
+/* 10 Ekim 2026, Mustafa: Documents pending kapali menu; acilinca basliklar, her baslik acilinca adim adim aciklama. */
+const BELGE_REHBER=[
+ ['1','ABD şirket kurulumu (Bargello USA LLC)',['Önerilen şirket adı ve bir alternatif ad.','Şirket sahibinin adı soyadı ve Türkiye adresi.','Şirket sahibinin pasaport görüntüsü (panelde şifreli yüklenir).','iPostal1 kaydı: bağlantıdan şirket adına ABD posta adresi açılır.','Kurulum ve EIN: Gökhan Çıkılı (Troy Business Services), yaklaşık 3-4 hafta.']],
+ ['2','GPSR / AB sorumlu kişi',['Obelis\'in unvanı, AB adresi ve e-posta adresi girilir.','Export Partners bu bilgileri Seller Central\'a işler; listeler bundan sonra açılır.']],
+ ['3','LUCID / ambalaj bilgileri',['2026 için tahmini yıllık ambalaj miktarı, kg olarak.','Kalemler: kâğıt/karton, plastik, cam, metal, ahşap, diğer ve kargo ambalajı.','Kesin rakam yoksa tahmin yeterli.','Ersin Bey LUCID kaydını ve dual system sözleşmesini tamamlar.']],
+ ['4','VAT son durum',['Taxually\'deki VAT kaydının aşaması yazılır.','Numara geldiyse numara, gelmediyse beklenen tarih.']],
+ ['5','Ürün etiketleri',['Etiket dosyaları Drive\'daki Etiketler klasörüne yüklenir.','Dosya adı ürünün parça numarasıyla başlar.']],
+ ['0','Güvenlik bilgi formları (MSDS / SDS)',['Ürün listesinde her ürünün satılacağı pazar seçilir: Almanya, ABD ya da ikisi.','Almanya formları (REACH Ek II) Drive\'daki Almanya klasörüne yüklenir.','ABD formları (OSHA HazCom, İngilizce) Drive\'daki ABD klasörüne yüklenir.','Dosya adı ürünün parça numarasıyla başlar.','Export Partners formları Amazon\'a yükler ve tehlikeli madde başvurusunu yapar.']]
+];
+let belgeAcik={};
 function belgeBarCiz(){
-  const bb=document.getElementById('belgeBar');
-  if(bb){const e=(typeof teslimEksikler==='function'&&document.getElementById('f_ad'))?teslimEksikler():[];
-    bb.innerHTML=e.length?`<div class="ubox" style="margin:0 0 14px;cursor:pointer;display:flex;align-items:center;gap:10px" onclick="showTab('docs')"><span class="udot"></span><span style="font-weight:800;font-size:12px;letter-spacing:.14em;color:#232F3E">DOCUMENTS PENDING</span><span style="font-size:13px;color:#4A5568">${e.length} fields to complete</span><span style="margin-left:auto;font-weight:700;font-size:13px;color:#232F3E">Open Documents →</span></div>`:'';}
+  const bb=document.getElementById('belgeBar');if(!bb)return;
+  const e=(typeof teslimEksikler==='function'&&document.getElementById('f_ad'))?teslimEksikler():[];
+  const rozet=k=>{const ad=(DSEC[k]||[]);if(!ad.length)return '';const n=ad.filter(x=>e.includes(x)).length;return `<span class="drozet ${n?'eksik':'tamam'}">${n?n+' eksik':'Tamam'}</span>`;};
+  const ac=k=>belgeAcik[k]?' open':'';
+  bb.innerHTML=`<details class="ubox bbox" data-k="ana"${ac('ana')} ontoggle="belgeAcik.ana=this.open" style="margin:0 0 14px">
+    <summary class="uhead"><span class="udot"></span>DOCUMENTS PENDING${e.length?' · '+e.length:''}<a href="#" onclick="event.preventDefault();event.stopPropagation();showTab('docs')" style="margin-left:auto;font-weight:700;font-size:12px;letter-spacing:0;color:#232F3E;text-decoration:none">Open Documents →</a><span class="uchev" style="margin-left:10px">▾</span></summary>
+    ${BELGE_REHBER.map(([k,bas,adim])=>`<details class="brehber"${ac('b'+k)} ontoggle="belgeAcik['b${k}']=this.open"><summary><b>${bas}</b>${rozet(k)}</summary><ul>${adim.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></details>`).join('')}
+  </details>`;
 }
 function teslimCiz(){const e=teslimEksikler();dsecCiz(e);belgeBarCiz();const b=document.getElementById('teslimBtn');const k=document.getElementById('teslimEksik');if(!b)return;
   k.textContent=e.length?('Henüz girilmeyen: '+e.join(', ')):'Tüm bilgi ve belgeler girildi.';
