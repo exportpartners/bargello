@@ -1136,7 +1136,7 @@ function openPill(key){
   if(!d.list.length){body.innerHTML='<div class="pempty">No items.</div>';}
   else body.innerHTML=d.list.map(x=>{
     const dl=daysLeft(x.r.deadline);
-    const dlt=(dl===null||dl<0)?'':(dl===0?'today':`${dl} days left`);
+    const dlt=x.r.deadline?('Due '+new Date(x.r.deadline+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'})):'';
     const acts=(x.r.actions||[]).join(', ');
     return `<div class="pitem" onclick="closePill();openNote(${x.si},${x.ri})">
       <div class="ptask">${esc(name(x.r))}<small>${esc(x.s.name)}${acts?' · '+esc(acts):''}</small>${x.why?`<span class="pwhy">← ${esc(x.why)}</span>`:''}</div>
@@ -1155,7 +1155,7 @@ function renderUrgentBar(){
   el.innerHTML='<details class="ubox"><summary class="uhead"><span class="udot"></span>TO DO · '+items.length+'<span class="uchev">▾</span></summary>'+
     items.map(({s,si,r,ri})=>{
       const d=daysLeft(r.deadline);
-      const dl=(d===null||d<0)?'':(d===0?'today':`${d} days left`);
+      const dl=r.deadline?('Due '+new Date(r.deadline+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'})):'';
       return `<div class="uitem" onclick="openNote(${si},${ri})">
         <span class="utask">${esc(r.task.replace(/^ACİL\s*·\s*/,''))}</span>
         <span class="usec">${esc(s.name)}</span>
