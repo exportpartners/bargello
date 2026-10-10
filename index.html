@@ -170,6 +170,10 @@
   details.dsec>summary::after{content:"▾";color:#8A93A3;font-size:12px;transition:transform .15s}
   details.dsec[open]>summary::after{transform:rotate(180deg)}
   details.dsec>.dbody{padding:0 18px 16px}
+  .dgrup{display:flex;align-items:baseline;gap:10px;max-width:760px;margin:22px 0 10px;padding-bottom:6px;border-bottom:2px solid #232F3E}
+  .dgrup span{font-weight:800;font-size:13px;letter-spacing:.16em;color:#232F3E}
+  .dgrup small{font-size:12px;color:#8A93A3}
+  .dgrup:first-child{margin-top:0}
   details.dsec.onemli{border:1.5px solid #E7B4AE;background:#FFFCFB}
   details.dsec.onemli>summary h3{color:#C0392B}
   .msdsadim{margin:8px 0 0;padding:0;list-style:none;counter-reset:a}
@@ -359,6 +363,7 @@
   <section id="view-tasks">
     <div id="pillBar"></div>
     <div id="urgentBar"></div>
+    <div id="belgeBar"></div>
     <div class="stat">
       <button class="addbtn" onclick="addSection()">+ Section</button>
     </div>
@@ -527,30 +532,38 @@
     </div>
   </section>
   <section id="view-docs" style="display:none" oninput="teslimCiz()">
-    <details class="dcard dsec onemli" id="dsec0" open>
-      <summary><h3>⚠ Güvenlik bilgi formları (MSDS / SDS)</h3><span class="drozet" id="drozet0"></span></summary><div class="dbody">
-      <p class="dnote" style="margin:0">Amazon FBA'ya geçiş için satışa açılacak her parfümün formu gerekiyor.</p>
-      <ol class="msdsadim">
-        <li><span>Ürün listesinde satılacak her ürün için pazarı seçin (Almanya, ABD ya da ikisi).</span><a class="bigbtn" href="https://docs.google.com/spreadsheets/d/1wk2N-GA0lA0ZMCNkAhCFBNXjeBueWw7cKZM7ZpJdKbM/edit" target="_blank" rel="noopener">📊 Ürün listesi (Excel)</a></li>
-        <li><span>Formları Drive klasöründe ilgili pazarın alt klasörüne yükleyin (AB - Almanya / ABD).</span><a class="bigbtn" href="https://drive.google.com/drive/folders/1ExuOBXWJBXobo9sD0R_gFJtn8uVmxj9C" target="_blank" rel="noopener">📁 Drive klasörüne yükle</a></li>
-      </ol>
-      <div id="msdsSlot"></div>
-      <p class="dnote" style="margin:8px 0 0">MSDS ve gümrük konularında: Ersin Bey <a href="mailto:ersiner@diefreaks.de">ersiner@diefreaks.de</a> · <a href="mailto:opr@exportpartners.com.tr">opr@exportpartners.com.tr</a></p>
-    </div></details>
+    <div class="dgrup"><span>ABD</span><small>Bargello USA LLC · Amazon.com</small></div>
     <details class="dcard dsec" id="dsec1">
-      <summary><h3>1) ABD şirket kurulumu</h3><span class="drozet" id="drozet1"></span></summary><div class="dbody">
+      <summary><h3>ABD şirket kurulumu (Bargello USA LLC)</h3><span class="drozet" id="drozet1"></span></summary><div class="dbody">
       <p class="dnote">Şirket kurulumu ve EIN için Gökhan Çıkılı (Troy Business Services) aşağıdaki bilgileri istiyor.</p>
       <label>Şirket adı (önerilen)<input id="f_ad" placeholder="Ör. Bargello USA LLC"></label>
       <label>Alternatif şirket adı<input id="f_alt" placeholder="İlk ad uygun değilse"></label>
       <label>Şirket sahibinin adı soyadı<input id="f_sahip" placeholder="Cemalettin ..."></label>
       <label>Türkiye adresi<textarea id="f_adres" rows="3" placeholder="Açık adres"></textarea></label>
       <button class="btn-save" onclick="formKaydet()">Kaydet</button> <span id="f_durum" class="dnote"></span>
+      <div class="dslot" style="border:1px solid #1f8a4c;border-radius:10px;padding:10px 12px;margin:8px 0 12px">
+        <b>Şirket sahibinin pasaport görüntüsü</b>
+        <p class="dnote" style="margin:4px 0;flex-basis:100%">Tarayıcınızda şifrelenir; yalnızca Export Partners LLC açabilir.</p><details class="acikla"><summary>Gizlilik</summary><div><p>pasaport görüntüsü yüklenmeden önce tarayıcınızda şifrelenir ve panelde şifreli olarak saklanır. Panel üzerinden kimse açamaz; yalnızca Export Partners LLC açabilir. Belge yalnızca ABD şirket kurulumu ve EIN başvurusu için Gökhan Çıkılı'ya (Troy Business Services) iletilir, iletildikten sonra panelden silinir. Dilerseniz pasaport görüntüsünü doğrudan Gökhan Çıkılı'ya (WhatsApp ya da e-posta) da iletebilirsiniz; bu durumda panele yüklemeniz gerekmez.</p></div></details>
+        <span id="pasaportListe"></span>
+        <label class="addbtn" style="margin:0">+ Şifreli yükle<input type="file" accept="image/*,application/pdf" style="display:none" onchange="pasaportYukle(event)"></label>
+      </div>
       <div class="dlink"><b>ABD posta adresi (iPostal1)</b> <span class="dnote">· kayıt aşağıdaki bağlantıdan, şirket sahibinin imzasıyla</span><details class="acikla"><summary>Açıklama</summary><div><p>Neden gerekli: ABD'de kurulan şirketin resmi yazışmaları (IRS ve EIN yazıları, eyalet bildirimleri, banka mektupları) için ABD'de bir posta adresi gerekir. iPostal1 bu adresi sağlar; gelen mektuplar taranarak çevrim içi olarak iletilir.</p><p>Kim yapar: kayıt şirket adına, Gökhan Çıkılı'nın (Troy Business Services) ilettiği aşağıdaki bağlantıdan yapılır. Kayıt sırasında abonelik ödemesi ve posta vekalet formu (USPS Form 1583) için şirket sahibinin imzası ve kimlik doğrulaması istenir; form kayıt ekranında hazır gelir, ayrıca indirilmesi gerekmez.</p></div></details>
         <a href="https://my.ipostal1.com/signup/TroyBusinessServices" target="_blank" rel="noopener">my.ipostal1.com/signup/TroyBusinessServices</a>
         <label style="display:flex;gap:8px;align-items:center;font-weight:700"><input type="checkbox" id="f_ipostal" style="width:auto;margin:0"> iPostal1 kaydı tamamlandı</label></div>
     </div></details>
+    <details class="dcard dsec onemli" id="dsecU" open>
+      <summary><h3>⚠ Güvenlik bilgi formları (MSDS / SDS), ABD</h3><span class="drozet" id="drozetU"></span></summary><div class="dbody">
+      <p class="dnote" style="margin:0">Amazon.com FBA için satışa açılacak her parfümün ABD formu gerekiyor; AB formu ABD'de geçerli olmuyor.</p>
+      <ol class="msdsadim">
+        <li><span>Ürün listesinde ABD'de satılacak ürünleri seçin.</span><a class="bigbtn" href="https://docs.google.com/spreadsheets/d/1wk2N-GA0lA0ZMCNkAhCFBNXjeBueWw7cKZM7ZpJdKbM/edit" target="_blank" rel="noopener">📊 Ürün listesi (Excel)</a></li>
+        <li><span>ABD formlarını (OSHA HazCom, İngilizce) Drive'daki ABD klasörüne yükleyin.</span><a class="bigbtn" href="https://drive.google.com/drive/folders/1w6h2RVGMWpSu9mSUyxIwb6-kAGAVg3MB" target="_blank" rel="noopener">📁 Drive klasörüne yükle</a></li>
+      </ol>
+      <details class="acikla"><summary>Açıklama</summary><div><p>ABD formu OSHA Hazard Communication Standard (29 CFR 1910.1200) düzenine göre, İngilizce, 16 bölümlü ve GHS biçiminde olmalı; 14. bölümde ABD taşıma bilgisi (DOT, UN 1266) yer almalı. Form üretici ya da tedarikçi tarafından düzenlenir; ürün ve marka adı listedekiyle aynı olmalı.</p><p>Dosya adında ürün kodu olması eşleştirmeyi hızlandırır.</p></div></details>
+      <p class="dnote" style="margin:8px 0 0">MSDS ve gümrük konularında: Ersin Bey <a href="mailto:ersiner@diefreaks.de">ersiner@diefreaks.de</a> · <a href="mailto:opr@exportpartners.com.tr">opr@exportpartners.com.tr</a></p>
+    </div></details>
+    <div class="dgrup"><span>ALMANYA</span><small>Amazon.de</small></div>
     <details class="dcard dsec" id="dsec2">
-      <summary><h3>2) GPSR / AB sorumlu kişi</h3><span class="drozet" id="drozet2"></span></summary><div class="dbody">
+      <summary><h3>GPSR / AB sorumlu kişi</h3><span class="drozet" id="drozet2"></span></summary><div class="dbody">
       <p class="dnote">Listelerin açılabilmesi için AB sorumlu kişi bilgisinin Seller Central'a işlenmesi gerekiyor.</p>
       <label>Obelis unvanı<input id="f_gpsr_unvan"></label>
       <label>AB adresi<textarea id="f_gpsr_adres" rows="3"></textarea></label>
@@ -558,7 +571,7 @@
       <button class="btn-save" onclick="gpsrKaydet()">Kaydet</button> <span id="f_gpsr_durum" class="dnote"></span>
     </div></details>
     <details class="dcard dsec" id="dsec3">
-      <summary><h3>3) LUCID / Almanya ambalaj bilgileri</h3><span class="drozet" id="drozet3"></span></summary><div class="dbody">
+      <summary><h3>LUCID / ambalaj bilgileri</h3><span class="drozet" id="drozet3"></span></summary><div class="dbody">
       <p class="dnote">2026 için tahmini yıllık ambalaj miktarı, malzeme türüne göre kg olarak. Kesin rakam yoksa tahmin yeterli.</p>
       <details class="acikla"><summary>Ersin Bey'in talebi (2 Ekim, WhatsApp grubu)</summary><div><p>Toplantıda konuştuğumuz üzere, Almanya pazarı için ambalaj lisanslaması ve LUCID bildirim süreçlerini yürütebilmemiz adına, Almanya'da piyasaya sunulacak ürünlere ilişkin ambalaj bilgilerini bizimle paylaşmanızı rica ederiz.</p><p>Bu kapsamda, mümkünse 2026 yılı için tahmini ambalaj miktarlarını kg bazında, aşağıdaki malzeme türlerine göre ayrı ayrı iletebilir misiniz? Ayrıca, ürünlerin Almanya'ya gönderiminde kullanılan kargo/taşıma ambalajlarının (koli, dolgu malzemesi, bant, film vb.) miktarlarını da mümkünse ayrıca belirtmenizi rica ederiz.</p><p>Eğer kesin rakamlar henüz mevcut değilse, 2026 yılı için tahmini miktarları paylaşmanız yeterlidir. Miktarları ürün bazında değil, toplam yıllık kg olarak verebilirsiniz.</p><p>Bu bilgileri aldıktan sonra Almanya'daki ambalaj lisanslaması ve LUCID bildirimleri için gerekli işlemleri planlayabiliriz.</p></div></details>
       <label>Kâğıt / Karton <span class="dnote">(ürün kutuları, dış ambalajlar, koli ve karton kutular vb.)</span><input id="l_kagit" inputmode="decimal" placeholder="kg/yıl"></label>
@@ -571,21 +584,26 @@
       <button class="btn-save" onclick="lucidKaydet()">Kaydet</button> <span id="l_durum" class="dnote"></span>
     </div></details>
     <details class="dcard dsec" id="dsec4">
-      <summary><h3>4) Almanya VAT son durum</h3><span class="drozet" id="drozet4"></span></summary><div class="dbody">
+      <summary><h3>VAT son durum</h3><span class="drozet" id="drozet4"></span></summary><div class="dbody">
       <p class="dnote">Taxually tarafındaki VAT kaydının son durumunu kısaca yazınız (başvuru aşaması, numara geldiyse numara, beklenen tarih).</p>
       <label>VAT son durum notu<textarea id="f_vat" rows="3"></textarea></label>
       <button class="btn-save" onclick="vatKaydet()">Kaydet</button> <span id="f_vat_durum" class="dnote"></span>
     </div></details>
+    <details class="dcard dsec onemli" id="dsec0" open>
+      <summary><h3>⚠ Güvenlik bilgi formları (MSDS / SDS), AB</h3><span class="drozet" id="drozet0"></span></summary><div class="dbody">
+      <p class="dnote" style="margin:0">Amazon.de FBA için satışa açılacak her parfümün formu gerekiyor.</p>
+      <ol class="msdsadim">
+        <li><span>Ürün listesinde Almanya'da satılacak ürünleri seçin.</span><a class="bigbtn" href="https://docs.google.com/spreadsheets/d/1wk2N-GA0lA0ZMCNkAhCFBNXjeBueWw7cKZM7ZpJdKbM/edit" target="_blank" rel="noopener">📊 Ürün listesi (Excel)</a></li>
+        <li><span>AB formlarını (REACH Ek II, Almanca ya da İngilizce) Drive'daki AB klasörüne yükleyin.</span><a class="bigbtn" href="https://drive.google.com/drive/folders/1oUA62BuXq7q0kGK_GdbKeTc523GKy8Nj" target="_blank" rel="noopener">📁 Drive klasörüne yükle</a></li>
+      </ol>
+      <div id="msdsSlot"></div>
+      <p class="dnote" style="margin:8px 0 0">MSDS ve gümrük konularında: Ersin Bey <a href="mailto:ersiner@diefreaks.de">ersiner@diefreaks.de</a> · <a href="mailto:opr@exportpartners.com.tr">opr@exportpartners.com.tr</a></p>
+    </div></details>
+    <div class="dgrup"><span>ORTAK</span><small>Her iki pazar</small></div>
     <details class="dcard dsec" id="dsec5">
-      <summary><h3>5) Belge yükleme</h3><span class="drozet" id="drozet5"></span></summary><div class="dbody">
+      <summary><h3>Ürün etiketleri ve diğer belgeler</h3><span class="drozet" id="drozet5"></span></summary><div class="dbody">
       <p class="dnote">Dosya başına en fazla 7 MB. PDF, JPG, PNG, Excel ya da Word.</p>
       <p class="dnote">Genel sorularınız için: <a href="mailto:info@exportpartners.com.tr">info@exportpartners.com.tr</a></p>
-      <div class="dslot" style="border:1px solid #1f8a4c;border-radius:10px;padding:10px 12px;margin:8px 0 12px">
-        <b>ABD şirket kurulumu belgesi (Bargello USA LLC): şirket sahibinin pasaport görüntüsü</b>
-        <p class="dnote" style="margin:4px 0;flex-basis:100%">Tarayıcınızda şifrelenir; yalnızca Export Partners LLC açabilir.</p><details class="acikla"><summary>Gizlilik</summary><div><p>pasaport görüntüsü yüklenmeden önce tarayıcınızda şifrelenir ve panelde şifreli olarak saklanır. Panel üzerinden kimse açamaz; yalnızca Export Partners LLC açabilir. Belge yalnızca ABD şirket kurulumu ve EIN başvurusu için Gökhan Çıkılı'ya (Troy Business Services) iletilir, iletildikten sonra panelden silinir. Dilerseniz pasaport görüntüsünü doğrudan Gökhan Çıkılı'ya (WhatsApp ya da e-posta) da iletebilirsiniz; bu durumda panele yüklemeniz gerekmez.</p></div></details>
-        <span id="pasaportListe"></span>
-        <label class="addbtn" style="margin:0">+ Şifreli yükle<input type="file" accept="image/*,application/pdf" style="display:none" onchange="pasaportYukle(event)"></label>
-      </div>
       <details class="acikla"><summary>Kişisel verilerin korunması hakkında bilgilendirme</summary><div><p>Bu panelde paylaşılan bilgi ve belgeler, Export Partners LLC tarafından yalnızca ABD şirket kurulumu, Amazon pazar girişi ve bunlara bağlı resmi kayıt süreçlerinin yürütülmesi amacıyla işlenir. Bilgiler, bu süreçlerin gerektirdiği ölçüde ilgili hizmet sağlayıcılarıyla (şirket kurulum hizmeti, Almanya ambalaj ve LUCID temsilcisi) paylaşılır; başka bir amaçla kullanılmaz ve üçüncü kişilere aktarılmaz. Süreç tamamlandıktan sonra talebiniz üzerine silinir. Bilgi ve talepleriniz için: info@exportpartners.com.tr</p></div></details>
       <div id="dSlots"></div>
       <label>Danışman yorumları <span class="dnote">(ürünler hakkında daha önce alınan uyum ya da danışman görüşleri)</span><textarea id="f_danisman" rows="5"></textarea></label>
@@ -742,7 +760,7 @@ const SEED={
 
 let state={sections:[],timeline:[],weeks:[],calc:[],ship:{rate:0,list:[]},log:[],strategy:{market:'DE',depth:'core',fulfil:'hybrid',ppc:'mid',bundles:['discovery','duo']}};
 let curShip=0;
-let collapsed={};
+let collapsed={__done:true};
 let secFilter={}; /* per-section: array of selected statuses; empty = All */
 
 function normalize(d){
@@ -1136,16 +1154,16 @@ function renderTasks(){
   state.sections.forEach((s,si)=>{
     const f=secFilter[s.id]||[];
     const open=!collapsed[s.id];
-    const shown=s.rows.map((r,ri)=>({r,ri})).filter(x=>passFilter(f,x.r)).sort(rowCmp);
+    const shown=s.rows.map((r,ri)=>({r,ri})).filter(x=>x.r.status!=='Complete'&&passFilter(f,x.r)).sort(rowCmp);
     html+=`<tr><td colspan="7" class="secbar">
       <span class="secpill">
         <span class="chev" onclick="toggleSec('${s.id}')">${open?'▾':'▸'}</span>
         <input class="secname" value="${esc(s.name)}" onchange="updSection(${si},this.value)" size="${Math.max(12,(s.name||'').length+4)}">
-        <span class="n">${s.rows.filter(r=>r.status==='Complete').length}/${s.rows.length}</span>
+        <span class="n">${s.rows.filter(r=>r.status!=='Complete').length} açık</span>
       </span>
       <span class="fchips">
         <button class="fchip ${f.length===0?'on':''}" onclick="clearFilter('${s.id}')">All</button>
-        ${['In Progress','Not Started','Complete','On Hold'].map(st=>`<button class="fchip ${f.includes(st)?'on':''}" onclick="toggleFilter('${s.id}','${st.replace(/'/g,"\\'")}')">${f.includes(st)?'✓ ':''}${st==='Complete'?'Completed':st}</button>`).join('')}
+        ${['In Progress','Not Started','On Hold'].map(st=>`<button class="fchip ${f.includes(st)?'on':''}" onclick="toggleFilter('${s.id}','${st.replace(/'/g,"\\'")}')">${f.includes(st)?'✓ ':''}${st==='Complete'?'Completed':st}</button>`).join('')}
       </span>
       <button class="del" onclick="delSection(${si})" title="Delete section" style="float:right">✕</button>
     </td></tr>`;
@@ -1154,7 +1172,12 @@ function renderTasks(){
       html+=shown.map(x=>rowHtml(si,x.ri,x.r)).join('');
     }
   });
+  const done=[];state.sections.forEach((s,si)=>s.rows.forEach((r,ri)=>{if(r.status==='Complete')done.push({si,ri,r});}));
+  if(done.length){const op=!collapsed.__done;
+    html+=`<tr><td colspan="7" class="secbar"><span class="secpill"><span class="chev" onclick="toggleSec('__done')">${op?'▾':'▸'}</span><span class="secname" style="cursor:pointer;border:0" onclick="toggleSec('__done')">TAMAMLANANLAR</span><span class="n">${done.length}</span></span></td></tr>`;
+    if(op)html+=done.map(x=>rowHtml(x.si,x.ri,x.r)).join('');}
   document.getElementById('taskBody').innerHTML=html;
+  belgeBarCiz();
 }
 function updRow(si,ri,k,v){
   const r=state.sections[si].rows[ri],old=r[k];r[k]=v;
@@ -1507,12 +1530,17 @@ function teslimEksikler(){const v=id=>(document.getElementById(id)||{}).value||'
    ['f_vat','VAT son durum notu']].forEach(([id,ad])=>{if(!v(id).trim())e.push(ad);});
   const yuk=k=>Object.values(dosyaListe).some(m=>m.kalem===k);
   if(!yuk('pasaport'))e.push('Pasaport');if(!yuk('msds')&&!/^https?:\/\//.test(belgeLink.msds||''))e.push('MSDS (Drive klasörü)');return e;}
-const DSEC={0:['MSDS (Drive klasörü)'],1:['Şirket adı','Şirket sahibinin adı soyadı','Türkiye adresi'],2:['Obelis unvanı','Obelis AB adresi','Obelis e-posta'],
-  3:['LUCID Kâğıt/Karton','LUCID Plastik','LUCID Cam','LUCID Metal','LUCID Kargo ambalajı'],4:['VAT son durum notu'],5:['Pasaport']};
+const DSEC={0:['MSDS (Drive klasörü)'],U:[],1:['Şirket adı','Şirket sahibinin adı soyadı','Türkiye adresi','Pasaport'],2:['Obelis unvanı','Obelis AB adresi','Obelis e-posta'],
+  3:['LUCID Kâğıt/Karton','LUCID Plastik','LUCID Cam','LUCID Metal','LUCID Kargo ambalajı'],4:['VAT son durum notu'],5:[]};
 function dsecCiz(e){let ilk=0;for(const [no,ad] of Object.entries(DSEC)){const k=ad.filter(x=>e.includes(x)).length;
-  const r=document.getElementById('drozet'+no);if(!r)continue;if(no==='0'){r.className='drozet onem';r.textContent='Önemli';continue;}r.className='drozet '+(k?'eksik':'tamam');r.textContent=k?(k+' eksik'):'Tamam';if(k&&!ilk)ilk=no;}
+  const r=document.getElementById('drozet'+no);if(!r)continue;if(no==='0'||no==='U'){r.className='drozet onem';r.textContent='Önemli';continue;}if(!ad.length){r.textContent='';r.className='drozet';continue;}r.className='drozet '+(k?'eksik':'tamam');r.textContent=k?(k+' eksik'):'Tamam';if(k&&!ilk)ilk=no;}
 }
-function teslimCiz(){const e=teslimEksikler();dsecCiz(e);const b=document.getElementById('teslimBtn');const k=document.getElementById('teslimEksik');if(!b)return;
+function belgeBarCiz(){
+  const bb=document.getElementById('belgeBar');
+  if(bb){const e=(typeof teslimEksikler==='function'&&document.getElementById('f_ad'))?teslimEksikler():[];
+    bb.innerHTML=e.length?`<div class="ubox" style="margin:0 0 14px;cursor:pointer;display:flex;align-items:center;gap:10px" onclick="showTab('docs')"><span class="udot"></span><span style="font-weight:800;font-size:12px;letter-spacing:.14em;color:#232F3E">BELGELER BEKLENİYOR</span><span style="font-size:13px;color:#4A5568">Belgeler sekmesinde ${e.length} alan doldurulacak</span><span style="margin-left:auto;font-weight:700;font-size:13px;color:#232F3E">Belgeler'i aç →</span></div>`:'';}
+}
+function teslimCiz(){const e=teslimEksikler();dsecCiz(e);belgeBarCiz();const b=document.getElementById('teslimBtn');const k=document.getElementById('teslimEksik');if(!b)return;
   k.textContent=e.length?('Henüz girilmeyen: '+e.join(', ')):'Tüm bilgi ve belgeler girildi.';
   const d=document.getElementById('teslimDurum');if(d)d.textContent=teslimD.ts?('Gönderildi: '+new Date(teslimD.ts).toLocaleString('tr-TR')+' · '+(teslimD.u||'')):'';}
 function teslimEt(){if(!dbRef){toast('Bağlantı yok');return;}if(!hazirMi())return;
