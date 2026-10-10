@@ -358,12 +358,12 @@
 
 <div class="wrap">
   <div class="tabs">
-    <button class="tab on" id="tab-tasks" onclick="showTab('tasks')">Takip</button>
-    <button class="tab" id="tab-timeline" onclick="showTab('timeline')">Zaman çizelgesi</button>
-    <button class="tab" id="tab-calc" onclick="showTab('calc')">Kârlılık</button>
-    <button class="tab" id="tab-ship" onclick="showTab('ship')">Sevkiyat planı</button>
-    <button class="tab" id="tab-strategy" onclick="showTab('strategy')">Lansman stratejisi</button>
-    <button class="tab" id="tab-docs" onclick="showTab('docs')">Belgeler</button>
+    <button class="tab on" id="tab-tasks" onclick="showTab('tasks')">Track Tasks</button>
+    <button class="tab" id="tab-timeline" onclick="showTab('timeline')">Timeline</button>
+    <button class="tab" id="tab-calc" onclick="showTab('calc')">Profitability</button>
+    <button class="tab" id="tab-ship" onclick="showTab('ship')">Shipment Plan</button>
+    <button class="tab" id="tab-strategy" onclick="showTab('strategy')">Launch Studio</button>
+    <button class="tab" id="tab-docs" onclick="showTab('docs')">Documents</button>
   </div>
 
   <section id="view-tasks">
@@ -371,15 +371,15 @@
     <div id="urgentBar"></div>
     <div id="belgeBar"></div>
     <div class="stat">
-      <button class="addbtn" onclick="addSection()">+ Bölüm</button>
+      <button class="addbtn" onclick="addSection()">+ Section</button>
     </div>
     <div class="scroll">
       <table>
-        <thead><tr><th style="width:118px">DURUM</th><th style="width:128px">TAHMİNİ TARİH</th><th style="width:52px">GÜN</th><th>İŞ</th><th style="width:250px">BEKLENEN</th><th style="width:310px">NOT</th><th style="width:36px"></th></tr></thead>
+        <thead><tr><th style="width:118px">STATUS</th><th style="width:128px">EST. DEADLINE</th><th style="width:52px">DAYS</th><th>TASK</th><th style="width:250px">ACTION</th><th style="width:310px">NOTE</th><th style="width:36px"></th></tr></thead>
         <tbody id="taskBody"></tbody>
       </table>
     </div>
-    <div class="hint">Notun tamamı için nota tıklayın.</div>
+    <div class="hint">Click any note to open the full text.</div>
   </section>
 
   <section id="view-timeline" style="display:none">
@@ -685,8 +685,8 @@ const FIREBASE_CONFIG={
 /* ===================================================== */
 
 const STATUSES=['Urgent','In Progress','Not Started','Complete'];
-const ST_TR={'Urgent':'Yapılacak','In Progress':'Devam ediyor','Not Started':'Sırada','Complete':'Tamamlandı'};
-const ACT_TR={'Awaiting Client Info':'Firmadan bilgi bekleniyor','Awaiting Documents':'Belge bekleniyor','Collecting Requested Files':'Belgeler toplanıyor','Client Approval Pending':'Firma onayı bekleniyor','Waiting on Amazon':"Amazon'da bekliyor",'Awaiting Third-Party Approval':'Üçüncü taraf onayı bekleniyor','Revision Requested':'Düzeltme istendi','Payment Pending':'Ödeme bekleniyor'};
+const ST_TR={'Urgent':'To Do','In Progress':'In Progress','Not Started':'Scheduled','Complete':'Completed'};
+const ACT_TR={};
 const SCLASS={'Complete':'st-complete','In Progress':'st-inprogress','Not Started':'st-notstarted','On Hold':'st-onhold','Over Due':'st-overdue','Urgent':'st-urgent'};
 const ACTIONS=['Awaiting Client Info','Awaiting Documents','Collecting Requested Files','Client Approval Pending','Waiting on Amazon','Awaiting Third-Party Approval','Revision Requested','Payment Pending'];
 const ACT_RED=['Awaiting Client Info','Payment Pending'];
@@ -992,7 +992,7 @@ function openLog(){
   }
   /* 10 Ekim 2026, Mustafa: Updates'te yalniz musterinin (ekip ve Sistem disi) degisiklikleri. */
   const M=L.filter(e=>!EKIP.includes(e.u)&&!/^sistem$/i.test(e.u||''));
-  b.innerHTML=M.length?M.map(e=>`<div class="logrow"><span class="logwho">${esc(e.u)}</span><span class="logmsg">${esc(e.m)}</span><span class="logtime">${agoTxt(e.t)}</span></div>`).join(''):'<div style="color:var(--muted);font-size:13px;padding:10px 2px">Müşteri tarafında kayıtlı değişiklik yok.</div>';
+  b.innerHTML=M.length?M.map(e=>`<div class="logrow"><span class="logwho">${esc(e.u)}</span><span class="logmsg">${esc(e.m)}</span><span class="logtime">${agoTxt(e.t)}</span></div>`).join(''):'<div style="color:var(--muted);font-size:13px;padding:10px 2px">No client-side changes yet.</div>';
   document.getElementById('logBg').classList.add('show');
 }
 function closeLog(){document.getElementById('logBg').classList.remove('show');}
@@ -1032,7 +1032,7 @@ function daysLeft(dl){
   return Math.round((d-now)/86400000);
 }
 function statusOpts(sel){return STATUSES.map(s=>`<option value="${s}" ${s===sel?'selected':''}>${ST_TR[s]||s}</option>`).join('');}
-function addOpts(list,have){return '<option value="">+ Ekle</option>'+list.filter(x=>!have.includes(x)).map(x=>`<option value="${x}">${ACT_TR[x]||x}</option>`).join('');}
+function addOpts(list,have){return '<option value="">+ Action</option>'+list.filter(x=>!have.includes(x)).map(x=>`<option value="${x}">${ACT_TR[x]||x}</option>`).join('');}
 function actClass(a){if(ACT_RED.includes(a))return 'a-red';if(ACT_ORANGE.includes(a))return 'a-orange';if(ACT_BLUE.includes(a))return 'a-blue';if(ACT_GREEN.includes(a))return 'a-green';return '';}
 const SORT_RANK={'Urgent':-1,'Over Due':0,'On Hold':1,'In Progress':2,'Complete':3,'Not Started':4};
 function rowCmp(a,b){
@@ -1062,9 +1062,9 @@ function rowHtml(si,ri,r){
   const notePrev=textOf(r.note||'');
   return `<tr class="${r.status==='Urgent'?'urgentrow':''}">
     <td><select class="status ${SCLASS[r.status]}" onchange="updRow(${si},${ri},'status',this.value);renderTasks()">${statusOpts(r.status)}</select></td>
-    <td>${(r.status==='Complete')?'<span style="color:#b6bcc8;font-size:12px">—</span>':`<input class="cell dl ${r.status==='In Progress'&&!r.deadline?'needdl':''}" type="date" value="${esc(r.deadline)}" title="${r.status==='In Progress'&&!r.deadline?'Devam eden iş için tarih girilmesi önerilir':''}" onchange="updRow(${si},${ri},'deadline',this.value)">`}</td>
+    <td>${(r.status==='Complete')?'<span style="color:#b6bcc8;font-size:12px">—</span>':`<input class="cell dl ${r.status==='In Progress'&&!r.deadline?'needdl':''}" type="date" value="${esc(r.deadline)}" title="${r.status==='In Progress'&&!r.deadline?'Estimated deadline recommended':''}" onchange="updRow(${si},${ri},'deadline',this.value)">`}</td>
     <td>${(()=>{const dlv=r.status==='Complete'?null:daysLeft(r.deadline);if(dlv===null)return `<input class="cell days" value="${esc(r.days)}" placeholder="—" onchange="updRow(${si},${ri},'days',this.value)">`;if(dlv<0)return `<span class="res mut" style="display:block;text-align:center">—</span>`;const cls=dlv<=3?'':'mut';return `<span class="res ${cls}" style="display:block;text-align:center" title="Est. deadline'a göre otomatik">${dlv}</span>`;})()}</td>
-    <td><input class="cell task" value="${esc(r.task)}" placeholder="İş" onchange="updRow(${si},${ri},'task',this.value)"></td>
+    <td><input class="cell task" value="${esc(r.task)}" placeholder="Task" onchange="updRow(${si},${ri},'task',this.value)"></td>
     <td><div class="chips">${chips}<select class="add-sel" onchange="addAction(${si},${ri},this.value);this.selectedIndex=0">${addOpts(ACTIONS,r.actions||[])}</select></div></td>
     <td><div class="notewrap">${notePrev?`<div class="noteprev ${r.status==='Urgent'?'urgent':''}" onclick="openNote(${si},${ri})" title="Open note">${esc(notePrev)}</div>`:''}<button class="npen" onclick="openNote(${si},${ri})" title="${notePrev?'Edit note':'Add note'}">✏️</button></div></td>
     <td><button class="del" onclick="delRow(${si},${ri})" title="Delete row">✕</button></td>
@@ -1104,27 +1104,27 @@ function renderPillBar(){
   const ep=[];
   active.forEach(x=>{const n=name(x.r);const m=EP_BLOCKED.find(([k])=>n.startsWith(k));if(m)ep.push(Object.assign({},x,{why:m[1]}));});
   pillData={
-    urgent:{title:'Yapılacaklar',sub:'ŞİMDİ YAPILMASI GEREKENLER',list:urgent},
-    client:{title:'Firmadan bekleniyor',sub:'FİRMADAN KARAR, BELGE YA DA İMZA BEKLEYEN',list:client},
-    third:{title:'Üçüncü tarafta',sub:'AMAZON, TAXUALLY, PAYONEER GİBİ ÜÇÜNCÜ TARAFTA',list:third},
-    ep:{title:"Export Partners'ta",sub:'BİZİM YAPACAĞIMIZ, GİRDİ GELİNCE BAŞLAYACAK İŞLER',list:ep}
+    urgent:{title:'To Do',sub:'ACTION NEEDED NOW',list:urgent},
+    client:{title:'Waiting on client',sub:'DECISION, DOCUMENT OR SIGNATURE FROM CLIENT',list:client},
+    third:{title:'Waiting on third party',sub:'AMAZON, TAXUALLY, PAYONEER AND OTHER THIRD PARTIES',list:third},
+    ep:{title:'Export Partners awaiting input',sub:'OUR TASKS, START WHEN INPUT ARRIVES',list:ep}
   };
   const pill=(key,cls,label,n)=>`<span class="pill ${cls}" onclick="openPill('${key}')" title="Tıkla, listeyi aç"><span class="pv">${n}</span>${label}</span>`;
   el.innerHTML=
-    pill('urgent','p-urgent','Yapılacaklar',urgent.length)+
-    pill('client','p-client','Firmadan bekleniyor',client.length)+
-    pill('third','p-third','Üçüncü tarafta',third.length)+
-    pill('ep','p-ep',"Export Partners'ta",ep.length);
+    pill('urgent','p-urgent','To Do',urgent.length)+
+    pill('client','p-client','Waiting on client',client.length)+
+    pill('third','p-third','Waiting on third party',third.length)+
+    pill('ep','p-ep','Export Partners awaiting input',ep.length);
 }
 function openPill(key){
   const d=pillData[key]; if(!d)return;
   const name=r=>r.task.replace(/^ACİL\s*·\s*/,'');
   document.getElementById('pillTitle').innerHTML=esc(d.title)+' · '+d.list.length+'<small>'+esc(d.sub)+'</small>';
   const body=document.getElementById('pillBody');
-  if(!d.list.length){body.innerHTML='<div class="pempty">Bu başlıkta kalem yok.</div>';}
+  if(!d.list.length){body.innerHTML='<div class="pempty">No items.</div>';}
   else body.innerHTML=d.list.map(x=>{
     const dl=daysLeft(x.r.deadline);
-    const dlt=(dl===null||dl<0)?'':(dl===0?'bugün':`${dl} gün kaldı`);
+    const dlt=(dl===null||dl<0)?'':(dl===0?'today':`${dl} days left`);
     const acts=(x.r.actions||[]).join(', ');
     return `<div class="pitem" onclick="closePill();openNote(${x.si},${x.ri})">
       <div class="ptask">${esc(name(x.r))}<small>${esc(x.s.name)}${acts?' · '+esc(acts):''}</small>${x.why?`<span class="pwhy">← ${esc(x.why)}</span>`:''}</div>
@@ -1140,10 +1140,10 @@ function renderUrgentBar(){
   state.sections.forEach((s,si)=>s.rows.forEach((r,ri)=>{ if(r.status==='Urgent'||r.status==='Over Due') items.push({s,si,r,ri}); }));
   if(!items.length){ el.innerHTML=''; return; }
   items.sort((a,b)=>((a.r.onc!=null?a.r.onc:99)-(b.r.onc!=null?b.r.onc:99))||String(a.r.deadline||'9').localeCompare(String(b.r.deadline||'9')));
-  el.innerHTML='<details class="ubox"><summary class="uhead"><span class="udot"></span>YAPILACAKLAR · '+items.length+'<span class="uchev">▾</span></summary>'+
+  el.innerHTML='<details class="ubox"><summary class="uhead"><span class="udot"></span>TO DO · '+items.length+'<span class="uchev">▾</span></summary>'+
     items.map(({s,si,r,ri})=>{
       const d=daysLeft(r.deadline);
-      const dl=(d===null||d<0)?'':(d===0?'bugün':`${d} gün kaldı`);
+      const dl=(d===null||d<0)?'':(d===0?'today':`${d} days left`);
       return `<div class="uitem" onclick="openNote(${si},${ri})">
         <span class="utask">${esc(r.task.replace(/^ACİL\s*·\s*/,''))}</span>
         <span class="usec">${esc(s.name)}</span>
@@ -1163,22 +1163,22 @@ function renderTasks(){
       <span class="secpill">
         <span class="chev" onclick="toggleSec('${s.id}')">${open?'▾':'▸'}</span>
         <input class="secname" value="${esc(s.name)}" onchange="updSection(${si},this.value)" size="${Math.max(12,(s.name||'').length+4)}">
-        <span class="n">${s.rows.filter(r=>r.status!=='Complete').length} açık</span>
+        <span class="n">${s.rows.filter(r=>r.status!=='Complete').length} open</span>
       </span>
       <span class="fchips">
-        <button class="fchip ${f.length===0?'on':''}" onclick="clearFilter('${s.id}')">Tümü</button>
+        <button class="fchip ${f.length===0?'on':''}" onclick="clearFilter('${s.id}')">All</button>
         ${['Urgent','In Progress','Not Started'].map(st=>`<button class="fchip ${f.includes(st)?'on':''}" onclick="toggleFilter('${s.id}','${st}')">${f.includes(st)?'✓ ':''}${ST_TR[st]}</button>`).join('')}
       </span>
       <button class="del" onclick="delSection(${si})" title="Delete section" style="float:right">✕</button>
     </td></tr>`;
     if(open){
-      html+=`<tr><td colspan="7" style="padding:0"><button class="addrow" onclick="addRow(${si})">+ Satır ekle</button></td></tr>`;
+      html+=`<tr><td colspan="7" style="padding:0"><button class="addrow" onclick="addRow(${si})">+ Add row</button></td></tr>`;
       html+=shown.map(x=>rowHtml(si,x.ri,x.r)).join('');
     }
   });
   const done=[];state.sections.forEach((s,si)=>s.rows.forEach((r,ri)=>{if(r.status==='Complete')done.push({si,ri,r});}));
   if(done.length){const op=!collapsed.__done;
-    html+=`<tr><td colspan="7" class="secbar"><span class="secpill"><span class="chev" onclick="toggleSec('__done')">${op?'▾':'▸'}</span><span class="secname" style="cursor:pointer;border:0" onclick="toggleSec('__done')">TAMAMLANANLAR</span><span class="n">${done.length}</span></span></td></tr>`;
+    html+=`<tr><td colspan="7" class="secbar"><span class="secpill"><span class="chev" onclick="toggleSec('__done')">${op?'▾':'▸'}</span><span class="secname" style="cursor:pointer;border:0" onclick="toggleSec('__done')">COMPLETED</span><span class="n">${done.length}</span></span></td></tr>`;
     if(op)html+=done.map(x=>rowHtml(x.si,x.ri,x.r)).join('');}
   document.getElementById('taskBody').innerHTML=html;
   belgeBarCiz();
@@ -1190,7 +1190,7 @@ function updRow(si,ri,k,v){
       logChange(r.task+' → '+v);r.isNew=false;
       const dl=daysLeft(r.deadline);
       r.odMuted=(v!=='Over Due'&&dl!==null&&dl<0);
-      if(v==='In Progress'&&!r.deadline)toast('Devam eden işe tahmini tarih girin');
+      if(v==='In Progress'&&!r.deadline)toast('Please set an estimated deadline');
     }
     if(k==='deadline'){r.odMuted=false;}
     else if(k==='deadline')logChange('Deadline: '+r.task+' → '+(v||'—'));
@@ -1541,7 +1541,7 @@ function dsecCiz(e){let ilk=0;for(const [no,ad] of Object.entries(DSEC)){const k
 function belgeBarCiz(){
   const bb=document.getElementById('belgeBar');
   if(bb){const e=(typeof teslimEksikler==='function'&&document.getElementById('f_ad'))?teslimEksikler():[];
-    bb.innerHTML=e.length?`<div class="ubox" style="margin:0 0 14px;cursor:pointer;display:flex;align-items:center;gap:10px" onclick="showTab('docs')"><span class="udot"></span><span style="font-weight:800;font-size:12px;letter-spacing:.14em;color:#232F3E">BELGELER BEKLENİYOR</span><span style="font-size:13px;color:#4A5568">Belgeler sekmesinde ${e.length} alan doldurulacak</span><span style="margin-left:auto;font-weight:700;font-size:13px;color:#232F3E">Belgeler'i aç →</span></div>`:'';}
+    bb.innerHTML=e.length?`<div class="ubox" style="margin:0 0 14px;cursor:pointer;display:flex;align-items:center;gap:10px" onclick="showTab('docs')"><span class="udot"></span><span style="font-weight:800;font-size:12px;letter-spacing:.14em;color:#232F3E">DOCUMENTS PENDING</span><span style="font-size:13px;color:#4A5568">${e.length} fields to complete</span><span style="margin-left:auto;font-weight:700;font-size:13px;color:#232F3E">Open Documents →</span></div>`:'';}
 }
 function teslimCiz(){const e=teslimEksikler();dsecCiz(e);belgeBarCiz();const b=document.getElementById('teslimBtn');const k=document.getElementById('teslimEksik');if(!b)return;
   k.textContent=e.length?('Henüz girilmeyen: '+e.join(', ')):'Tüm bilgi ve belgeler girildi.';
