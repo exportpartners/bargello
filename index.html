@@ -166,6 +166,16 @@
   .dcard label{display:block;font-size:12px;font-weight:700;color:#232F3E;margin:10px 0 0}
   .dcard input,.dcard textarea{display:block;width:100%;box-sizing:border-box;margin-top:4px;padding:9px 11px;border:1px solid #D5D9E0;border-radius:8px;font:inherit;font-size:14px}
   .dnote{font-size:12px;color:#6B7280}
+  .acikla{flex-basis:100%;font-size:12.5px;color:var(--muted)}
+  .acikla summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#8A93A3;padding:2px 0;user-select:none}
+  .acikla summary::-webkit-details-marker{display:none}
+  .acikla summary::before{content:"ⓘ";font-size:13px}
+  .acikla summary::after{content:"▾";font-size:10px;transition:transform .15s}
+  .acikla[open] summary::after{transform:rotate(180deg)}
+  .acikla>div{margin-top:6px;padding:10px 12px;background:#F8F9FB;border-radius:8px;max-width:720px}
+  .acikla p{margin:0 0 8px;line-height:1.55;text-align:left}
+  @media (min-width:700px){.acikla p{text-align:justify}}
+  .acikla p:last-child{margin-bottom:0}
   .dlink{margin-top:14px;font-size:13px}
   .dslot{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #F0F1F4}
   .dslot b{min-width:230px;font-size:13px;color:#232F3E}
@@ -552,7 +562,7 @@
         <span id="pasaportListe"></span>
         <label class="addbtn" style="margin:0">+ Şifreli yükle<input type="file" accept="image/*,application/pdf" style="display:none" onchange="pasaportYukle(event)"></label>
       </div>
-      <p class="dnote"><b>Kişisel verilerin korunması hakkında bilgilendirme.</b> Bu panelde paylaşılan bilgi ve belgeler, Export Partners LLC tarafından yalnızca ABD şirket kurulumu, Amazon pazar girişi ve bunlara bağlı resmi kayıt süreçlerinin yürütülmesi amacıyla işlenir. Bilgiler, bu süreçlerin gerektirdiği ölçüde ilgili hizmet sağlayıcılarıyla (şirket kurulum hizmeti, Almanya ambalaj ve LUCID temsilcisi) paylaşılır; başka bir amaçla kullanılmaz ve üçüncü kişilere aktarılmaz. Süreç tamamlandıktan sonra talebiniz üzerine silinir. Bilgi ve talepleriniz için: deniz@exportpartners.com.tr</p>
+      <details class="acikla"><summary>Kişisel verilerin korunması hakkında bilgilendirme</summary><div><p>Bu panelde paylaşılan bilgi ve belgeler, Export Partners LLC tarafından yalnızca ABD şirket kurulumu, Amazon pazar girişi ve bunlara bağlı resmi kayıt süreçlerinin yürütülmesi amacıyla işlenir. Bilgiler, bu süreçlerin gerektirdiği ölçüde ilgili hizmet sağlayıcılarıyla (şirket kurulum hizmeti, Almanya ambalaj ve LUCID temsilcisi) paylaşılır; başka bir amaçla kullanılmaz ve üçüncü kişilere aktarılmaz. Süreç tamamlandıktan sonra talebiniz üzerine silinir. Bilgi ve talepleriniz için: deniz@exportpartners.com.tr</p></div></details>
       <div id="dSlots"></div>
       <label>Danışman yorumları <span class="dnote">(ürünler hakkında daha önce alınan uyum ya da danışman görüşleri)</span><textarea id="f_danisman" rows="5"></textarea></label>
       <button class="btn-save" onclick="danismanKaydet()">Kaydet</button> <span id="f_danisman_durum" class="dnote"></span>
@@ -1433,8 +1443,8 @@ function applyOverdue(){
 
 /* ---------- belgeler ---------- */
 let abdForm={},gpsrForm={},lucidForm={},danisman={},vatD={},teslimD={},dosyaListe={},belgeLink={};
-const SLOTLAR=[['msds','Güvenlik bilgi formları (MSDS / SDS) — satışa açılacak her ürün için',
-    "Amazon, alkol bazlı parfümü nakliyede tehlikeli madde kapsamında\ndeğerlendiriyor (UN 1266, Sınıf 3 yanıcı sıvı) ve FBA'ya geçişte her ürün\niçin güvenlik bilgi formu talep ediyor. Form üretici ya da tedarikçi\ntarafından düzenlenmiş olmalı, 16 bölümlü standart formatta ve güncel\ntarihli olmalı, üzerindeki ürün ve marka adı listedeki ürünle\nbirebir aynı olmalı, GHS/CLP tehlike bilgisiyle birlikte UN numarası ve\nalevlenme noktası görünmeli. Avrupa Birliği için REACH Ek II düzenine göre\nhazırlanmış versiyon gerekiyor; ABD için düzenlenen form geçerli olmuyor.\nAlmanca tercih edilir, İngilizce de kabul ediliyor. Formlar formülasyon\nbaşına düzenlendiği için tek bir belge yeterli olmuyor; satışa açılacak\nürün listesinin tamamı için ayrı ayrı gerekiyor.\n\nABD için ayrı bir versiyon gerekiyor: OSHA Hazard Communication Standard\n(29 CFR 1910.1200) düzenine göre, İngilizce, 16 bölümlü ve GHS biçiminde;\n14. bölümde ABD taşıma bilgisi (DOT, UN 1266) yer almalı. AB için hazırlanan\nform ABD'de, ABD için hazırlanan form AB'de geçerli olmuyor.\n\nDosya sayısı yüksek olduğu için formları tek tek yüklemek yerine aşağıdaki\nDrive klasörüne yüklemeniz yeterli. Klasörde iki alt klasör var:\n\"AB - Almanya (REACH Ek II)\" ve \"ABD (OSHA HazCom, İngilizce)\"; her form\nilgili pazarın klasörüne konmalı. Dosya adlarında ürün kodunun bulunması\neşleştirmeyi hızlandırır. Kendi klasörünüzü kullanmak isterseniz bağlantısını\nalana yapıştırıp kaydedebilirsiniz."],
+const SLOTLAR=[['msds','Güvenlik bilgi formları (MSDS / SDS)',
+    "Amazon alkol bazlı parfümü tehlikeli madde (UN 1266, Sınıf 3) sayıyor ve FBA'ya geçişte satışa açılacak her ürün için ayrı form istiyor. Form üretici ya da tedarikçi tarafından düzenlenmiş, 16 bölümlü, güncel tarihli olmalı; ürün ve marka adı listedekiyle aynı, UN numarası ve alevlenme noktası görünür olmalı.\n\nAB için REACH Ek II düzeninde (Almanca ya da İngilizce), ABD için OSHA HazCom düzeninde İngilizce ayrı bir versiyon gerekiyor; biri diğerinin yerine geçmiyor.\n\nFormları aşağıdaki Drive klasöründe ilgili pazarın alt klasörüne (AB - Almanya / ABD) yüklemeniz yeterli; dosya adında ürün kodu olması eşleştirmeyi hızlandırır."],
   ['etiket','Ürün etiketleri'],['diger','Diğer belgeler']];
 function formCiz(){[['f_ad','sirket_adi'],['f_alt','alternatif'],['f_sahip','sahip'],['f_adres','tr_adres']].forEach(([id,k])=>{
   const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=abdForm[k]||'';});
@@ -1516,7 +1526,7 @@ async function pasaportYukle(ev){const f=ev.target.files[0];ev.target.value='';i
 function slotCiz(){setTimeout(teslimCiz,0);pasaportCiz();const k=document.getElementById('dSlots');if(!k)return;
   k.innerHTML=SLOTLAR.map(([id,ad,aciklama])=>{
     const dosyalar=Object.entries(dosyaListe).filter(([,m])=>m.kalem===id).sort((a,b)=>a[1].ts-b[1].ts);
-    return `<div class="dslot"><b>${ad}</b>${aciklama?`<div style="flex-basis:100%;font-size:12px;line-height:1.5;color:var(--muted);white-space:pre-line">${esc(aciklama)}</div>`:''}${dosyalar.map(([fid,m])=>`<span class="dfile" onclick="dosyaAc('${fid}')" title="${esc(new Date(m.ts).toLocaleString('tr-TR'))}">📎 ${esc(m.ad)}</span><span class="dfile" style="color:#C0392B;cursor:pointer" title="Sil" onclick="dosyaSil('${fid}')">✕</span>`).join('')}
+    return `<div class="dslot"><b>${ad}</b>${aciklama?`<details class="acikla"><summary>Açıklama</summary><div>${aciklama.split('\n\n').map(p=>`<p>${esc(p)}</p>`).join('')}</div></details>`:''}${dosyalar.map(([fid,m])=>`<span class="dfile" onclick="dosyaAc('${fid}')" title="${esc(new Date(m.ts).toLocaleString('tr-TR'))}">📎 ${esc(m.ad)}</span><span class="dfile" style="color:#C0392B;cursor:pointer" title="Sil" onclick="dosyaSil('${fid}')">✕</span>`).join('')}
       ${id==='msds'?'':`<label class="addbtn" style="margin:0">+ Yükle<input type="file" style="display:none" onchange="dosyaYukle(event,'${id}')"></label>`}${id==='msds'?`<div style="flex-basis:100%;display:flex;gap:8px;align-items:center"><input type="text" id="f_link_msds" placeholder="Klasör bağlantısı (Google Drive, OneDrive, Dropbox...)" value="${esc(belgeLink.msds||'')}" style="flex:1;min-width:0;padding:7px 10px;border:1px solid var(--line);border-radius:6px;font-size:13px"><button class="addbtn" style="margin:0" onclick="belgeLinkKaydet('msds')">Kaydet</button>${/^https?:\/\//.test(belgeLink.msds||'')?`<a class="addbtn" style="margin:0;text-decoration:none" href="${esc(belgeLink.msds)}" target="_blank" rel="noopener">📁 Drive klasörüne yükle</a>`:''}</div>`:''}</div>`;}).join('');}
 /* 10 Ekim 2026: MSDS slotuna klasor baglantisi. Deger bargello_tracker_v2/belge_linkleri/<slot> altinda. */
 function belgeLinkKaydet(slot){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}if(!hazirMi())return;
