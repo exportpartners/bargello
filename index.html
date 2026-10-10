@@ -163,6 +163,16 @@
   .mfoot{padding:11px 16px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;background:#f8fafc}
   .dcard{background:#fff;border:1px solid #E6E8EC;border-radius:12px;padding:18px 20px;margin:0 0 16px;max-width:760px}
   .dcard h3{margin:0 0 6px;font-size:16px;color:#232F3E}
+  details.dsec{padding:0}
+  details.dsec>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 18px;user-select:none}
+  details.dsec>summary::-webkit-details-marker{display:none}
+  details.dsec>summary h3{margin:0;flex:1;font-size:15px}
+  details.dsec>summary::after{content:"▾";color:#8A93A3;font-size:12px;transition:transform .15s}
+  details.dsec[open]>summary::after{transform:rotate(180deg)}
+  details.dsec>.dbody{padding:0 18px 16px}
+  .drozet{font-size:11px;font-weight:700;border-radius:999px;padding:3px 9px;white-space:nowrap}
+  .drozet.tamam{background:#E7F5EC;color:#1f8a4c}
+  .drozet.eksik{background:#FFF1E4;color:#C25E00}
   .dcard label{display:block;font-size:12px;font-weight:700;color:#232F3E;margin:10px 0 0}
   .dcard input,.dcard textarea{display:block;width:100%;box-sizing:border-box;margin-top:4px;padding:9px 11px;border:1px solid #D5D9E0;border-radius:8px;font:inherit;font-size:14px}
   .dnote{font-size:12px;color:#6B7280}
@@ -508,35 +518,30 @@
     </div>
   </section>
   <section id="view-docs" style="display:none" oninput="teslimCiz()">
-    <div class="dcard">
-      <h3>1) ABD şirket kurulumu</h3>
+    <details class="dcard dsec" id="dsec1">
+      <summary><h3>1) ABD şirket kurulumu</h3><span class="drozet" id="drozet1"></span></summary><div class="dbody">
       <p class="dnote">Şirket kurulumu ve EIN için Gökhan Çıkılı (Troy Business Services) aşağıdaki bilgileri istiyor.</p>
       <label>Şirket adı (önerilen)<input id="f_ad" placeholder="Ör. Bargello USA LLC"></label>
       <label>Alternatif şirket adı<input id="f_alt" placeholder="İlk ad uygun değilse"></label>
       <label>Şirket sahibinin adı soyadı<input id="f_sahip" placeholder="Cemalettin ..."></label>
       <label>Türkiye adresi<textarea id="f_adres" rows="3" placeholder="Açık adres"></textarea></label>
       <button class="btn-save" onclick="formKaydet()">Kaydet</button> <span id="f_durum" class="dnote"></span>
-      <div class="dlink"><b>ABD posta adresi (iPostal1)</b><br>
-        Neden gerekli: ABD'de kurulan şirketin resmi yazışmaları (IRS ve EIN yazıları, eyalet bildirimleri, banka mektupları) için ABD'de bir posta adresi gerekir. iPostal1 bu adresi sağlar; gelen mektuplar taranarak çevrim içi olarak iletilir.<br>
-        Kim yapar: kayıt şirket adına, Gökhan Çıkılı'nın (Troy Business Services) ilettiği aşağıdaki bağlantıdan yapılır. Kayıt sırasında abonelik ödemesi ve posta vekalet formu (USPS Form 1583) için şirket sahibinin imzası ve kimlik doğrulaması istenir; form kayıt ekranında hazır gelir, ayrıca indirilmesi gerekmez.<br>
+      <div class="dlink"><b>ABD posta adresi (iPostal1)</b> <span class="dnote">· kayıt aşağıdaki bağlantıdan, şirket sahibinin imzasıyla</span><details class="acikla"><summary>Açıklama</summary><div><p>Neden gerekli: ABD'de kurulan şirketin resmi yazışmaları (IRS ve EIN yazıları, eyalet bildirimleri, banka mektupları) için ABD'de bir posta adresi gerekir. iPostal1 bu adresi sağlar; gelen mektuplar taranarak çevrim içi olarak iletilir.</p><p>Kim yapar: kayıt şirket adına, Gökhan Çıkılı'nın (Troy Business Services) ilettiği aşağıdaki bağlantıdan yapılır. Kayıt sırasında abonelik ödemesi ve posta vekalet formu (USPS Form 1583) için şirket sahibinin imzası ve kimlik doğrulaması istenir; form kayıt ekranında hazır gelir, ayrıca indirilmesi gerekmez.</p></div></details>
         <a href="https://my.ipostal1.com/signup/TroyBusinessServices" target="_blank" rel="noopener">my.ipostal1.com/signup/TroyBusinessServices</a>
         <label style="display:flex;gap:8px;align-items:center;font-weight:700"><input type="checkbox" id="f_ipostal" style="width:auto;margin:0"> iPostal1 kaydı tamamlandı</label></div>
-    </div>
-    <div class="dcard">
-      <h3>2) GPSR / AB sorumlu kişi</h3>
+    </div></details>
+    <details class="dcard dsec" id="dsec2">
+      <summary><h3>2) GPSR / AB sorumlu kişi</h3><span class="drozet" id="drozet2"></span></summary><div class="dbody">
       <p class="dnote">Listelerin açılabilmesi için AB sorumlu kişi bilgisinin Seller Central'a işlenmesi gerekiyor.</p>
       <label>Obelis unvanı<input id="f_gpsr_unvan"></label>
       <label>AB adresi<textarea id="f_gpsr_adres" rows="3"></textarea></label>
       <label>E-posta<input id="f_gpsr_mail"></label>
       <button class="btn-save" onclick="gpsrKaydet()">Kaydet</button> <span id="f_gpsr_durum" class="dnote"></span>
-    </div>
-    <div class="dcard">
-      <h3>3) LUCID / Almanya ambalaj bilgileri</h3>
-      <p class="dnote">Ersin Bey, 2 Ekim (WhatsApp grubu):</p>
-      <p class="dnote">Toplantıda konuştuğumuz üzere, Almanya pazarı için ambalaj lisanslaması ve LUCID bildirim süreçlerini yürütebilmemiz adına, Almanya'da piyasaya sunulacak ürünlere ilişkin ambalaj bilgilerini bizimle paylaşmanızı rica ederiz.</p>
-      <p class="dnote">Bu kapsamda, mümkünse 2026 yılı için tahmini ambalaj miktarlarını kg bazında, aşağıdaki malzeme türlerine göre ayrı ayrı iletebilir misiniz? Ayrıca, ürünlerin Almanya'ya gönderiminde kullanılan kargo/taşıma ambalajlarının (koli, dolgu malzemesi, bant, film vb.) miktarlarını da mümkünse ayrıca belirtmenizi rica ederiz.</p>
-      <p class="dnote">Eğer kesin rakamlar henüz mevcut değilse, 2026 yılı için tahmini miktarları paylaşmanız yeterlidir. Miktarları ürün bazında değil, toplam yıllık kg olarak verebilirsiniz.</p>
-      <p class="dnote">Bu bilgileri aldıktan sonra Almanya'daki ambalaj lisanslaması ve LUCID bildirimleri için gerekli işlemleri planlayabiliriz.</p>
+    </div></details>
+    <details class="dcard dsec" id="dsec3">
+      <summary><h3>3) LUCID / Almanya ambalaj bilgileri</h3><span class="drozet" id="drozet3"></span></summary><div class="dbody">
+      <p class="dnote">2026 için tahmini yıllık ambalaj miktarı, malzeme türüne göre kg olarak. Kesin rakam yoksa tahmin yeterli.</p>
+      <details class="acikla"><summary>Ersin Bey'in talebi (2 Ekim, WhatsApp grubu)</summary><div><p>Toplantıda konuştuğumuz üzere, Almanya pazarı için ambalaj lisanslaması ve LUCID bildirim süreçlerini yürütebilmemiz adına, Almanya'da piyasaya sunulacak ürünlere ilişkin ambalaj bilgilerini bizimle paylaşmanızı rica ederiz.</p><p>Bu kapsamda, mümkünse 2026 yılı için tahmini ambalaj miktarlarını kg bazında, aşağıdaki malzeme türlerine göre ayrı ayrı iletebilir misiniz? Ayrıca, ürünlerin Almanya'ya gönderiminde kullanılan kargo/taşıma ambalajlarının (koli, dolgu malzemesi, bant, film vb.) miktarlarını da mümkünse ayrıca belirtmenizi rica ederiz.</p><p>Eğer kesin rakamlar henüz mevcut değilse, 2026 yılı için tahmini miktarları paylaşmanız yeterlidir. Miktarları ürün bazında değil, toplam yıllık kg olarak verebilirsiniz.</p><p>Bu bilgileri aldıktan sonra Almanya'daki ambalaj lisanslaması ve LUCID bildirimleri için gerekli işlemleri planlayabiliriz.</p></div></details>
       <label>Kâğıt / Karton <span class="dnote">(ürün kutuları, dış ambalajlar, koli ve karton kutular vb.)</span><input id="l_kagit" inputmode="decimal" placeholder="kg/yıl"></label>
       <label>Plastik <span class="dnote">(plastik poşetler, ambalaj filmleri, shrink film, plastik kapaklar vb.)</span><input id="l_plastik" inputmode="decimal" placeholder="kg/yıl"></label>
       <label>Cam <span class="dnote">(cam şişe, kavanoz vb.)</span><input id="l_cam" inputmode="decimal" placeholder="kg/yıl"></label>
@@ -545,20 +550,20 @@
       <label>Diğer ambalaj malzemeleri <span class="dnote">(yukarıdaki kategorilere girmeyen ambalajlar)</span><input id="l_diger" inputmode="decimal" placeholder="kg/yıl"></label>
       <label>Kargo / taşıma ambalajları <span class="dnote">(koli, dolgu malzemesi, bant, film vb.)</span><input id="l_kargo" inputmode="decimal" placeholder="kg/yıl"></label>
       <button class="btn-save" onclick="lucidKaydet()">Kaydet</button> <span id="l_durum" class="dnote"></span>
-    </div>
-    <div class="dcard">
-      <h3>4) Almanya VAT son durum</h3>
+    </div></details>
+    <details class="dcard dsec" id="dsec4">
+      <summary><h3>4) Almanya VAT son durum</h3><span class="drozet" id="drozet4"></span></summary><div class="dbody">
       <p class="dnote">Taxually tarafındaki VAT kaydının son durumunu kısaca yazınız (başvuru aşaması, numara geldiyse numara, beklenen tarih).</p>
       <label>VAT son durum notu<textarea id="f_vat" rows="3"></textarea></label>
       <button class="btn-save" onclick="vatKaydet()">Kaydet</button> <span id="f_vat_durum" class="dnote"></span>
-    </div>
-    <div class="dcard">
-      <h3>5) Belge yükleme</h3>
+    </div></details>
+    <details class="dcard dsec" id="dsec5">
+      <summary><h3>5) Belge yükleme</h3><span class="drozet" id="drozet5"></span></summary><div class="dbody">
       <p class="dnote">Dosya başına en fazla 7 MB. PDF, JPG, PNG, Excel ya da Word.</p>
-      <p class="dnote">MSDS, ürün etiketleri ve danışman yorumları mevzuat birimimizin talebidir. Sorularınız için: <a href="mailto:opr@exportpartners.com.tr">opr@exportpartners.com.tr</a></p>
+      <p class="dnote">Sorularınız için: <a href="mailto:opr@exportpartners.com.tr">opr@exportpartners.com.tr</a></p>
       <div class="dslot" style="border:1px solid #1f8a4c;border-radius:10px;padding:10px 12px;margin:8px 0 12px">
         <b>Şirket sahibinin pasaport görüntüsü (şifreli yükleme)</b>
-        <p class="dnote" style="margin:4px 0">Gizlilik: pasaport görüntüsü yüklenmeden önce tarayıcınızda şifrelenir ve panelde şifreli olarak saklanır. Panel üzerinden kimse açamaz; yalnızca Export Partners LLC açabilir. Belge yalnızca ABD şirket kurulumu ve EIN başvurusu için Gökhan Çıkılı'ya (Troy Business Services) iletilir, iletildikten sonra panelden silinir. Dilerseniz pasaport görüntüsünü doğrudan Gökhan Çıkılı'ya (WhatsApp ya da e-posta) da iletebilirsiniz; bu durumda panele yüklemeniz gerekmez.</p>
+        <p class="dnote" style="margin:4px 0;flex-basis:100%">Tarayıcınızda şifrelenir; yalnızca Export Partners LLC açabilir.</p><details class="acikla"><summary>Gizlilik</summary><div><p>pasaport görüntüsü yüklenmeden önce tarayıcınızda şifrelenir ve panelde şifreli olarak saklanır. Panel üzerinden kimse açamaz; yalnızca Export Partners LLC açabilir. Belge yalnızca ABD şirket kurulumu ve EIN başvurusu için Gökhan Çıkılı'ya (Troy Business Services) iletilir, iletildikten sonra panelden silinir. Dilerseniz pasaport görüntüsünü doğrudan Gökhan Çıkılı'ya (WhatsApp ya da e-posta) da iletebilirsiniz; bu durumda panele yüklemeniz gerekmez.</p></div></details>
         <span id="pasaportListe"></span>
         <label class="addbtn" style="margin:0">+ Şifreli yükle<input type="file" accept="image/*,application/pdf" style="display:none" onchange="pasaportYukle(event)"></label>
       </div>
@@ -566,7 +571,7 @@
       <div id="dSlots"></div>
       <label>Danışman yorumları <span class="dnote">(ürünler hakkında daha önce alınan uyum ya da danışman görüşleri)</span><textarea id="f_danisman" rows="5"></textarea></label>
       <button class="btn-save" onclick="danismanKaydet()">Kaydet</button> <span id="f_danisman_durum" class="dnote"></span>
-    </div>
+    </div></details>
     <div class="dcard" id="teslimKart">
       <h3>Tamamla ve gönder</h3>
       <p class="dnote">Hazır olan bilgi ve belgeleri istediğiniz zaman gönderebilirsiniz; eksik kalanları daha sonra tamamlayıp tekrar gönderebilirsiniz.</p>
@@ -1449,21 +1454,21 @@ const SLOTLAR=[['msds','Güvenlik bilgi formları (MSDS / SDS)',
 function formCiz(){[['f_ad','sirket_adi'],['f_alt','alternatif'],['f_sahip','sahip'],['f_adres','tr_adres']].forEach(([id,k])=>{
   const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=abdForm[k]||'';});
   const ip=document.getElementById('f_ipostal');if(ip)ip.checked=!!abdForm.ipostal;
-  const d=document.getElementById('f_durum');if(d)d.textContent=abdForm.ts?('Son kayıt: '+new Date(abdForm.ts).toLocaleString('tr-TR')+' · '+(abdForm.u||'')):'';}
+  const d=document.getElementById('f_durum');if(d)d.textContent=abdForm.ts?('Son kayıt: '+new Date(abdForm.ts).toLocaleString('tr-TR')+' · '+(abdForm.u||'')):'';;teslimCiz();}
 function formKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}if(!hazirMi())return;
   const v=id=>document.getElementById(id).value.trim();
   const f={sirket_adi:v('f_ad'),alternatif:v('f_alt'),sahip:v('f_sahip'),tr_adres:v('f_adres'),ipostal:document.getElementById('f_ipostal').checked,ts:Date.now(),u:whoAmI()};
   dbRef.child('abd_form').set(f).then(()=>{logChange('ABD şirket formu kaydedildi: '+(f.sirket_adi||'-')+(f.ipostal?' · iPostal1 tamam':''));save();toast('Kaydedildi');});}
 function gpsrCiz(){[['f_gpsr_unvan','unvan'],['f_gpsr_adres','adres'],['f_gpsr_mail','mail']].forEach(([id,k])=>{
   const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=gpsrForm[k]||'';});
-  const d=document.getElementById('f_gpsr_durum');if(d)d.textContent=gpsrForm.ts?('Son kayıt: '+new Date(gpsrForm.ts).toLocaleString('tr-TR')+' · '+(gpsrForm.u||'')):'';}
+  const d=document.getElementById('f_gpsr_durum');if(d)d.textContent=gpsrForm.ts?('Son kayıt: '+new Date(gpsrForm.ts).toLocaleString('tr-TR')+' · '+(gpsrForm.u||'')):'';;teslimCiz();}
 function gpsrKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}if(!hazirMi())return;
   const v=id=>document.getElementById(id).value.trim();
   const f={unvan:v('f_gpsr_unvan'),adres:v('f_gpsr_adres'),mail:v('f_gpsr_mail'),ts:Date.now(),u:whoAmI()};
   dbRef.child('gpsr_form').set(f).then(()=>{logChange('GPSR formu kaydedildi: '+(f.unvan||'-'));save();toast('Kaydedildi');});}
 const LUCID_ALAN=["l_kagit", "l_plastik", "l_cam", "l_metal", "l_ahsap", "l_diger", "l_kargo"];
 function lucidCiz(){LUCID_ALAN.forEach(id=>{const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=lucidForm[id]||'';});
-  const d=document.getElementById('l_durum');if(d)d.textContent=lucidForm.ts?('Son kayıt: '+new Date(lucidForm.ts).toLocaleString('tr-TR')+' · '+(lucidForm.u||'')):'';}
+  const d=document.getElementById('l_durum');if(d)d.textContent=lucidForm.ts?('Son kayıt: '+new Date(lucidForm.ts).toLocaleString('tr-TR')+' · '+(lucidForm.u||'')):'';;teslimCiz();}
 function lucidKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}if(!hazirMi())return;
   const f={ts:Date.now(),u:whoAmI()};LUCID_ALAN.forEach(id=>{f[id]=document.getElementById(id).value.trim();});
   dbRef.child('lucid_form').set(f).then(()=>{logChange('LUCID ambalaj bilgileri kaydedildi: '+LUCID_ALAN.filter(k=>f[k]).length+'/7 kalem dolu');save();toast('Kaydedildi');});}
@@ -1473,7 +1478,7 @@ function danismanKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');retu
   dbRef.child('danisman_yorum').set({metin:document.getElementById('f_danisman').value.trim(),ts:Date.now(),u:whoAmI()})
   .then(()=>{logChange('Danışman yorumları kaydedildi: '+document.getElementById('f_danisman').value.trim().slice(0,90));save();toast('Kaydedildi');});}
 function vatCiz(){const e=document.getElementById('f_vat');if(e&&document.activeElement!==e)e.value=vatD.metin||'';
-  const d=document.getElementById('f_vat_durum');if(d)d.textContent=vatD.ts?('Son kayıt: '+new Date(vatD.ts).toLocaleString('tr-TR')+' · '+(vatD.u||'')):'';}
+  const d=document.getElementById('f_vat_durum');if(d)d.textContent=vatD.ts?('Son kayıt: '+new Date(vatD.ts).toLocaleString('tr-TR')+' · '+(vatD.u||'')):'';;teslimCiz();}
 function vatKaydet(){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}if(!hazirMi())return;
   const m=document.getElementById('f_vat').value.trim();
   dbRef.child('vat_durum').set({metin:m,ts:Date.now(),u:whoAmI()})
@@ -1485,7 +1490,12 @@ function teslimEksikler(){const v=id=>(document.getElementById(id)||{}).value||'
    ['f_vat','VAT son durum notu']].forEach(([id,ad])=>{if(!v(id).trim())e.push(ad);});
   const yuk=k=>Object.values(dosyaListe).some(m=>m.kalem===k);
   if(!yuk('pasaport'))e.push('Pasaport');if(!yuk('msds')&&!/^https?:\/\//.test(belgeLink.msds||''))e.push('MSDS (Drive klasörü)');return e;}
-function teslimCiz(){const e=teslimEksikler();const b=document.getElementById('teslimBtn');const k=document.getElementById('teslimEksik');if(!b)return;
+const DSEC={1:['Şirket adı','Şirket sahibinin adı soyadı','Türkiye adresi'],2:['Obelis unvanı','Obelis AB adresi','Obelis e-posta'],
+  3:['LUCID Kâğıt/Karton','LUCID Plastik','LUCID Cam','LUCID Metal','LUCID Kargo ambalajı'],4:['VAT son durum notu'],5:['Pasaport','MSDS (Drive klasörü)']};
+function dsecCiz(e){let ilk=0;for(const [no,ad] of Object.entries(DSEC)){const k=ad.filter(x=>e.includes(x)).length;
+  const r=document.getElementById('drozet'+no);if(!r)continue;r.className='drozet '+(k?'eksik':'tamam');r.textContent=k?(k+' eksik'):'Tamam';if(k&&!ilk)ilk=no;}
+}
+function teslimCiz(){const e=teslimEksikler();dsecCiz(e);const b=document.getElementById('teslimBtn');const k=document.getElementById('teslimEksik');if(!b)return;
   k.textContent=e.length?('Henüz girilmeyen: '+e.join(', ')):'Tüm bilgi ve belgeler girildi.';
   const d=document.getElementById('teslimDurum');if(d)d.textContent=teslimD.ts?('Gönderildi: '+new Date(teslimD.ts).toLocaleString('tr-TR')+' · '+(teslimD.u||'')):'';}
 function teslimEt(){if(!dbRef){toast('Bağlantı yok');return;}if(!hazirMi())return;
