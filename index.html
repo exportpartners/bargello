@@ -588,7 +588,7 @@
       <label>Danışman yorumları <span class="dnote">(ürünler hakkında daha önce alınan uyum ya da danışman görüşleri)</span><textarea id="f_danisman" rows="5"></textarea></label>
       <button class="btn-save" onclick="danismanKaydet()">Kaydet</button> <span id="f_danisman_durum" class="dnote"></span>
     </div></details>
-    <details class="dcard dsec onemli" id="dsec0">
+    <details class="dcard dsec onemli" id="dsec0" open>
       <summary><h3>Güvenlik bilgi formları (MSDS / SDS)</h3><span class="drozet" id="drozet0"></span></summary><div class="dbody">
       <p class="dnote" style="margin:0">Amazon, parfümleri FBA'ya almadan önce tehlikeli madde sınıflandırmasından geçiriyor (Almanya: Gefahrgut, ABD: hazmat). Sınıflandırma her ürünün güvenlik bilgi formuyla yapılıyor.</p>
       <ol class="msdsadim">
@@ -1575,7 +1575,7 @@ function slotCiz(){setTimeout(teslimCiz,0);pasaportCiz();const k=document.getEle
   const ms=SLOTLAR.find(x=>x[0]==='msds'),mk=document.getElementById('msdsSlot');
   if(mk){const f=dl('msds');mk.innerHTML=f?`<div class="dslot" style="border-top:0;padding-top:4px">${f}</div>`:'';}
   k.innerHTML=SLOTLAR.filter(x=>x[0]!=='msds').map(([id,ad,aciklama])=>`<div class="dslot"><b>${ad}</b>${acik(aciklama)}${dl(id)}
-      <label class="addbtn" style="margin:0">+ Yükle<input type="file" style="display:none" onchange="dosyaYukle(event,'${id}')"></label></div>`).join('');}
+      ${id==='etiket'?`<span class="dnote" style="flex:1;min-width:200px">Ürün etiketlerini Drive klasörüne yükleyin; dosya adı parça numarasıyla başlamalı.</span><a class="bigbtn" href="https://drive.google.com/drive/folders/1bli3EmEPgODS7_fJ_IEUa4NuEHijEI7Z" target="_blank" rel="noopener">Etiketler klasörü</a>`:`<label class="addbtn" style="margin:0">+ Yükle<input type="file" style="display:none" onchange="dosyaYukle(event,'${id}')"></label>`}</div>`).join('');}
 /* 10 Ekim 2026: MSDS slotuna klasor baglantisi. Deger bargello_tracker_v2/belge_linkleri/<slot> altinda. */
 function belgeLinkKaydet(slot){if(!dbRef){toast('Bağlantı yok, kaydedilemedi');return;}if(!hazirMi())return;
   const v=(document.getElementById('f_link_'+slot)||{}).value||'';
