@@ -213,6 +213,8 @@
   .dsay{display:inline-block;margin-left:6px;font-size:11px;font-weight:800;padding:1px 8px;border-radius:999px;border:1.5px solid #C9CFDA;color:#5A6475;vertical-align:1px}
   .dsay.yeni{border:2px solid #7A1F2B;color:#7A1F2B;background:#fff;animation:opendocNabiz 1.6s ease-in-out infinite}
   @media (prefers-reduced-motion:reduce){.dsay.yeni{animation:none}}
+  .once{font-size:11px;color:#6B7487;margin:3px 0 0 2px;line-height:1.5}
+  .once span.ok{color:#2E7D32}
   .acikla{flex-basis:100%;font-size:12.5px;color:var(--muted)}
   .acikla summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:#232F3E;background:#F1F3F7;border:1px solid #D5DAE3;border-radius:999px;padding:5px 12px 5px 10px;margin:2px 0;user-select:none;transition:background .15s,border-color .15s}
   .acikla summary:hover{background:#E7EBF2;border-color:#B9C1CF}
@@ -860,6 +862,7 @@ function initData(){
       dbRef.child('danisman_yorum').on('value',sn=>{danisman=sn.val()||{};danismanCiz();});
       dbRef.child('vat_durum').on('value',sn=>{vatD=sn.val()||{};vatCiz();});
       dbRef.child('teslim').on('value',sn=>{teslimD=sn.val()||{};teslimCiz();});
+      dbRef.child('oto_durum').on('value',sn=>{otoD=sn.val()||{};otoHazir=true;otoBag();},()=>{});
       dbRef.child('dosya_liste').on('value',sn=>{dosyaListe=sn.val()||{};slotCiz();});
       dbRef.child('belge_linkleri').on('value',sn=>{belgeLink=sn.val()||{};teslimCiz();const e=document.getElementById('f_link_msds');if(!e||document.activeElement!==e)slotCiz();});
       return;
@@ -1100,7 +1103,7 @@ function rowHtml(si,ri,r){
     <td><select class="status ${SCLASS[r.status]}" onchange="updRow(${si},${ri},'status',this.value);renderTasks()">${statusOpts(r.status)}</select></td>
     <td>${(r.status==='Complete')?'<span style="color:#b6bcc8;font-size:12px">—</span>':`<input class="cell dl ${r.status==='In Progress'&&!r.deadline?'needdl':''}" type="date" value="${esc(r.deadline)}" title="${r.status==='In Progress'&&!r.deadline?'Estimated deadline recommended':''}" onchange="updRow(${si},${ri},'deadline',this.value)">`}</td>
     <td>${(()=>{const dlv=r.status==='Complete'?null:daysLeft(r.deadline);if(dlv===null)return `<input class="cell days" value="${esc(r.days)}" placeholder="—" onchange="updRow(${si},${ri},'days',this.value)">`;if(dlv<0)return `<span class="res mut" style="display:block;text-align:center">—</span>`;const cls=dlv<=3?'':'mut';return `<span class="res ${cls}" style="display:block;text-align:center" title="Est. deadline'a göre otomatik">${dlv}</span>`;})()}</td>
-    <td><input class="cell task" value="${esc(r.task)}" placeholder="Task" onchange="updRow(${si},${ri},'task',this.value)"></td>
+    <td><input class="cell task" value="${esc(r.task)}" placeholder="Task" onchange="updRow(${si},${ri},'task',this.value)">${onceHtml(r)}</td>
     <td><div class="chips">${chips}<select class="add-sel" onchange="addAction(${si},${ri},this.value);this.selectedIndex=0">${addOpts(ACTIONS,r.actions||[])}</select></div></td>
     <td><div class="notewrap">${notePrev?`<div class="noteprev ${r.status==='Urgent'?'urgent':''}" onclick="openNote(${si},${ri})" title="Open note">${esc(notePrev)}</div>`:''}<button class="npen" onclick="openNote(${si},${ri})" title="${notePrev?'Edit note':'Add note'}">✏️</button></div></td>
     <td><button class="del" onclick="delRow(${si},${ri})" title="Delete row">✕</button></td>
@@ -1509,6 +1512,35 @@ function stSet(key,val,multi){
 }
 
 /* ---------- shared ---------- */
+/* 10 Ekim 2026, Mustafa: kalemler arasi on kosul ("Önce:"). Tarih otomatik KAYMAZ; yalnizca durum guncellenir:
+   a) Bargello Gönder'e bastiktan sonra ilgili belge bolumu tamamsa kalem To Do -> In Progress.
+   b) On kosullarin hepsi Completed olunca kalem Scheduled -> To Do.
+   Her otomatik degisim bir kez yapilir (oto_durum); elle geri alinan durum yeniden ezilmez. */
+const ONCE={
+ 'ri1okdbtr8k':['ms2f6xevmjwxo','ms01c7i66pj2r'],
+ 'aplus_de':['ri1okdbtr8k'],
+ 'r8ucz8m2lmv':['ms01c7i6m5jkv','ms01le20hxyjx','mv1l5pild3yu4','rpb5vo6hork'],
+ 'ms01c7i6jxlvu':['rpb5vo6hork','ri1okdbtr8k','ms01c7i63rurd','r8ucz8m2lmv'],
+ 'mv1mcu8xqigqf':['us_6r1429kw'],
+ 'ms01c7i6jod7a':['mv1mcu8sip27u','rehb1ig51w3','mv1mcu8u3d1vi'],
+ 'rcr8dy0vdsf':['mv1mcu8xqigqf','ms01c7i6jod7a','us_8ccfuetj','us_0adzj6lq'],
+ 'ms01c7i6czj0d':['ms01c7i6jxlvu'],
+ 'nr_q4':['ms01c7i6jxlvu']
+};
+const TESLIM_KALEM={'us_6r1429kw':1,'ms2f6xevmjwxo':2,'ms01c7i66pj2r':3,'ms01c7i63rurd':4};
+let otoD={},otoHazir=false;
+function satirBul(id){const S=state.sections||[];for(let si=0;si<S.length;si++){const R=S[si].rows||[];for(let ri=0;ri<R.length;ri++)if(R[ri].id===id)return {si,ri,r:R[ri]};}return null;}
+function kisaAd(t){return (t||'').split(/[(:&]/)[0].trim();}
+function onceHtml(r){const o=ONCE[r.id];if(!o)return '';const p=o.map(id=>{const x=satirBul(id);if(!x)return '';const ok=x.r.status==='Complete';return '<span class="'+(ok?'ok':'')+'">'+(ok?'✓ ':'⏳ ')+esc(kisaAd(x.r.task))+'</span>';}).filter(Boolean);return p.length?'<div class="once">Önce: '+p.join(' · ')+'</div>':'';}
+function otoBag(){
+  if(!dbRef||!BULUT_HAZIR||!otoHazir)return;let ch=false;
+  const yaz=(x,v,an)=>{x.r.status=v;dbRef.child('sections/'+x.si+'/rows/'+x.ri+'/status').set(v);dbRef.child('oto_durum/'+an).set(Date.now());otoD[an]=1;ch=true;};
+  if(teslimD.ts&&document.getElementById('f_ad')){const e=teslimEksikler();for(const [id,k] of Object.entries(TESLIM_KALEM)){const x=satirBul(id),an=id+'_teslim_'+teslimD.ts,L=DSEC[k]||[];
+    if(x&&x.r.status==='Urgent'&&!otoD[an]&&L.length&&L.every(a=>!e.includes(a)))yaz(x,'In Progress',an);}}
+  for(const [id,on] of Object.entries(ONCE)){const x=satirBul(id),an=id+'_once';
+    if(x&&x.r.status==='Not Started'&&!otoD[an]&&on.every(o=>{const y=satirBul(o);return y&&y.r.status==='Complete';}))yaz(x,'Urgent',an);}
+  if(ch)renderTasks();
+}
 function applyOverdue(){return;
   let ch=false;
   (state.sections||[]).forEach(sec=>(sec.rows||[]).forEach(r=>{
@@ -1594,7 +1626,7 @@ function belgeBarCiz(){
     ${BELGE_REHBER.map(([k,bas,adim])=>`<details class="brehber"${ac('b'+k)} ontoggle="belgeAcik['b${k}']=this.open"><summary><b>${bas}</b>${rozet(k)}</summary><ul>${adim.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></details>`).join('')}
   </details>`;
 }
-function teslimCiz(){const e=teslimEksikler();dsecCiz(e);docSayCiz(e);belgeBarCiz();const b=document.getElementById('teslimBtn');const k=document.getElementById('teslimEksik');if(!b)return;
+function teslimCiz(){const e=teslimEksikler();dsecCiz(e);docSayCiz(e);belgeBarCiz();setTimeout(otoBag,0);const b=document.getElementById('teslimBtn');const k=document.getElementById('teslimEksik');if(!b)return;
   k.textContent=e.length?('Henüz girilmeyen: '+e.join(', ')):'Tüm bilgi ve belgeler girildi.';
   const d=document.getElementById('teslimDurum');if(d)d.textContent=teslimD.ts?('Gönderildi: '+new Date(teslimD.ts).toLocaleString('tr-TR')+' · '+(teslimD.u||'')):'';}
 function teslimEt(){if(!dbRef){toast('Bağlantı yok');return;}if(!hazirMi())return;
@@ -1661,7 +1693,7 @@ function dosyaAc(id){dbRef.child('dosyalar/'+id).once('value').then(sn=>{const d
   const a=document.createElement('a');a.href=d.veri;a.download=d.ad;document.body.appendChild(a);a.click();a.remove();});}
 function ustSabit(){const h=document.querySelector('header'),t=document.querySelector('.tabs');if(!h||!t)return;document.documentElement.style.setProperty('--hh',h.offsetHeight+'px');document.documentElement.style.setProperty('--th',t.offsetHeight+'px');}
 window.addEventListener('resize',ustSabit);window.addEventListener('load',ustSabit);
-function renderAll(){ustSabit();applyOverdue();renderTasks();renderTimeline();renderCalc();renderShip();renderStudio();renderLastUpd();teslimCiz();}
+function renderAll(){ustSabit();applyOverdue();renderTasks();renderTimeline();renderCalc();renderShip();renderStudio();renderLastUpd();teslimCiz();otoBag();}
 function toast(m){const t=document.getElementById('toast');if(!t)return;t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
 function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bargello-tracker-backup.json';a.click();}
 function importData(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);state=normalize(d);save();renderAll();toast('Backup restored');}catch(e){alert('Invalid backup file.');}};r.readAsText(f);ev.target.value='';}
