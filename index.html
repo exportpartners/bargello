@@ -529,9 +529,9 @@
         <div class="repnum">05</div>
         <h2>Faz planı</h2>
         <div class="phaserow">
-          <div class="phase"><b>Faz 1 · Ekim – Kasım</b><h4>Almanya uyum</h4><p>GPSR, LUCID, VAT, IOR ve EORI; güvenlik bilgi formları ve Gefahrgut (tehlikeli madde) sınıflandırması.</p></div>
+          <div class="phase"><b>Faz 1 · Ekim – Kasım</b><h4>Almanya uyum</h4><p>GPSR, LUCID, VAT, IOR ve EORI; MSDS ve Gefahrgut (tehlikeli madde) sınıflandırması.</p></div>
           <div class="phase"><b>Faz 2 · Kasım – Aralık</b><h4>Almanya FBA</h4><p>Konteynerle FBA depo girişi, Almanca A+ içerik, Vine kaydı ve reklam açılışı.</p></div>
-          <div class="phase"><b>Faz 3 · Ekim – Kasım</b><h4>ABD hazırlık</h4><p>Bargello USA LLC ve EIN, güvenlik bilgi formları ve hazmat sınıflandırması, MoCRA kaydı, İngilizce etiket, IOR ve gümrük bonosu.</p></div>
+          <div class="phase"><b>Faz 3 · Ekim – Kasım</b><h4>ABD hazırlık</h4><p>Bargello USA LLC ve EIN, MSDS ve hazmat sınıflandırması, MoCRA kaydı, İngilizce etiket, IOR ve gümrük bonosu.</p></div>
           <div class="phase"><b>Faz 4 · Aralık – Ocak</b><h4>ABD lansman</h4><p>Konteynerle depo girişi ve ABD listelerinin aktivasyonu.</p></div>
         </div>
       </div>
@@ -598,15 +598,15 @@
       <button class="btn-save" onclick="danismanKaydet()">Kaydet</button> <span id="f_danisman_durum" class="dnote"></span>
     </div></details>
     <details class="dcard dsec onemli" id="dsec0" open>
-      <summary><h3>Güvenlik bilgi formları (MSDS / SDS)</h3><span class="drozet" id="drozet0"></span></summary><div class="dbody">
-      <p class="dnote" style="margin:0">Amazon, parfümleri FBA'ya almadan önce tehlikeli madde sınıflandırmasından geçiriyor (Almanya: Gefahrgut, ABD: hazmat). Sınıflandırma her ürünün güvenlik bilgi formuyla yapılıyor.</p>
+      <summary><h3>MSDS</h3><span class="drozet" id="drozet0"></span></summary><div class="dbody">
+      <p class="dnote" style="margin:0">Amazon, parfümleri FBA'ya almadan önce tehlikeli madde sınıflandırmasından geçiriyor (Almanya: Gefahrgut, ABD: hazmat). Sınıflandırma her ürünün MSDS'i ile yapılıyor.</p>
       <ol class="msdsadim">
         <li><span>Satışa açılacak ürünlerin pazarını ürün listesinde seçin. <span class="dnote">Google Sheets, tarayıcıda açılır; indirmeye gerek yok.</span></span><a class="bigbtn" href="https://docs.google.com/spreadsheets/d/1wk2N-GA0lA0ZMCNkAhCFBNXjeBueWw7cKZM7ZpJdKbM/edit" target="_blank" rel="noopener">Ürün listesini aç</a></li>
         <li><span>Almanya'da satılacak ürünlerin formlarını yükleyin. <span class="dnote">AB formatı: REACH Ek II, Almanca ya da İngilizce.</span></span><a class="bigbtn" href="https://drive.google.com/drive/folders/1oUA62BuXq7q0kGK_GdbKeTc523GKy8Nj" target="_blank" rel="noopener">Almanya klasörü</a></li>
         <li><span>ABD'de satılacak ürünlerin formlarını yükleyin. <span class="dnote">ABD formatı: OSHA HazCom, İngilizce.</span></span><a class="bigbtn" href="https://drive.google.com/drive/folders/1w6h2RVGMWpSu9mSUyxIwb6-kAGAVg3MB" target="_blank" rel="noopener">ABD klasörü</a></li>
       </ol>
       <details class="acikla" open><summary>Açıklama: neden, hangi form, nereye</summary><div>
-        <p><b>Neden gerekiyor.</b> Alkol bazlı parfüm taşımada yanıcı sıvı sınıfındadır (UN 1266, Sınıf 3). Amazon bu ürünleri FBA deposuna almadan önce ürün bazında tehlikeli madde incelemesinden geçirir; Almanya'da bu incelemenin adı Gefahrgut, ABD'de hazmat. İncelemenin dayanağı ürünün güvenlik bilgi formudur (MSDS / SDS). Formu onaylanmayan ürün FBA'ya gönderilemez.</p>
+        <p><b>Neden gerekiyor.</b> Alkol bazlı parfüm taşımada yanıcı sıvı sınıfındadır (UN 1266, Sınıf 3). Amazon bu ürünleri FBA deposuna almadan önce ürün bazında tehlikeli madde incelemesinden geçirir; Almanya'da bu incelemenin adı Gefahrgut, ABD'de hazmat. İncelemenin dayanağı ürünün MSDS'idir. Formu onaylanmayan ürün FBA'ya gönderilemez.</p>
         <p><b>Hangi form.</b> Form formülasyon başına düzenlenir, yani her parfüm için ayrı form gerekir. Üretici ya da esans tedarikçisi tarafından düzenlenmiş, güncel tarihli ve 16 bölümlü olmalı; üzerindeki ürün ve marka adı listedekiyle aynı olmalı, alevlenme noktası (9. bölüm) ve UN numarası (14. bölüm) yer almalı. Almanya için AB formatı (REACH Ek II), ABD için ABD formatı (OSHA HazCom) kullanılır; iki pazarda satılacak üründe iki form da gerekir.</p>
         <p><b>Nereye.</b> Almanya formları "Almanya klasörü"ne, ABD formları "ABD klasörü"ne yüklenir. Dosya adı parça numarasıyla başlar (örnek: 3010001614-harmony-azure-sds.pdf).</p>
         <p><b>Sonrası.</b> Export Partners formları kontrol eder, Seller Central'da tehlikeli madde başvurusunu yapar ve sonucu panelde günceller.</p>
@@ -824,7 +824,7 @@ function hazirMi(){if(dbRef&&!BULUT_HAZIR){toast('Veriler yükleniyor, birkaç s
    tekrar calisma kontrolu yalnizca bu satir-var-mi kontroludur, ayri bayrak tutulmaz. */
 function gefahrgutGoc(){return false;/* 10 Ekim 2026: kalem MSDS ozet kalemine katildi, goc kapali */const b=(state.sections||[]).find(s=>s.name==='COMPLIANCE & REGISTRATIONS');if(!b)return false;
   b.rows=b.rows||[];if(b.rows.some(r=>(r.task||'').includes('Gefahrgut')))return false;
-  b.rows.push({id:id(),status:'Not Started',deadline:'2026-10-23',days:'',task:'FBA tehlikeli madde sınıflandırması (Gefahrgut)',note:"Amazon, alkol bazlı parfümü UN 1266 / Sınıf 3 yanıcı sıvı olarak\nsınıflandırıyor. ASIN'ler FBA'ya geçmeden önce Seller Central üzerinde\ntehlikeli madde sınıflandırma başvurusunun tamamlanması gerekiyor.\n\nSıra: güvenlik bilgi formlarının ürün bazında toplanması, Seller Central >\nTehlikeli Madde Sınıflandırmasını Yönet ekranından yüklenmesi, Amazon'un\nsınıflandırma incelemesi, onay sonrası ASIN'in FBA'ya uygun hale gelmesi.\n\nİnceleme süresi Amazon'a bağlı; formlar eksiksiz olursa süreç hızlanıyor.\nOnay çıkmadan lojistik merkezine mal gönderilmesi sevkiyatın reddine yol\naçabileceği için 6 Kasım depo girişi bu kaleme bağlı. Ürünün olduğundan\nağır sınıflandırılması halinde Uyumluluk Panosu üzerinden itiraz yolu\naçık.",actions:[]});
+  b.rows.push({id:id(),status:'Not Started',deadline:'2026-10-23',days:'',task:'FBA tehlikeli madde sınıflandırması (Gefahrgut)',note:"Amazon, alkol bazlı parfümü UN 1266 / Sınıf 3 yanıcı sıvı olarak\nsınıflandırıyor. ASIN'ler FBA'ya geçmeden önce Seller Central üzerinde\ntehlikeli madde sınıflandırma başvurusunun tamamlanması gerekiyor.\n\nSıra: MSDS'lerin ürün bazında toplanması, Seller Central >\nTehlikeli Madde Sınıflandırmasını Yönet ekranından yüklenmesi, Amazon'un\nsınıflandırma incelemesi, onay sonrası ASIN'in FBA'ya uygun hale gelmesi.\n\nİnceleme süresi Amazon'a bağlı; formlar eksiksiz olursa süreç hızlanıyor.\nOnay çıkmadan lojistik merkezine mal gönderilmesi sevkiyatın reddine yol\naçabileceği için 6 Kasım depo girişi bu kaleme bağlı. Ürünün olduğundan\nağır sınıflandırılması halinde Uyumluluk Panosu üzerinden itiraz yolu\naçık.",actions:[]});
   logChange('Yeni kalem eklendi: FBA tehlikeli madde sınıflandırması (Gefahrgut)');save();return true;}
 function save(){localStorage.setItem('bargello_v9',JSON.stringify(state));if(dbRef&&BULUT_HAZIR){try{const u={};ANA.forEach(k=>u[k]=state[k]);dbRef.update(u);}catch(e){}}}
 function initData(){
@@ -1503,8 +1503,8 @@ function applyOverdue(){return;
 
 /* ---------- belgeler ---------- */
 let abdForm={},gpsrForm={},lucidForm={},danisman={},vatD={},teslimD={},dosyaListe={},belgeLink={};
-const SLOTLAR=[['msds','Güvenlik bilgi formları (MSDS / SDS)',
-    "MSDS (güvenlik bilgi formu) nedir: Parfümün içinde ne olduğunu, ne kadar yanıcı olduğunu ve nasıl taşınacağını anlatan standart bir belgedir. Parfümü üreten firma ya da hammadde tedarikçisi hazırlar.\n\nNeden gerekiyor: Parfüm alkol içerdiği için Amazon onu tehlikeli madde sayıyor. Her ürünün formunu görmeden ürünü deposuna (FBA) kabul etmiyor.\n\nNe yapacaksınız:\n\n1. Ürün listesini (Excel) açın. Her ürünün satırında en sağdaki \"Amazon pazarı\" sütununda ürünün nerede satılacağını seçin: Almanya, ABD ya da Almanya ve ABD. Satılmayacak ürünün satırını boş bırakın.\n\n2. Almanya için seçilen her ürünün formunu üreticiden isteyin. Almanya için AB formatı (REACH Ek II, Almanca ya da İngilizce) gerekir. İki pazarda satılacak üründe iki ayrı form olur.\n\n3. Formu Drive'da \"AB - Almanya\" klasörüne yükleyin. Dosya adı ürünün parça numarasıyla başlasın, örnek: 3010001614-harmony-azure.pdf\n\nSonra Export Partners: Formları kontrol eder, Amazon'a yükler ve tehlikeli madde başvurusunu yapar. Amazon onayladığı ürünü depoya kabul eder. Formu olmayan ürün FBA'ya gönderilemez."],
+const SLOTLAR=[['msds','MSDS',
+    "MSDS nedir: Parfümün içinde ne olduğunu, ne kadar yanıcı olduğunu ve nasıl taşınacağını anlatan standart bir belgedir. Parfümü üreten firma ya da hammadde tedarikçisi hazırlar.\n\nNeden gerekiyor: Parfüm alkol içerdiği için Amazon onu tehlikeli madde sayıyor. Her ürünün formunu görmeden ürünü deposuna (FBA) kabul etmiyor.\n\nNe yapacaksınız:\n\n1. Ürün listesini (Excel) açın. Her ürünün satırında en sağdaki \"Amazon pazarı\" sütununda ürünün nerede satılacağını seçin: Almanya, ABD ya da Almanya ve ABD. Satılmayacak ürünün satırını boş bırakın.\n\n2. Almanya için seçilen her ürünün formunu üreticiden isteyin. Almanya için AB formatı (REACH Ek II, Almanca ya da İngilizce) gerekir. İki pazarda satılacak üründe iki ayrı form olur.\n\n3. Formu Drive'da \"AB - Almanya\" klasörüne yükleyin. Dosya adı ürünün parça numarasıyla başlasın, örnek: 3010001614-harmony-azure.pdf\n\nSonra Export Partners: Formları kontrol eder, Amazon'a yükler ve tehlikeli madde başvurusunu yapar. Amazon onayladığı ürünü depoya kabul eder. Formu olmayan ürün FBA'ya gönderilemez."],
   ['etiket','Ürün etiketleri'],['diger','Diğer belgeler']];
 function formCiz(){[['f_ad','sirket_adi'],['f_alt','alternatif'],['f_sahip','sahip'],['f_adres','tr_adres']].forEach(([id,k])=>{
   const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=abdForm[k]||'';});
@@ -1557,7 +1557,7 @@ const BELGE_REHBER=[
  ['3','LUCID / ambalaj bilgileri',['2026 için tahmini yıllık ambalaj miktarı, kg olarak.','Kalemler: kâğıt/karton, plastik, cam, metal, ahşap, diğer ve kargo ambalajı.','Kesin rakam yoksa tahmin yeterli.','Ersin Bey LUCID kaydını ve dual system sözleşmesini tamamlar.']],
  ['4','VAT son durum',['Taxually\'deki VAT kaydının aşaması yazılır.','Numara geldiyse numara, gelmediyse beklenen tarih.']],
  ['5','Ürün etiketleri',['Etiket dosyaları Drive\'daki Etiketler klasörüne yüklenir.','Dosya adı ürünün parça numarasıyla başlar.']],
- ['0','Güvenlik bilgi formları (MSDS / SDS)',['Ürün listesinde her ürünün satılacağı pazar seçilir: Almanya, ABD ya da ikisi.','Almanya formları (REACH Ek II) Drive\'daki Almanya klasörüne yüklenir.','ABD formları (OSHA HazCom, İngilizce) Drive\'daki ABD klasörüne yüklenir.','Dosya adı ürünün parça numarasıyla başlar.','Export Partners formları Amazon\'a yükler ve tehlikeli madde başvurusunu yapar.']]
+ ['0','MSDS',['Ürün listesinde her ürünün satılacağı pazar seçilir: Almanya, ABD ya da ikisi.','Almanya formları (REACH Ek II) Drive\'daki Almanya klasörüne yüklenir.','ABD formları (OSHA HazCom, İngilizce) Drive\'daki ABD klasörüne yüklenir.','Dosya adı ürünün parça numarasıyla başlar.','Export Partners formları Amazon\'a yükler ve tehlikeli madde başvurusunu yapar.']]
 ];
 let belgeAcik={};
 function belgeBarCiz(){
