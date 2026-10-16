@@ -561,7 +561,7 @@
     <div class="dgrup"><span>ABD</span><small>Bargello USA LLC · Amazon.com</small></div>
     <details class="dcard dsec" id="dsec1">
       <summary><h3>ABD şirket kurulumu (Bargello USA LLC)</h3><span class="drozet" id="drozet1"></span></summary><div class="dbody">
-      <p class="dnote">Şirket kurulumu ve EIN için Gökhan Çıkılı (Troy Business Services) aşağıdaki bilgileri istiyor. İletişim: <a href="mailto:gokhan@exportpartnersllc.com">gokhan@exportpartnersllc.com</a></p>
+      <p class="dnote">Şirket kurulumu ve EIN için Gökhan Çıkılı aşağıdaki bilgileri istiyor. İletişim: <a href="mailto:gokhan@exportpartnersllc.com">gokhan@exportpartnersllc.com</a></p>
       <label>Şirket adı (önerilen)<input id="f_ad" placeholder="Ör. Bargello USA LLC"></label>
       <label>Alternatif şirket adı<input id="f_alt" placeholder="İlk ad uygun değilse"></label>
       <label>Şirket sahibinin adı soyadı<input id="f_sahip" placeholder="Cemalettin ..."></label>
@@ -569,12 +569,11 @@
       <button class="btn-save" onclick="formKaydet()">Kaydet</button> <span id="f_durum" class="dnote"></span>
       <div class="dslot" style="border:1px solid #1f8a4c;border-radius:10px;padding:10px 12px;margin:8px 0 12px">
         <b>Şirket sahibinin pasaport görüntüsü</b>
-        <p class="dnote" style="margin:4px 0;flex-basis:100%">Tarayıcınızda şifrelenir; yalnızca Export Partners LLC açabilir.</p><details class="acikla"><summary>Gizlilik</summary><div><p>pasaport görüntüsü yüklenmeden önce tarayıcınızda şifrelenir ve panelde şifreli olarak saklanır. Panel üzerinden kimse açamaz; yalnızca Export Partners LLC açabilir. Belge yalnızca ABD şirket kurulumu ve EIN başvurusu için Gökhan Çıkılı'ya (Troy Business Services) iletilir, iletildikten sonra panelden silinir. Dilerseniz pasaport görüntüsünü doğrudan Gökhan Çıkılı'ya (WhatsApp ya da <a href="mailto:gokhan@exportpartnersllc.com">gokhan@exportpartnersllc.com</a>) da iletebilirsiniz; bu durumda panele yüklemeniz gerekmez.</p></div></details>
+        <p class="dnote" style="margin:4px 0;flex-basis:100%">Tarayıcınızda şifrelenir; yalnızca Export Partners LLC açabilir.</p><details class="acikla"><summary>Gizlilik</summary><div><p>pasaport görüntüsü yüklenmeden önce tarayıcınızda şifrelenir ve panelde şifreli olarak saklanır. Panel üzerinden kimse açamaz; yalnızca Export Partners LLC açabilir. Belge yalnızca ABD şirket kurulumu ve EIN başvurusu için Gökhan Çıkılı'ya iletilir, iletildikten sonra panelden silinir. Dilerseniz pasaport görüntüsünü doğrudan Gökhan Çıkılı'ya e-postayla (<a href="mailto:gokhan@exportpartnersllc.com">gokhan@exportpartnersllc.com</a>) da iletebilirsiniz; bu durumda panele yüklemeniz gerekmez.</p></div></details>
         <span id="pasaportListe"></span>
         <label class="addbtn" style="margin:0">+ Şifreli yükle<input type="file" accept="image/*,application/pdf" style="display:none" onchange="pasaportYukle(event)"></label>
       </div>
-      <div class="dlink"><b>ABD posta adresi (iPostal1)</b> <span class="dnote">· kayıt aşağıdaki bağlantıdan, şirket sahibinin imzasıyla</span><details class="acikla"><summary>Açıklama</summary><div><p>Neden gerekli: ABD'de kurulan şirketin resmi yazışmaları (IRS ve EIN yazıları, eyalet bildirimleri, banka mektupları) için ABD'de bir posta adresi gerekir. iPostal1 bu adresi sağlar; gelen mektuplar taranarak çevrim içi olarak iletilir.</p><p>Kim yapar: kayıt şirket adına, Gökhan Çıkılı'nın (Troy Business Services) ilettiği aşağıdaki bağlantıdan yapılır. Kayıt sırasında abonelik ödemesi ve posta vekalet formu (USPS Form 1583) için şirket sahibinin imzası ve kimlik doğrulaması istenir; form kayıt ekranında hazır gelir, ayrıca indirilmesi gerekmez.</p></div></details>
-        <a href="https://my.ipostal1.com/signup/TroyBusinessServices" target="_blank" rel="noopener">my.ipostal1.com/signup/TroyBusinessServices</a>
+      <div class="dlink"><b>ABD posta adresi (iPostal1)</b> <span class="dnote">· kaydı Export Partners yapar</span><details class="acikla"><summary>Açıklama</summary><div><p>Neden gerekli: ABD'de kurulan şirketin resmi yazışmaları (IRS ve EIN yazıları, eyalet bildirimleri, banka mektupları) için ABD'de bir posta adresi gerekir. iPostal1 bu adresi sağlar; gelen mektuplar taranarak çevrim içi olarak iletilir.</p><p>Kim yapar: kayıt Export Partners tarafından şirket adına yapılır. Şirket sahibinin imzası gereken adım ayrıca iletilir.</p></div></details>
         <label style="display:flex;gap:8px;align-items:center;font-weight:700"><input type="checkbox" id="f_ipostal" style="width:auto;margin:0"> iPostal1 kaydı tamamlandı</label></div>
     </div></details>
     <div class="dgrup"><span>ALMANYA</span><small>Amazon.de</small></div>
@@ -1611,7 +1610,7 @@ function dsecCiz(e){let ilk=0;for(const [no,ad] of Object.entries(DSEC)){const k
 }
 /* 10 Ekim 2026, Mustafa: Documents pending kapali menu; acilinca basliklar, her baslik acilinca adim adim aciklama. */
 const BELGE_REHBER=[
- ['1','ABD şirket kurulumu (Bargello USA LLC)',['Önerilen şirket adı ve bir alternatif ad.','Şirket sahibinin adı soyadı ve Türkiye adresi.','Şirket sahibinin pasaport görüntüsü (panelde şifreli yüklenir).','iPostal1 kaydı: bağlantıdan şirket adına ABD posta adresi açılır.','Kurulum ve EIN: Gökhan Çıkılı (Troy Business Services), yaklaşık 3-4 hafta.']],
+ ['1','ABD şirket kurulumu (Bargello USA LLC)',['Önerilen şirket adı ve bir alternatif ad.','Şirket sahibinin adı soyadı ve Türkiye adresi.','Şirket sahibinin pasaport görüntüsü (panelde şifreli yüklenir).','iPostal1 kaydı: Export Partners şirket adına ABD posta adresi açar.','Kurulum ve EIN: Gökhan Çıkılı, yaklaşık 3-4 hafta.']],
  ['2','GPSR / AB sorumlu kişi',['Obelis\'in unvanı, AB adresi ve e-posta adresi girilir.','Export Partners bu bilgileri Seller Central\'a işler; listeler bundan sonra açılır.']],
  ['3','LUCID / ambalaj bilgileri',['2026 için tahmini yıllık ambalaj miktarı, kg olarak.','Kalemler: kâğıt/karton, plastik, cam, metal, ahşap, diğer ve kargo ambalajı.','Kesin rakam yoksa tahmin yeterli.','Ersin Bey LUCID kaydını ve dual system sözleşmesini tamamlar.']],
  ['4','VAT son durum',['Taxually\'deki VAT kaydının aşaması yazılır.','Numara geldiyse numara, gelmediyse beklenen tarih.']],
